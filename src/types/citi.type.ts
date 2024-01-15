@@ -1,6 +1,6 @@
-import {Location} from './location.type.js';
+import {Location} from '#src/types/location.type.js';
 
-export type Citi = {
+export interface Citi {
   name: string,
   location: Location
 }

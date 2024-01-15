@@ -1,4 +1,7 @@
-import {Offer, OfferType} from '../types/offer.type.js';
+import {Offer, OfferType} from '#src/types/offer.type.js';
+import {UserType} from '#src/types/user.type.js';
+
+const stringToBoolean = (str: string): boolean => str === 'true';
 
 function tsvOffersParse(tsvString: string): Offer[] {
   return tsvString
@@ -7,7 +10,7 @@ function tsvOffersParse(tsvString: string): Offer[] {
     .map((line) => line.split('\t'))
     .map(([title, description, publicDate, cityName, cityLocationLatitude, cityLocationLongitude,
       previewImage, images, isPremium, isFavorite, rating, type, room, bedroom, price, goods,
-      hostName, hostEmail, hostAvatarUrl, hostPassword, hostIsPro, offerLocationLatitude, offerLocationLongitude]) => ({
+      hostName, hostEmail, hostAvatarUrl, hostPassword, hostType, offerLocationLatitude, offerLocationLongitude]) => ({
       title,
       description,
       publicDate: new Date(publicDate),
@@ -20,8 +23,8 @@ function tsvOffersParse(tsvString: string): Offer[] {
       },
       previewImage,
       images: images.split(';'),
-      isPremium: Boolean(isPremium),
-      isFavorite: Boolean(isFavorite),
+      isPremium: stringToBoolean(isPremium),
+      isFavorite: stringToBoolean(isFavorite),
       rating: Number(rating),
       type: type as OfferType,
       room: Number(room),
@@ -33,7 +36,7 @@ function tsvOffersParse(tsvString: string): Offer[] {
         email: hostEmail,
         avatarUrl: hostAvatarUrl,
         password: hostPassword,
-        isPro: Boolean(hostIsPro)
+        type: hostType as UserType
       },
       location: {
         latitude: Number(offerLocationLatitude),
@@ -41,5 +44,6 @@ function tsvOffersParse(tsvString: string): Offer[] {
       }
     }));
 }
+
 
 export {tsvOffersParse};

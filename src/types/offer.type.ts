@@ -1,10 +1,10 @@
-import {Citi} from './citi.type.js';
-import {Location} from './location.type.js';
-import {User} from './user.type.js';
+import {Citi} from '#src/types/citi.type.js';
+import {Location} from '#src/types/location.type.js';
+import {User} from '#src/types/user.type.js';
 
 export type OfferType = 'apartment' | 'room' | 'house' | 'hotel';
 
-export type Offer = {
+export interface Offer {
   title: string,
   description: string,
   publicDate: Date,

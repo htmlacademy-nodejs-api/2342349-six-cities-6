@@ -14,7 +14,7 @@
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
-    "ts": "tsx",
+    "tsx": "tsx",
     "cli:version": "tsx ./src/main.cli.ts --version",
     "cli:help": "tsx ./src/main.cli.ts",
     "cli:import": "tsx ./src/main.cli.ts --import mocks/mock-data.tsv"
@@ -31,8 +31,11 @@
     "typescript": "5.3.3"
   },
   "type": "module",
+  "imports": {
+    "#src/*": "./dist/*"
+  },
   "engines": {
-    "node": "^18.0.0",
+    "node": "^20.0.0",
     "npm": ">=8"
   },
   "dependencies": {

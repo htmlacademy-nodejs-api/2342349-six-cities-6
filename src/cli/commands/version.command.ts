@@ -1,16 +1,16 @@
+import {BaseCommand} from '#src/cli/commands/base-command.js';
+import {fileRead} from '#src/utils/file-read.js';
+import {jsonParse} from '#src/utils/json-parse.js';
 import chalk from 'chalk';
-import {fileRead} from '../../utils/file-read.js';
-import {jsonParse} from '../../utils/json-parse.js';
-import {Command} from './command.interface.js';
 
-export class VersionCommand implements Command {
-  private readonly filePath: string = './package.json';
+export class VersionCommand extends BaseCommand {
+  private readonly filePath = './package.json';
 
   public async execute(..._parameters: string[]): Promise<void> {
-    console.info(chalk.blue(this.readVersion()));
+    console.info(chalk.blue(await this.readVersion()));
   }
 
-  public getName(): string {
+  get name(): string {
     return '--version';
   }
 
@@ -18,8 +18,8 @@ export class VersionCommand implements Command {
     return typeof obj === 'object' && obj !== null && 'version' in obj;
   }
 
-  private readVersion(): string {
-    const rawFileContent = fileRead(this.filePath);
+  private async readVersion(): Promise<string> {
+    const rawFileContent = await fileRead(this.filePath);
     const fileConfig = jsonParse(rawFileContent);
     if (!this.isJsonConfig(fileConfig) || typeof fileConfig.version !== 'string') {
       console.error(`'version' field is missing or not a string in the file at ${this.filePath}`);

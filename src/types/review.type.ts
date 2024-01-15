@@ -1,6 +1,6 @@
-import {User} from './user.type.js';
+import {User} from '#src/types/user.type.js';
 
-export type Review = {
+export interface Review {
   comment: string,
   publishDate: Date,
   rating: number,

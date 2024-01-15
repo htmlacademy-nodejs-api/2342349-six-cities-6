@@ -1,17 +1,17 @@
+import {Command} from '#src/cli/commands/command.interface.js';
+import {CommandParser} from '#src/cli/index.js';
 import chalk from 'chalk';
-import {CommandParser} from './command-parser.js';
-import {Command} from './commands/command.interface.js';
 
 export class CliApplication {
   private commands: Record<string, Command> = {};
-  private readonly defaultCommand: string = '--help';
+  private readonly defaultCommand = '--help';
 
   public registerCommands(commandsForRegistration: Command[]): void {
     commandsForRegistration.forEach((command) => {
-      if (Object.hasOwn(this.commands, command.getName())) {
-        throw new Error(`Command '${command.getName()}' is already registered.`);
+      if (this.commands[command.name]) {
+        throw new Error(`Command '${command.name}' is already registered.`);
       }
-      this.commands[command.getName()] = command;
+      this.commands[command.name] = command;
     });
   }
 
@@ -23,7 +23,7 @@ export class CliApplication {
     }
     commands.forEach((commandName) => {
       const commandArguments = parsedCommand[commandName] ?? [];
-      if (!Object.hasOwn(this.commands, commandName)) {
+      if (!this.commands[commandName]) {
         console.error(`Command '${commandName}' does not exist.`);
       } else {
         console.info(chalk.blue(`Executing a command: ${commandName} ${commandArguments}`));

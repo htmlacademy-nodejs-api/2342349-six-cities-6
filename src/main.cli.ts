@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import {ImportCommand} from './cli/commands/import.command.js';
-import {CliApplication, HelpCommand, VersionCommand} from './cli/index.js';
+import {ImportCommand} from '#src/cli/commands/import.command.js';
+import {CliApplication, HelpCommand, VersionCommand} from '#src/cli/index.js';
 
 function bootstrap() {
   const cliApplication = new CliApplication();

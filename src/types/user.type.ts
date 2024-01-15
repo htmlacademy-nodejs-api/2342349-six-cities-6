@@ -1,7 +1,9 @@
-export type User = {
+export type UserType = 'обычный' | 'pro';
+
+export interface User {
   name: string,
   email: string,
   avatarUrl: string,
   password: string,
-  isPro: boolean
+  type: UserType
 }
