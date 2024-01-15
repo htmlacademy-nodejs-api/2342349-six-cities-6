@@ -1,0 +1,7 @@
+Program for preparing data for a REST API server.
+Example:
+    cli.js --<commands> [--arguments]
+Commands:
+    --version         # displays the version number
+    --help            # prints this text
+    --import <path>   # imports data from TSV
