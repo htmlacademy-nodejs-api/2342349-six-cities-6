@@ -2,7 +2,12 @@ import {Citi} from '#src/types/citi.type.js';
 import {Location} from '#src/types/location.type.js';
 import {User} from '#src/types/user.type.js';
 
-export type OfferType = 'apartment' | 'room' | 'house' | 'hotel';
+export enum OfferType {
+  apartment = 'apartment',
+  room = 'room',
+  house = 'house',
+  hotel = 'hotel'
+}
 
 export interface Offer {
   title: string,

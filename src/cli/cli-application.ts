@@ -18,7 +18,7 @@ export class CliApplication {
   public processCommand(args: string[]) {
     const parsedCommand = CommandParser.parse(args);
     const commands = Object.keys(parsedCommand);
-    if (commands.length === 0) {
+    if (!commands.length) {
       commands.push(this.defaultCommand);
     }
     commands.forEach((commandName) => {

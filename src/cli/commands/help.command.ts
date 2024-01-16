@@ -4,16 +4,17 @@ import chalk from 'chalk';
 
 export class HelpCommand extends BaseCommand {
   private readonly filePath = './src/cli/help.txt';
+  private readonly _name = '--help';
 
   public async execute(..._parameters: string[]): Promise<void> {
     console.info(chalk.green(await this.readHelp()));
   }
 
   private async readHelp(): Promise<string> {
-    return await fileRead(this.filePath);
+    return fileRead(this.filePath);
   }
 
   get name(): string {
-    return '--help';
+    return this._name;
   }
 }
