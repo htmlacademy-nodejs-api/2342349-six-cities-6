@@ -55,16 +55,29 @@ npm run lint
 ```bash
 npm run tsx -- <Путь к модулю с ts-кодом>
 ```
+Пакет `tsx` позволяет выполнить TS-код в Node.js без предварительной компиляции. Используется только на этапе разработки.
 
-Примеры запуска:
+
+Запуск скрипта для получения версии приложения:
 ```bash
 npm run tsx ./src/main.cli.ts --version
 ```
+
+Импорт данных из TSV файла:
 ```bash
 npm run tsx ./src/main.cli.ts --import mocks/mock-data.tsv
 ```
 
-Пакет `tsx` позволяет выполнить TS-код в Node.js без предварительной компиляции. Используется только на этапе разработки.
+Генерация мок-данных и запись их в TSV файл:
+```bash
+npm run tsx ./src/main.cli.ts --generate 100 ./mocks/mock-offers.tsv http://localhost:3123/api
+```
+
+Запуск мок-сервера:
+```bash
+npm run json-server ./mocks/mock-server-data.json --port 3123
+```
+
 
 #### Запустить проект
 
