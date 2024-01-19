@@ -1,6 +1,6 @@
 import {BaseCommand} from '#src/cli/commands/base-command.js';
-import {fileRead} from '#src/utils/file-read.js';
-import {jsonParse} from '#src/utils/json-parse.js';
+import {parseJson} from '#src/utils/parse-json.js';
+import {readFileAsync} from '#src/utils/read-file-async.js';
 import chalk from 'chalk';
 
 export class VersionCommand extends BaseCommand {
@@ -16,8 +16,8 @@ export class VersionCommand extends BaseCommand {
   }
 
   private async readVersion(): Promise<string> {
-    const rawFileContent = await fileRead(this.filePath);
-    const fileConfig = jsonParse(rawFileContent);
+    const rawFileContent = await readFileAsync(this.filePath);
+    const fileConfig = parseJson(rawFileContent);
     if (!this.isJsonConfig(fileConfig) || typeof fileConfig.version !== 'string') {
       throw new Error(`'version' field is missing or not a string in the file at ${this.filePath}`);
     }

@@ -1,5 +1,5 @@
+import {CommandParser} from '#src/cli/command-parser.js';
 import {Command} from '#src/cli/commands/command.interface.js';
-import {CommandParser} from '#src/cli/index.js';
 import chalk from 'chalk';
 
 export class CliApplication {
