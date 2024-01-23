@@ -14,10 +14,6 @@ export class TsvFileReader extends EventEmitter implements FileReader {
     let nextLinePosition = -1;
     let importedRowCount = 0;
 
-    readStream.on('error', (error) => {
-      this.emit('error', error);
-    });
-
     for await (const chunk of readStream) {
       remainingData += chunk.toString();
 

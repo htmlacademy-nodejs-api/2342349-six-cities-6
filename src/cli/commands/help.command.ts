@@ -3,7 +3,7 @@ import {readFileAsync} from '#src/utils/read-file-async.js';
 import chalk from 'chalk';
 
 export class HelpCommand extends BaseCommand {
-  protected readonly _name: string = '--help';
+  readonly _name: string = '--help';
   private readonly filePath = './src/cli/help.txt';
 
   public async execute(..._parameters: string[]): Promise<void> {

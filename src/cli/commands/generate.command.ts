@@ -5,7 +5,7 @@ import {MockServerData} from '#src/types/mock-server-data.type.js';
 import {loadDataAsync} from '#src/utils/load-data-async.js';
 
 export class GenerateCommand extends BaseCommand {
-  protected readonly _name: string = '--generate';
+  readonly _name: string = '--generate';
 
   constructor(
     private readonly offerGenerator: OfferGenerator,
@@ -23,21 +23,25 @@ export class GenerateCommand extends BaseCommand {
 
   private validateParameters(parameters: string[]): void {
     if (parameters.length !== 3) {
-      throw new Error('Incorrect number of parameters. Expecting 3 parameters: "count", "filepath", and "url".');
+      throw new Error(`Incorrect number of parameters: found ${parameters.length}, expecting 3. The required parameters are "count", "filepath", and "url".`);
     }
     const [count, filepath, url] = parameters;
     const offerCount = Number.parseInt(count, 10);
 
     if (isNaN(offerCount) || offerCount <= 0) {
-      throw new Error('Invalid "count". Count should be a positive number.');
+      throw new Error(`Invalid "count": "${count}". Count should be a positive number.`);
     }
-    if (!filepath) {
-      throw new Error('"Filepath" is required.');
+    if (!filepath.trim()) {
+      throw new Error('"Filepath" is required and cannot be empty.');
+    }
+
+    if (!url.trim()) {
+      throw new Error('"URL" is required and cannot be empty.');
     }
     try {
       new URL(url);
     } catch {
-      throw new Error('Invalid "URL".');
+      throw new Error(`Invalid "URL": "${url}". Please provide a valid URL.`);
     }
   }
 

@@ -3,7 +3,7 @@ import {parseJson} from '#src/utils/parse-json.js';
 import {readFileAsync} from '#src/utils/read-file-async.js';
 
 export class VersionCommand extends BaseCommand {
-  protected readonly _name: string = '--version';
+  readonly _name: string = '--version';
   private readonly filePath = './package.json';
 
   public async execute(..._parameters: string[]): Promise<void> {

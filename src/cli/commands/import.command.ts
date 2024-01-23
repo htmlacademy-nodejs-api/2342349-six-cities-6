@@ -3,7 +3,7 @@ import {OfferParser} from '#src/offers/parser/offer-parser.interface.js';
 import {FileReader} from '#src/offers/reader/file-reader.interface.js';
 
 export class ImportCommand extends BaseCommand {
-  protected readonly _name: string = '--import';
+  readonly _name: string = '--import';
 
   constructor(
     private readonly offerParser: OfferParser,
@@ -21,10 +21,8 @@ export class ImportCommand extends BaseCommand {
     if (!fileList.length) {
       throw new Error('At least one "Filepath" is required.');
     }
-    for (const filePath of fileList) {
-      if (!filePath) {
-        throw new Error('All file paths must be non-empty strings.');
-      }
+    if (fileList.some((filePath) => !filePath?.trim())) {
+      throw new Error('All file paths must be non-empty strings.');
     }
   }
 
