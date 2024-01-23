@@ -3,18 +3,29 @@ import {OfferParser} from '#src/offers/parser/offer-parser.interface.js';
 import {FileReader} from '#src/offers/reader/file-reader.interface.js';
 
 export class ImportCommand extends BaseCommand {
-  private readonly _name = '--import';
+  protected readonly _name: string = '--import';
 
   constructor(
     private readonly offerParser: OfferParser,
     private readonly fileReader: FileReader
   ) {
     super();
-    this.offerParser = offerParser;
   }
 
   public async execute(...parameters: string[]): Promise<void> {
+    this.validateParameters(parameters);
     await this.parseFileList(parameters);
+  }
+
+  private validateParameters(fileList: string[]) {
+    if (!fileList.length) {
+      throw new Error('At least one "Filepath" is required.');
+    }
+    for (const filePath of fileList) {
+      if (!filePath) {
+        throw new Error('All file paths must be non-empty strings.');
+      }
+    }
   }
 
   private onImportedLine = (dataLine: string) => {
@@ -36,9 +47,5 @@ export class ImportCommand extends BaseCommand {
         console.error(`Can't import data from file: ${file}`);
       }
     }
-  }
-
-  get name(): string {
-    return this._name;
   }
 }

@@ -2,7 +2,7 @@ import {FileWriter} from '#src/offers/writer/file-writer.interface.js';
 import {createWriteStream, WriteStream} from 'node:fs';
 
 export class TsvFileWriter implements FileWriter {
-  private stream: WriteStream | undefined;
+  private stream?: WriteStream;
 
   createStream(filename: string): void {
     this.stream = createWriteStream(filename, {
@@ -11,7 +11,7 @@ export class TsvFileWriter implements FileWriter {
     });
   }
 
-  public async write(row: string): Promise<unknown> {
+  public async write(row: string): Promise<void> {
     if (!this.stream) {
       throw new Error('Stream not initialized. Call createStream first.');
     }
@@ -19,11 +19,9 @@ export class TsvFileWriter implements FileWriter {
     const stream = this.stream;
     const writeSuccess = this.stream.write(`${row}\n`);
     if (!writeSuccess) {
-      return new Promise((resolve) => {
-        stream.once('drain', () => resolve(true));
+      await new Promise<void>((resolve) => {
+        stream.once('drain', () => resolve());
       });
     }
-
-    return Promise.resolve();
   }
 }

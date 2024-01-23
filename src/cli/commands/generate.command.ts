@@ -3,9 +3,10 @@ import {OfferGenerator} from '#src/offers/generator/offer-generator.interface.js
 import {FileWriter} from '#src/offers/writer/file-writer.interface.js';
 import {MockServerData} from '#src/types/mock-server-data.type.js';
 import {loadDataAsync} from '#src/utils/load-data-async.js';
-import chalk from 'chalk';
 
 export class GenerateCommand extends BaseCommand {
+  protected readonly _name: string = '--generate';
+
   constructor(
     private readonly offerGenerator: OfferGenerator,
     private readonly fileWriter: FileWriter
@@ -13,12 +14,31 @@ export class GenerateCommand extends BaseCommand {
     super();
   }
 
-  private readonly _name = '--generate';
-
   public async execute(...parameters: string[]): Promise<void> {
+    this.validateParameters(parameters);
     const [count, filepath, url] = parameters;
     const offerCount = Number.parseInt(count, 10);
     await this.generateOffers(offerCount, filepath, url);
+  }
+
+  private validateParameters(parameters: string[]): void {
+    if (parameters.length !== 3) {
+      throw new Error('Incorrect number of parameters. Expecting 3 parameters: "count", "filepath", and "url".');
+    }
+    const [count, filepath, url] = parameters;
+    const offerCount = Number.parseInt(count, 10);
+
+    if (isNaN(offerCount) || offerCount <= 0) {
+      throw new Error('Invalid "count". Count should be a positive number.');
+    }
+    if (!filepath) {
+      throw new Error('"Filepath" is required.');
+    }
+    try {
+      new URL(url);
+    } catch {
+      throw new Error('Invalid "URL".');
+    }
   }
 
   private async generateOffers(offerCount: number, filepath: string, url: string): Promise<void> {
@@ -29,13 +49,9 @@ export class GenerateCommand extends BaseCommand {
         const offer = this.offerGenerator.generate(mockServerData);
         await this.fileWriter.write(offer);
       }
-      console.info(chalk.green(`TSV File '${filepath}' was created with ${offerCount} offers.`));
+      console.info(`TSV File '${filepath}' was created with ${offerCount} offers.`);
     } catch {
       console.error(`Can't generate data for ${filepath} with ${url}`);
     }
-  }
-
-  get name(): string {
-    return this._name;
   }
 }

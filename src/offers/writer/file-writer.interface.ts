@@ -1,4 +1,4 @@
 export interface FileWriter {
-  write(row: string): void;
+  write(row: string): Promise<void>;
   createStream(filename: string): void;
 }
