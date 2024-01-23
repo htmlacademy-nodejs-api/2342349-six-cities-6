@@ -17,14 +17,17 @@
     "tsx": "tsx",
     "cli:version": "tsx ./src/main.cli.ts --version",
     "cli:help": "tsx ./src/main.cli.ts",
-    "cli:import": "tsx ./src/main.cli.ts --import mocks/mock-data.tsv"
+    "cli:import": "tsx ./src/main.cli.ts --import mocks/mock-offers.tsv",
+    "cli:generate": "tsx ./src/main.cli.ts --generate 100 ./mocks/mock-offers.tsv http://localhost:3123/api",
+    "mock:server": "json-server ./mocks/mock-server-data.json --port 3123"
   },
   "devDependencies": {
-    "@types/node": "20.11.4",
-    "@typescript-eslint/eslint-plugin": "6.19.0",
-    "@typescript-eslint/parser": "6.19.0",
+    "@types/node": "20.11.5",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
     "eslint": "8.56.0",
     "eslint-config-htmlacademy": "10.0.1",
+    "json-server": "0.17.4",
     "rimraf": "5.0.5",
     "ts-node": "10.9.2",
     "tsx": "4.7.0",
@@ -39,6 +42,9 @@
     "npm": ">=8"
   },
   "dependencies": {
-    "chalk": "^5.3.0"
+    "chalk": "5.3.0",
+    "dayjs": "1.11.10",
+    "got": "14.0.0",
+    "tslib": "2.6.2"
   }
 }

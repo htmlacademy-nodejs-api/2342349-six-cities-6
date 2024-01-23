@@ -1,20 +1,16 @@
 import {BaseCommand} from '#src/cli/commands/base-command.js';
-import {fileRead} from '#src/utils/file-read.js';
+import {readFileAsync} from '#src/utils/read-file-async.js';
 import chalk from 'chalk';
 
 export class HelpCommand extends BaseCommand {
+  readonly _name: string = '--help';
   private readonly filePath = './src/cli/help.txt';
-  private readonly _name = '--help';
 
   public async execute(..._parameters: string[]): Promise<void> {
     console.info(chalk.green(await this.readHelp()));
   }
 
   private async readHelp(): Promise<string> {
-    return fileRead(this.filePath);
-  }
-
-  get name(): string {
-    return this._name;
+    return readFileAsync(this.filePath);
   }
 }

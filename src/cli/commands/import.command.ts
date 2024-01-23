@@ -1,23 +1,49 @@
 import {BaseCommand} from '#src/cli/commands/base-command.js';
-import {fileRead} from '#src/utils/file-read.js';
-import {tsvOffersParse} from '#src/utils/tsv-offers-parse.js';
+import {OfferParser} from '#src/offers/parser/offer-parser.interface.js';
+import {FileReader} from '#src/offers/reader/file-reader.interface.js';
 
 export class ImportCommand extends BaseCommand {
-  private readonly _name = '--import';
+  readonly _name: string = '--import';
+
+  constructor(
+    private readonly offerParser: OfferParser,
+    private readonly fileReader: FileReader
+  ) {
+    super();
+  }
 
   public async execute(...parameters: string[]): Promise<void> {
+    this.validateParameters(parameters);
     await this.parseFileList(parameters);
   }
 
-  private async parseFileList(fileList: string[]) {
-    for (const file of fileList) {
-      const rawFileContent = await fileRead(file);
-      const offers = tsvOffersParse(rawFileContent);
-      console.log(offers);
+  private validateParameters(fileList: string[]) {
+    if (!fileList.length) {
+      throw new Error('At least one "Filepath" is required.');
+    }
+    if (fileList.some((filePath) => !filePath?.trim())) {
+      throw new Error('All file paths must be non-empty strings.');
     }
   }
 
-  get name(): string {
-    return this._name;
+  private onImportedLine = (dataLine: string) => {
+    const offer = this.offerParser.parserOffer(dataLine);
+    console.info(offer);
+  };
+
+  private onCompleteImport = (count: number) => {
+    console.info(`${count} rows imported.`);
+  };
+
+  private async parseFileList(fileList: string[]): Promise<void> {
+    for (const file of fileList) {
+      this.fileReader.on('line', this.onImportedLine);
+      this.fileReader.on('end', this.onCompleteImport);
+      try {
+        await this.fileReader.read(file);
+      } catch {
+        console.error(`Can't import data from file: ${file}`);
+      }
+    }
   }
 }
