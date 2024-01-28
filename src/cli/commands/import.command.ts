@@ -1,13 +1,16 @@
 import {BaseCommand} from '#src/cli/commands/base-command.js';
 import {OfferParser} from '#src/offers/parser/offer-parser.interface.js';
 import {FileReader} from '#src/offers/reader/file-reader.interface.js';
+import {Component} from '#src/types/component.enum.js';
+import {inject, injectable} from 'inversify';
 
+@injectable()
 export class ImportCommand extends BaseCommand {
   readonly _name: string = '--import';
 
   constructor(
-    private readonly offerParser: OfferParser,
-    private readonly fileReader: FileReader
+    @inject(Component.OfferParser) private readonly offerParser: OfferParser,
+    @inject(Component.FileReader) private readonly fileReader: FileReader
   ) {
     super();
   }

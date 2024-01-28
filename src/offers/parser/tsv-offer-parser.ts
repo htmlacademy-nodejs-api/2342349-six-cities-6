@@ -1,7 +1,9 @@
 import {OfferParser} from '#src/offers/parser/offer-parser.interface.js';
 import {Offer, OfferType} from '#src/types/offer.type.js';
 import {UserType} from '#src/types/user.type.js';
+import {injectable} from 'inversify';
 
+@injectable()
 export class TsvOfferParser implements OfferParser {
 
   private stringToBoolean(str: string) {

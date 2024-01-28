@@ -1,7 +1,11 @@
 import {FileReader} from '#src/offers/reader/file-reader.interface.js';
+import {decorate, injectable} from 'inversify';
 import EventEmitter from 'node:events';
 import {createReadStream} from 'node:fs';
 
+decorate(injectable(), EventEmitter);
+
+@injectable()
 export class TsvFileReader extends EventEmitter implements FileReader {
   private readonly chunkSize = 16384;
 
@@ -29,3 +33,5 @@ export class TsvFileReader extends EventEmitter implements FileReader {
     this.emit('end', importedRowCount);
   }
 }
+
+

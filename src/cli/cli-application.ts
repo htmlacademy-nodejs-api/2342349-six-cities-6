@@ -1,7 +1,9 @@
 import {CommandParser} from '#src/cli/command-parser.js';
 import {Command} from '#src/cli/commands/command.interface.js';
 import chalk from 'chalk';
+import {injectable} from 'inversify';
 
+@injectable()
 export class CliApplication {
   private commands: Record<string, Command> = {};
   private readonly defaultCommand = '--help';
