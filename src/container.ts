@@ -19,11 +19,11 @@ import {RestConfig} from '#src/utils/config/rest.config.js';
 import {RestSchema} from '#src/utils/config/rest.schema.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {PinoLogger} from '#src/utils/logger/pino.logger.js';
-import {Container} from 'inversify';
+import {Container as InversifyContainer} from 'inversify';
 
-export class ContainerConfig {
-  public static createRestContainer(): Container {
-    const container = new Container();
+export class Container {
+  public static createRestContainer(): InversifyContainer {
+    const container = new InversifyContainer();
     container.bind<RestApplication>(Component.RestApplication).to(RestApplication).inSingletonScope();
     container.bind<Logger>(Component.Logger).to(PinoLogger).inSingletonScope();
     container.bind<Config<RestSchema>>(Component.Config).to(RestConfig).inSingletonScope();
@@ -31,8 +31,8 @@ export class ContainerConfig {
     return container;
   }
 
-  public static createCliContainer(): Container {
-    const container = new Container({skipBaseClassChecks: true});
+  public static createCliContainer(): InversifyContainer {
+    const container = new InversifyContainer({skipBaseClassChecks: true});
     container.bind<CliApplication>(Component.CliApplication).to(CliApplication).inSingletonScope();
     container.bind<HelpCommand>(Component.HelpCommand).to(HelpCommand).inSingletonScope();
     container.bind<VersionCommand>(Component.VersionCommand).to(VersionCommand).inSingletonScope();

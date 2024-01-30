@@ -4,11 +4,11 @@ import {GenerateCommand} from '#src/cli/commands/generate.command.js';
 import {HelpCommand} from '#src/cli/commands/help.command.js';
 import {ImportCommand} from '#src/cli/commands/import.command.js';
 import {VersionCommand} from '#src/cli/commands/version.command.js';
-import {ContainerConfig} from '#src/container.js';
+import {Container} from '#src/container.js';
 import {Component} from '#src/types/component.enum.js';
 
 function bootstrap() {
-  const cliContainer = ContainerConfig.createCliContainer();
+  const cliContainer = Container.createCliContainer();
   const cliApplication = cliContainer.get<CliApplication>(Component.CliApplication);
 
   cliApplication.registerCommands([
