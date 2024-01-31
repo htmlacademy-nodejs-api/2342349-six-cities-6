@@ -1,6 +1,8 @@
 import {FileWriter} from '#src/offers/writer/file-writer.interface.js';
+import {injectable} from 'inversify';
 import {createWriteStream, WriteStream} from 'node:fs';
 
+@injectable()
 export class TsvFileWriter implements FileWriter {
   private stream?: WriteStream;
 

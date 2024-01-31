@@ -3,7 +3,9 @@ import {OfferGenerator} from '#src/offers/generator/offer-generator.interface.js
 import {MockServerData} from '#src/types/mock-server-data.type.js';
 import {getRandomItem, getRandomItems, getRandomNumber} from '#src/utils/random.js';
 import dayjs from 'dayjs';
+import {injectable} from 'inversify';
 
+@injectable()
 export class TsvOfferGenerator implements OfferGenerator {
   public generate(mockData: MockServerData): string {
     const title = getRandomItem(mockData.titles);

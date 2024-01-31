@@ -9,7 +9,8 @@
   ],
   "main": "main.js",
   "scripts": {
-    "start": "npm run build && node ./dist/main.js",
+    "start": "npm run build && node ./dist/main.rest.js",
+    "start:dev": "npm run tsx ./src/main.rest.ts",
     "build": "npm run clean && npm run compile",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
@@ -21,18 +22,6 @@
     "cli:generate": "tsx ./src/main.cli.ts --generate 100 ./mocks/mock-offers.tsv http://localhost:3123/api",
     "mock:server": "json-server ./mocks/mock-server-data.json --port 3123"
   },
-  "devDependencies": {
-    "@types/node": "20.11.5",
-    "@typescript-eslint/eslint-plugin": "6.19.1",
-    "@typescript-eslint/parser": "6.19.1",
-    "eslint": "8.56.0",
-    "eslint-config-htmlacademy": "10.0.1",
-    "json-server": "0.17.4",
-    "rimraf": "5.0.5",
-    "ts-node": "10.9.2",
-    "tsx": "4.7.0",
-    "typescript": "5.3.3"
-  },
   "type": "module",
   "imports": {
     "#src/*": "./dist/*"
@@ -43,8 +32,29 @@
   },
   "dependencies": {
     "chalk": "5.3.0",
+    "convict": "6.2.4",
+    "convict-format-with-validator": "6.2.0",
     "dayjs": "1.11.10",
-    "got": "14.0.0",
+    "dotenv": "16.4.1",
+    "got": "14.1.0",
+    "inversify": "6.0.2",
+    "pino": "8.17.2",
+    "reflect-metadata": "0.2.1",
     "tslib": "2.6.2"
+  },
+  "devDependencies": {
+    "@types/convict": "6.1.6",
+    "@types/convict-format-with-validator": "6.0.5",
+    "@types/node": "20.11.13",
+    "@typescript-eslint/eslint-plugin": "6.20.0",
+    "@typescript-eslint/parser": "6.20.0",
+    "eslint": "8.56.0",
+    "eslint-config-htmlacademy": "10.0.1",
+    "json-server": "0.17.4",
+    "pino-pretty": "10.3.1",
+    "rimraf": "5.0.5",
+    "ts-node": "10.9.2",
+    "tsx": "4.7.0",
+    "typescript": "5.3.3"
   }
 }

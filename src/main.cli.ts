@@ -4,18 +4,18 @@ import {GenerateCommand} from '#src/cli/commands/generate.command.js';
 import {HelpCommand} from '#src/cli/commands/help.command.js';
 import {ImportCommand} from '#src/cli/commands/import.command.js';
 import {VersionCommand} from '#src/cli/commands/version.command.js';
-import {TsvOfferGenerator} from '#src/offers/generator/tsv-offer-generator.js';
-import {TsvOfferParser} from '#src/offers/parser/tsv-offer-parser.js';
-import {TsvFileReader} from '#src/offers/reader/tsv-file-reader.js';
-import {TsvFileWriter} from '#src/offers/writer/tsv-file-writer.js';
+import {Container} from '#src/container.js';
+import {Component} from '#src/types/component.enum.js';
 
 function bootstrap() {
-  const cliApplication = new CliApplication();
+  const cliContainer = Container.createCliContainer();
+  const cliApplication = cliContainer.get<CliApplication>(Component.CliApplication);
+
   cliApplication.registerCommands([
-    new HelpCommand(),
-    new VersionCommand(),
-    new ImportCommand(new TsvOfferParser(), new TsvFileReader()),
-    new GenerateCommand(new TsvOfferGenerator(), new TsvFileWriter())
+    cliContainer.get<HelpCommand>(Component.HelpCommand),
+    cliContainer.get<VersionCommand>(Component.VersionCommand),
+    cliContainer.get<ImportCommand>(Component.ImportCommand),
+    cliContainer.get<GenerateCommand>(Component.GenerateCommand),
   ]);
 
   cliApplication.processCommand(process.argv);

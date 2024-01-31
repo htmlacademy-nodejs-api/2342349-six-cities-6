@@ -1,15 +1,18 @@
 import {BaseCommand} from '#src/cli/commands/base-command.js';
 import {OfferGenerator} from '#src/offers/generator/offer-generator.interface.js';
 import {FileWriter} from '#src/offers/writer/file-writer.interface.js';
+import {Component} from '#src/types/component.enum.js';
 import {MockServerData} from '#src/types/mock-server-data.type.js';
 import {loadDataAsync} from '#src/utils/load-data-async.js';
+import {inject, injectable} from 'inversify';
 
+@injectable()
 export class GenerateCommand extends BaseCommand {
   readonly _name: string = '--generate';
 
   constructor(
-    private readonly offerGenerator: OfferGenerator,
-    private readonly fileWriter: FileWriter
+    @inject(Component.OfferGenerator) private readonly offerGenerator: OfferGenerator,
+    @inject(Component.FileWriter) private readonly fileWriter: FileWriter
   ) {
     super();
   }

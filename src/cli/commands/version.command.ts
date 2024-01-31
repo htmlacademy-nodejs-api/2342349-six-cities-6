@@ -1,7 +1,9 @@
 import {BaseCommand} from '#src/cli/commands/base-command.js';
 import {parseJson} from '#src/utils/parse-json.js';
 import {readFileAsync} from '#src/utils/read-file-async.js';
+import {injectable} from 'inversify';
 
+@injectable()
 export class VersionCommand extends BaseCommand {
   readonly _name: string = '--version';
   private readonly filePath = './package.json';
