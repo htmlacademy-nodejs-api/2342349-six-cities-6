@@ -13,4 +13,6 @@ export const Component = {
   ImportCommand: Symbol.for('ImportCommand'),
   VersionCommand: Symbol.for('VersionCommand'),
   CliApplication: Symbol.for('CliApplication'),
+
+  DatabaseClient: Symbol.for('DatabaseClient'),
 } as const;

@@ -44,11 +44,19 @@ npm run build
 npm run lint
 ```
 
-Запуск проверки проекта статическим анализатором кода **ESLint**.
+#### Docker
 
-Линтер проверяет файлы только внутри директории `src`.
+Запустить сборку контейнеров
 
-**Обратите внимание**, при запуске данной команды, ошибки выводятся в терминал.
+```bash
+docker compose --file ./docker-compose.yml --env-file ./.env --project-name \"six-cities\" up -d
+```
+
+Остановить и удалить контейнеры
+
+```bash
+docker compose --file ./docker-compose.yml --env-file ./.env --project-name \"six-cities\" down
+```
 
 #### Запустить ts-модуль без компиляции
 
