@@ -31,7 +31,8 @@ export class ImportCommand extends BaseCommand {
   }
 
   public async execute(...parameters: string[]): Promise<void> {
-    const {fileList, dbParams} = this.parseAndValidateInput(parameters);
+    const {fileList, dbParams} = this.parseInput(parameters);
+    this.validateInput(fileList, dbParams);
     this.logger.info('Init database...');
     await this.initDb(dbParams);
     this.logger.info('Init database completed');
@@ -39,13 +40,12 @@ export class ImportCommand extends BaseCommand {
     await this.databaseClient.disconnect();
   }
 
-  private parseAndValidateInput(input: string[]): { fileList: string[], dbParams: DbParams } {
+  private parseInput(input: string[]): { fileList: string[], dbParams: DbParams } {
     const dbParamRegex = /-db-(user|password|host|port|name)/;
     const dbParams: Partial<DbParams> = {};
     const fileList: string[] = [];
 
     let index = 0;
-
     while (index < input.length) {
       const key = input[index];
       const match = dbParamRegex.exec(key);
@@ -63,10 +63,12 @@ export class ImportCommand extends BaseCommand {
       } else {
         fileList.push(key);
       }
-
       index++;
     }
+    return {fileList, dbParams};
+  }
 
+  private validateInput(fileList: string[], dbParams: Partial<DbParams>): void {
     if (fileList.length === 0) {
       throw new Error('At least one "Filepath" is required.');
     }
@@ -78,10 +80,7 @@ export class ImportCommand extends BaseCommand {
     if (Object.keys(dbParams).length && requiredDbParams.some((key) => dbParams[key] === undefined)) {
       throw new Error('All database parameters must be provided.');
     }
-
-    return {fileList, dbParams};
   }
-
 
   private onImportedLine = (dataLine: string) => {
     const offer = this.offerParser.parserOffer(dataLine);
