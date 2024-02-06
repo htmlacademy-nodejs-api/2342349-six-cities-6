@@ -91,6 +91,30 @@ npm run tsx ./src/main.cli.ts --version
 npm run tsx ./src/main.cli.ts --import mocks/mock-data.tsv
 ```
 
+Импорт данных из нескольких TSV файлов:
+
+```bash
+npm run tsx ./src/main.cli.ts --import data1.tsv data2.tsv data3.tsv
+```
+
+Импорт данных из TSV файла с указанием соединения с базой данных:
+
+- -db-user [логин_базы_данных]
+- -db-password [пароль_базы_данных]
+- -db-host [сервер_базы_данных]
+- -db-port [порт_базы_данных]
+- -db-name [имя_базы_данных]
+
+```bash
+npm run tsx ./src/main.cli.ts --import mocks/mock-data.tsv -db-user [user] -db-password [password] -db-host [host] -db-port [port] -db-name [dbname]
+```
+
+Импорт данных из нескольоких TSV файлов:
+
+```bash
+npm run tsx ./src/main.cli.ts --import data1.tsv data2.tsv data3.tsv
+```
+
 Генерация мок-данных и запись их в TSV файл:
 ```bash
 npm run tsx ./src/main.cli.ts --generate 100 ./mocks/mock-offers.tsv http://localhost:3123/api

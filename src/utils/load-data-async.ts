@@ -1,6 +1,6 @@
 import got from 'got';
 
-export async function loadDataAsync<T>(url: string): Promise<T> {
+async function loadDataAsync<T>(url: string): Promise<T> {
   try {
     return await got.get(url).json<T>();
   } catch (error: unknown) {
@@ -12,3 +12,5 @@ export async function loadDataAsync<T>(url: string): Promise<T> {
     }
   }
 }
+
+export {loadDataAsync};

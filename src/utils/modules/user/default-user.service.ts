@@ -1,27 +1,41 @@
-import {CreateUserDto} from '#src/utils/modules/user/create-user.dto.js';
+import {Component} from '#src/types/component.enum.js';
+import {Crypto} from '#src/utils/crypto/crypto.interface.js';
+import {Logger} from '#src/utils/logger/logger.interface.js';
 import {UserService} from '#src/utils/modules/user/user-service.interface.js';
-import {UserEntity, UserModel} from '#src/utils/modules/user/user.entity.js';
-import {DocumentType} from '@typegoose/typegoose';
-import {Promise} from 'mongoose';
+import {UserEntity} from '#src/utils/modules/user/user.entity.js';
+import {User} from '#src/utils/modules/user/user.type.js';
+import {DocumentType, types} from '@typegoose/typegoose';
+import {inject, injectable} from 'inversify';
 
+@injectable()
 export class DefaultUserService implements UserService {
-  public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
-    const user = new UserEntity(dto, salt);
-    return UserModel.create(user);
+  constructor(
+    @inject(Component.Logger) private readonly logger: Logger,
+    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
+    @inject(Component.Crypto) private readonly crypto: Crypto
+  ) {
   }
 
   public async findByMail(email: string): Promise<DocumentType<UserEntity> | null> {
-    return UserModel.findOne({email});
+    return this.userModel.findOne({email});
   }
 
-  public async findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
-    const existedUser = await this.findByMail(dto.email);
-
+  public async findOrCreate(userData: User): Promise<DocumentType<UserEntity>> {
+    const existedUser = await this.findByMail(userData.email);
     if (existedUser) {
       return existedUser;
     }
 
-    return this.create(dto, salt);
+    return this.create(userData);
   }
 
+  private async create(userData: User): Promise<DocumentType<UserEntity>> {
+    // todo определяю пароль в DefaultUserService
+    const hashedPassword = await this.crypto.hashPassword(userData.password);
+    const user = new UserEntity(userData, hashedPassword);
+    const result = await this.userModel.create(user);
+    this.logger.info(`New user created: ${user.email}`);
+
+    return result;
+  }
 }

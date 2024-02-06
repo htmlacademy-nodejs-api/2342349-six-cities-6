@@ -1,4 +1,4 @@
-import {User} from '#src/types/user.type.js';
+import {User} from '#src/utils/modules/user/user.type.js';
 
 export interface Review {
   comment: string,

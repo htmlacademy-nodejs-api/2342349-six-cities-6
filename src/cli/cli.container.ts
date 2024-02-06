@@ -13,6 +13,13 @@ import {TsvFileReader} from '#src/offers/reader/tsv-file-reader.js';
 import {FileWriter} from '#src/offers/writer/file-writer.interface.js';
 import {TsvFileWriter} from '#src/offers/writer/tsv-file-writer.js';
 import {Component} from '#src/types/component.enum.js';
+import {Config} from '#src/utils/config/config.interface.js';
+import {RestConfig} from '#src/utils/config/rest.config.js';
+import {RestSchema} from '#src/utils/config/rest.schema.js';
+import {DatabaseClient} from '#src/utils/database-client/database-client.interface.js';
+import {MongoDatabaseClient} from '#src/utils/database-client/mongo.database-client.js';
+import {Logger} from '#src/utils/logger/logger.interface.js';
+import {PinoLogger} from '#src/utils/logger/pino.logger.js';
 import {Container} from 'inversify';
 
 export function createCliApplicationContainer(): Container {
@@ -28,6 +35,10 @@ export function createCliApplicationContainer(): Container {
   cliApplicationContainer.bind<OfferGenerator>(Component.OfferGenerator).to(TsvOfferGenerator).inSingletonScope();
   cliApplicationContainer.bind<FileReader>(Component.FileReader).to(TsvFileReader).inSingletonScope();
   cliApplicationContainer.bind<FileWriter>(Component.FileWriter).to(TsvFileWriter).inSingletonScope();
+
+  cliApplicationContainer.bind<Logger>(Component.Logger).to(PinoLogger).inSingletonScope();
+  cliApplicationContainer.bind<Config<RestSchema>>(Component.Config).to(RestConfig).inSingletonScope();
+  cliApplicationContainer.bind<DatabaseClient>(Component.DatabaseClient).to(MongoDatabaseClient).inSingletonScope();
 
   return cliApplicationContainer;
 }

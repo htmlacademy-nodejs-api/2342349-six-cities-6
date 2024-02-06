@@ -1,6 +1,6 @@
-import {Citi} from '#src/types/citi.type.js';
-import {Location} from '#src/types/location.type.js';
-import {User} from '#src/types/user.type.js';
+import {Citi} from '#src/utils/modules/city/citi.type.js';
+import {Location} from '#src/utils/modules/location/location.type.js';
+import {User} from '#src/utils/modules/user/user.type.js';
 
 export enum OfferType {
   apartment = 'apartment',

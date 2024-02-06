@@ -1,9 +1,12 @@
-import {UserType} from '#src/types/user.type.js';
+import {UserType} from '#src/utils/modules/user/user.type.js';
 
 export class CreateUserDto {
-  public name: string;
-  public password: string;
-  public email: string;
-  public avatarUrl?: string;
-  public type: UserType;
+  constructor(
+    public name: string,
+    public password: string,
+    public email: string,
+    public type: UserType,
+    public avatarUrl?: string
+  ) {
+  }
 }

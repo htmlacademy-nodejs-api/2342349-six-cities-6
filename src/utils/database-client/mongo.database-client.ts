@@ -8,7 +8,7 @@ import {setTimeout} from 'node:timers/promises';
 
 @injectable()
 export class MongoDatabaseClient implements DatabaseClient {
-  private mongoose: typeof Mongoose | undefined;
+  private mongoose?: typeof Mongoose;
 
   constructor(
     @inject(Component.Logger) private readonly logger: Logger
@@ -31,6 +31,8 @@ export class MongoDatabaseClient implements DatabaseClient {
         this.mongoose = await Mongoose.connect(uri);
         this.logger.info('Database connection established');
         console.log(uri);
+        this.mongoose.set('debug', true);
+
         return;
       } catch (error) {
         attempt++;
@@ -50,8 +52,8 @@ export class MongoDatabaseClient implements DatabaseClient {
     this.logger.info('Database connection closed');
   }
 
+  //todo не получился статик из-за implements DatabaseClient
   public getURI(username: string, password: string, host: string, port: string, databaseName: string): string {
     return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=admin`;
   }
-
 }
