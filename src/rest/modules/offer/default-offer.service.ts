@@ -1,11 +1,11 @@
+import {CityService} from '#src/rest/modules/city/city-service.interface.js';
+import {LocationService} from '#src/rest/modules/location/location-service.interface.js';
+import {OfferService} from '#src/rest/modules/offer/offer-service.interface.js';
+import {OfferEntity} from '#src/rest/modules/offer/offer.entity.js';
+import {Offer} from '#src/rest/modules/offer/offer.type.js';
+import {UserService} from '#src/rest/modules/user/user-service.interface.js';
 import {Component} from '#src/types/component.enum.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
-import {CityService} from '#src/utils/modules/city/city-service.interface.js';
-import {LocationService} from '#src/utils/modules/location/location-service.interface.js';
-import {OfferService} from '#src/utils/modules/offer/offer-service.interface.js';
-import {OfferEntity} from '#src/utils/modules/offer/offer.entity.js';
-import {Offer} from '#src/utils/modules/offer/offer.type.js';
-import {UserService} from '#src/utils/modules/user/user-service.interface.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
 

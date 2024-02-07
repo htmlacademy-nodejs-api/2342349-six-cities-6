@@ -1,5 +1,5 @@
-import {OfferEntity} from '#src/utils/modules/offer/offer.entity.js';
-import {Offer} from '#src/utils/modules/offer/offer.type.js';
+import {OfferEntity} from '#src/rest/modules/offer/offer.entity.js';
+import {Offer} from '#src/rest/modules/offer/offer.type.js';
 import {DocumentType} from '@typegoose/typegoose';
 
 export interface OfferService {

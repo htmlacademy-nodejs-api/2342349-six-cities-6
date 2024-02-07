@@ -5,7 +5,7 @@ import {injectable} from 'inversify';
 
 @injectable()
 export class VersionCommand extends BaseCommand {
-  readonly _name: string = '--version';
+  protected readonly _name: string = '--version';
   private readonly filePath = './package.json';
 
   public async execute(..._parameters: string[]): Promise<void> {

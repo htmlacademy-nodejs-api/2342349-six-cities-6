@@ -1,12 +1,11 @@
-import {Citi} from '#src/utils/modules/city/citi.type.js';
-import {CityEntity} from '#src/utils/modules/city/city.entity.js';
-import {LocationEntity} from '#src/utils/modules/location/location.entity.js';
-import {Location} from '#src/utils/modules/location/location.type.js';
-import {Offer, OfferType} from '#src/utils/modules/offer/offer.type.js';
-import {UserEntity} from '#src/utils/modules/user/user.entity.js';
-import {User} from '#src/utils/modules/user/user.type.js';
+import {CityEntity} from '#src/rest/modules/city/city.entity.js';
+import {City} from '#src/rest/modules/city/city.type.js';
+import {LocationEntity} from '#src/rest/modules/location/location.entity.js';
+import {Location} from '#src/rest/modules/location/location.type.js';
+import {Offer, OfferType} from '#src/rest/modules/offer/offer.type.js';
+import {UserEntity} from '#src/rest/modules/user/user.entity.js';
+import {User} from '#src/rest/modules/user/user.type.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
-import mongoose from 'mongoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {
@@ -20,26 +19,24 @@ export interface OfferEntity extends defaultClasses.Base {
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
-  @prop({required: true, unique: true, type: String})
+  @prop({required: true, unique: true})
   public title: string;
 
-  @prop({required: true, enum: OfferType, type: String})
+  @prop({required: true, enum: OfferType})
   public type: OfferType;
 
-  @prop({required: true, type: Number})
+  @prop({required: true})
   public bedroom: number;
 
   @prop({required: true, ref: CityEntity})
   public cityId: Ref<CityEntity>;
 
-  public city: Citi;
+  public city: City;
 
-  @prop({required: true, type: String})
+  @prop({required: true})
   public description: string;
 
-  @prop({type: () => [String], required: true, default: []})
-  public goods2: mongoose.Types.Array<string>;
-
+  @prop({required: true, type: [String]})
   public goods: string[];
 
   @prop({required: true, ref: UserEntity})
@@ -47,13 +44,13 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
 
   public host: User;
 
-  // @prop({ required: true, type: () => [String], default: [] })
+  @prop({required: true, type: [String]})
   public images: string[];
 
-  @prop({required: true, type: Boolean})
+  @prop({required: true})
   public isFavorite: boolean;
 
-  @prop({required: true, type: Boolean})
+  @prop({required: true})
   public isPremium: boolean;
 
   @prop({required: true, ref: LocationEntity})
@@ -61,19 +58,19 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
 
   public location: Location;
 
-  @prop({required: true, type: String})
+  @prop({required: true})
   public previewImage: string;
 
-  @prop({required: true, type: Number})
+  @prop({required: true})
   public price: number;
 
-  @prop({required: true, type: Date})
+  @prop({required: true})
   public publicDate: Date;
 
-  @prop({required: true, type: Number})
+  @prop({required: true})
   public rating: number;
 
-  @prop({required: true, type: Number})
+  @prop({required: true})
   public room: number;
 
   constructor(
@@ -87,10 +84,6 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
     this.city = offerData.city;
     this.description = offerData.description;
     this.goods = offerData.goods;
-    this.goods2 = offerData.goods as mongoose.Types.Array<string>;
-    console.log('1');
-    console.log(this.goods2);
-    console.log(Array.isArray(this.goods2));
     this.host = offerData.host;
     this.images = offerData.images;
     this.isFavorite = offerData.isFavorite;

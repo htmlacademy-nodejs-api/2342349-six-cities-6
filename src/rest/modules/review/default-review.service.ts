@@ -1,8 +1,8 @@
+import {ReviewService} from '#src/rest/modules/review/review-service.interface.js';
+import {ReviewEntity} from '#src/rest/modules/review/review.entity.js';
+import {Review} from '#src/rest/modules/review/review.type.js';
 import {Component} from '#src/types/component.enum.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
-import {ReviewService} from '#src/utils/modules/review/review-service.interface.js';
-import {ReviewEntity} from '#src/utils/modules/review/review.entity.js';
-import {Review} from '#src/utils/modules/review/review.type.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
 

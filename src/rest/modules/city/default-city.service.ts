@@ -1,9 +1,9 @@
+import {CityService} from '#src/rest/modules/city/city-service.interface.js';
+import {CityEntity} from '#src/rest/modules/city/city.entity.js';
+import {City} from '#src/rest/modules/city/city.type.js';
+import {LocationService} from '#src/rest/modules/location/location-service.interface.js';
 import {Component} from '#src/types/component.enum.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
-import {Citi} from '#src/utils/modules/city/citi.type.js';
-import {CityService} from '#src/utils/modules/city/city-service.interface.js';
-import {CityEntity} from '#src/utils/modules/city/city.entity.js';
-import {LocationService} from '#src/utils/modules/location/location-service.interface.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
 
@@ -24,7 +24,7 @@ export class DefaultCityService implements CityService {
     return this.cityModel.findOne({name: cityName});
   }
 
-  public async fineOrCreate(cityData: Citi): Promise<DocumentType<CityEntity>> {
+  public async fineOrCreate(cityData: City): Promise<DocumentType<CityEntity>> {
     const existedCity = await this.findByName(cityData.name);
     if (existedCity) {
       return existedCity;
@@ -32,7 +32,7 @@ export class DefaultCityService implements CityService {
     return this.create(cityData);
   }
 
-  private async create(cityData: Citi): Promise<DocumentType<CityEntity>> {
+  private async create(cityData: City): Promise<DocumentType<CityEntity>> {
     const {location: locationData} = cityData;
     const location = await this.locationService.fineOrCreate(locationData);
 

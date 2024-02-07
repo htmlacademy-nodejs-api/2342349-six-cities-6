@@ -1,7 +1,7 @@
+import {CityService} from '#src/rest/modules/city/city-service.interface.js';
+import {CityEntity, CityModel} from '#src/rest/modules/city/city.entity.js';
+import {DefaultCityService} from '#src/rest/modules/city/default-city.service.js';
 import {Component} from '#src/types/component.enum.js';
-import {CityService} from '#src/utils/modules/city/city-service.interface.js';
-import {CityEntity, CityModel} from '#src/utils/modules/city/city.entity.js';
-import {DefaultCityService} from '#src/utils/modules/city/default-city.service.js';
 import {types} from '@typegoose/typegoose';
 import {Container} from 'inversify';
 

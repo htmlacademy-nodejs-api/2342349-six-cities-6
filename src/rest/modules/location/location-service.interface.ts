@@ -1,5 +1,5 @@
-import {LocationEntity} from '#src/utils/modules/location/location.entity.js';
-import {Location} from '#src/utils/modules/location/location.type.js';
+import {LocationEntity} from '#src/rest/modules/location/location.entity.js';
+import {Location} from '#src/rest/modules/location/location.type.js';
 import {DocumentType} from '@typegoose/typegoose';
 
 export interface LocationService {

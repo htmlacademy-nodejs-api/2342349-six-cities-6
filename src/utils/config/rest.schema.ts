@@ -13,6 +13,7 @@ export type RestSchema = {
   DB_NAME: string;
   DB_RETRY_COUNT: number;
   DB_RETRY_TIMEOUT: number;
+  AVATAR_DEFAULT_URL: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -69,5 +70,11 @@ export const configRestSchema = convict<RestSchema>({
     format: Number,
     env: 'DB_RETRY_TIMEOUT',
     default: null
+  },
+  AVATAR_DEFAULT_URL: {
+    doc: 'Default ulr for user avatar',
+    format: String,
+    env: 'AVATAR_DEFAULT_URL',
+    default: null,
   },
 });

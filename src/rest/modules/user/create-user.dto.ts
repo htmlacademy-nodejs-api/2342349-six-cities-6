@@ -1,4 +1,4 @@
-import {UserType} from '#src/utils/modules/user/user.type.js';
+import {UserType} from '#src/rest/modules/user/user.type.js';
 
 export class CreateUserDto {
   constructor(

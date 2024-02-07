@@ -8,7 +8,7 @@ import {inject, injectable} from 'inversify';
 
 @injectable()
 export class GenerateCommand extends BaseCommand {
-  readonly _name: string = '--generate';
+  protected readonly _name: string = '--generate';
 
   constructor(
     @inject(Component.OfferGenerator) private readonly offerGenerator: OfferGenerator,

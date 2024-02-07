@@ -1,4 +1,4 @@
-import {Location} from '#src/utils/modules/location/location.type.js';
+import {Location} from '#src/rest/modules/location/location.type.js';
 import {defaultClasses, getModelForClass, modelOptions, prop} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -13,10 +13,10 @@ export interface LocationEntity extends defaultClasses.Base {
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class LocationEntity extends defaultClasses.TimeStamps implements Location {
-  @prop({required: true, type: Number})
+  @prop({required: true})
   public latitude: number;
 
-  @prop({required: true, type: Number})
+  @prop({required: true})
   public longitude: number;
 
   constructor(locationData: Location) {

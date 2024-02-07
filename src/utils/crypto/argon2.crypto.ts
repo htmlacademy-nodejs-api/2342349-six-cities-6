@@ -1,9 +1,9 @@
-import {Crypto} from '#src/utils/crypto/crypto.interface.js';
+import {CryptoProtocol} from '#src/utils/crypto/crypto.interface.js';
 import argon2 from 'argon2';
 import {injectable} from 'inversify';
 
 @injectable()
-export class Argon2Crypto implements Crypto {
+export class Argon2Crypto implements CryptoProtocol {
   public async hashPassword(password: string): Promise<string> {
     try {
       return await argon2.hash(password);

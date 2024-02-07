@@ -1,5 +1,5 @@
-import {UserEntity} from '#src/utils/modules/user/user.entity.js';
-import {User} from '#src/utils/modules/user/user.type.js';
+import {UserEntity} from '#src/rest/modules/user/user.entity.js';
+import {User} from '#src/rest/modules/user/user.type.js';
 import {DocumentType} from '@typegoose/typegoose';
 
 export interface UserService {

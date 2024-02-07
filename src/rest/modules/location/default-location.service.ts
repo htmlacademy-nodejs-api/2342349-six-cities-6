@@ -1,8 +1,8 @@
+import {LocationService} from '#src/rest/modules/location/location-service.interface.js';
+import {LocationEntity} from '#src/rest/modules/location/location.entity.js';
+import {Location} from '#src/rest/modules/location/location.type.js';
 import {Component} from '#src/types/component.enum.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
-import {LocationService} from '#src/utils/modules/location/location-service.interface.js';
-import {LocationEntity} from '#src/utils/modules/location/location.entity.js';
-import {Location} from '#src/utils/modules/location/location.type.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
 

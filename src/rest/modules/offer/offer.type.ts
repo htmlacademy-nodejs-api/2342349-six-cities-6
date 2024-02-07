@@ -1,6 +1,6 @@
-import {Citi} from '#src/utils/modules/city/citi.type.js';
-import {Location} from '#src/utils/modules/location/location.type.js';
-import {User} from '#src/utils/modules/user/user.type.js';
+import {City} from '#src/rest/modules/city/city.type.js';
+import {Location} from '#src/rest/modules/location/location.type.js';
+import {User} from '#src/rest/modules/user/user.type.js';
 
 export enum OfferType {
   apartment = 'apartment',
@@ -13,7 +13,7 @@ export interface Offer {
   title: string,
   description: string,
   publicDate: Date,
-  city: Citi,
+  city: City,
   previewImage: string,
   images: string[],
   isPremium: boolean,

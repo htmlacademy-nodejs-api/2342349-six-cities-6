@@ -1,6 +1,6 @@
-import {Review} from '#src/utils/modules/review/review.type.js';
-import {UserEntity} from '#src/utils/modules/user/user.entity.js';
-import {User} from '#src/utils/modules/user/user.type.js';
+import {Review} from '#src/rest/modules/review/review.type.js';
+import {UserEntity} from '#src/rest/modules/user/user.entity.js';
+import {User} from '#src/rest/modules/user/user.type.js';
 import {defaultClasses, getModelForClass, modelOptions, prop} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -18,13 +18,13 @@ export class ReviewEntity extends defaultClasses.TimeStamps implements Review {
   @prop({required: true, type: UserEntity})
   public author: User;
 
-  @prop({required: true, trim: true, type: String})
+  @prop({required: true, trim: true})
   public comment: string;
 
-  @prop({required: true, type: Date})
+  @prop({required: true})
   public publishDate: Date;
 
-  @prop({required: true, type: Number})
+  @prop({required: true})
   public rating: number;
 
   constructor(reviewData: Review) {

@@ -1,14 +1,14 @@
-import {Citi} from '#src/utils/modules/city/citi.type.js';
-import {Location} from '#src/utils/modules/location/location.type.js';
-import {OfferType} from '#src/utils/modules/offer/offer.type.js';
-import {User} from '#src/utils/modules/user/user.type.js';
+import {City} from '#src/rest/modules/city/city.type.js';
+import {Location} from '#src/rest/modules/location/location.type.js';
+import {OfferType} from '#src/rest/modules/offer/offer.type.js';
+import {User} from '#src/rest/modules/user/user.type.js';
 
 export class CreateOfferDto {
   constructor(
     public title: string,
     public description: string,
     public publicDate: Date,
-    public city: Citi,
+    public city: City,
     public previewImage: string,
     public images: string[],
     public isPremium: boolean,

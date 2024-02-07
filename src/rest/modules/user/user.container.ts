@@ -1,7 +1,7 @@
+import {DefaultUserService} from '#src/rest/modules/user/default-user.service.js';
+import {UserService} from '#src/rest/modules/user/user-service.interface.js';
+import {UserEntity, UserModel} from '#src/rest/modules/user/user.entity.js';
 import {Component} from '#src/types/component.enum.js';
-import {DefaultUserService} from '#src/utils/modules/user/default-user.service.js';
-import {UserService} from '#src/utils/modules/user/user-service.interface.js';
-import {UserEntity, UserModel} from '#src/utils/modules/user/user.entity.js';
 import {types} from '@typegoose/typegoose';
 import {Container} from 'inversify';
 
