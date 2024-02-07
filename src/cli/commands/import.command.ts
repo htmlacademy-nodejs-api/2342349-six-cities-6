@@ -2,23 +2,16 @@ import {BaseCommand} from '#src/cli/commands/base-command.js';
 import {OfferParser} from '#src/offers/parser/offer-parser.interface.js';
 import {FileReader} from '#src/offers/reader/file-reader.interface.js';
 import {Component} from '#src/types/component.enum.js';
+import {DbParam} from '#src/types/db-param.type.js';
 import {Config} from '#src/utils/config/config.interface.js';
 import {RestSchema} from '#src/utils/config/rest.schema.js';
 import {DatabaseClient} from '#src/utils/database-client/database-client.interface.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {inject, injectable} from 'inversify';
 
-interface DbParams {
-  dbUser?: string;
-  dbPassword?: string;
-  dbHost?: string;
-  dbPort?: string;
-  dbName?: string;
-}
-
 @injectable()
 export class ImportCommand extends BaseCommand {
-  readonly _name: string = '--import';
+  protected readonly _name: string = '--import';
 
   constructor(
     @inject(Component.OfferParser) private readonly offerParser: OfferParser,
@@ -31,54 +24,54 @@ export class ImportCommand extends BaseCommand {
   }
 
   public async execute(...parameters: string[]): Promise<void> {
-    const {fileList, dbParams} = this.parseInput(parameters);
-    this.validateInput(fileList, dbParams);
+    const {fileList, dbParam} = this.parseInput(parameters);
+    this.validateInput(fileList);
+
     this.logger.info('Init database...');
-    await this.initDb(dbParams);
+    await this.initDb(dbParam);
+
     this.logger.info('Init database completed');
     await this.parseFileList(fileList);
     await this.databaseClient.disconnect();
   }
 
-  private parseInput(input: string[]): { fileList: string[], dbParams: DbParams } {
-    const dbParamRegex = /-db-(user|password|host|port|name)/;
-    const dbParams: Partial<DbParams> = {};
+  private parseInput(input: string[]): { fileList: string[], dbParam: DbParam } {
+    const dbParamKeys: { [key: string]: keyof DbParam } = {
+      '-u': 'dbUser',
+      '-p': 'dbPassword',
+      '-h': 'dbHost',
+      '-P': 'dbPort',
+      '-n': 'dbName',
+    };
+    const dbParam: Partial<DbParam> = {};
     const fileList: string[] = [];
 
-    let index = 0;
-    while (index < input.length) {
-      const key = input[index];
-      const match = dbParamRegex.exec(key);
-      if (key.startsWith('-db-')) {
-        if (match) {
-          const dbKey = `db${match[1].charAt(0).toUpperCase() + match[1].slice(1)}` as keyof DbParams;
-          if ((index + 1) < input.length) {
-            dbParams[dbKey] = input[index + 1];
-            this.logger.info(`Read '${dbKey}' from console`);
-            index++;
-          } else {
-            throw new Error(`Value for ${dbKey} is missing`);
-          }
+    for (let i = 0; i < input.length; i++) {
+      const arg = input[i];
+      if (dbParamKeys[arg]) {
+        const value = input[++i];
+        if (value && !value.startsWith('-')) {
+          dbParam[dbParamKeys[arg]] = value;
+
+          this.logger.info(`Read '${dbParamKeys[arg]}' from console: ${value}`);
+        } else {
+          throw new Error(`Value for ${arg} is missing`);
         }
-      } else {
-        fileList.push(key);
+      } else if (!arg.startsWith('-')) {
+        fileList.push(arg);
       }
-      index++;
     }
-    return {fileList, dbParams};
+
+    return {fileList, dbParam: dbParam};
   }
 
-  private validateInput(fileList: string[], dbParams: Partial<DbParams>): void {
-    if (fileList.length === 0) {
+
+  private validateInput(fileList: string[]): void {
+    if (!fileList.length) {
       throw new Error('At least one "Filepath" is required.');
     }
     if (fileList.some((filePath) => !filePath.trim())) {
       throw new Error('All file paths must be non-empty strings.');
-    }
-
-    const requiredDbParams: (keyof DbParams)[] = ['dbUser', 'dbPassword', 'dbHost', 'dbPort', 'dbName'];
-    if (Object.keys(dbParams).length && requiredDbParams.some((key) => dbParams[key] === undefined)) {
-      throw new Error('All database parameters must be provided.');
     }
   }
 
@@ -103,14 +96,15 @@ export class ImportCommand extends BaseCommand {
     }
   }
 
-  private async initDb(dbParams: DbParams): Promise<void> {
-    const dbUri = this.databaseClient.getURI(
-      dbParams?.dbUser ?? this.config.get('DB_USER'),
-      dbParams?.dbPassword ?? this.config.get('DB_PASSWORD'),
-      dbParams?.dbHost ?? this.config.get('DB_HOST'),
-      dbParams?.dbPort ?? this.config.get('DB_PORT'),
-      dbParams?.dbName ?? this.config.get('DB_NAME'),
-    );
+  private async initDb(dbParams: Partial<DbParam>): Promise<void> {
+    const dbParamVerified: DbParam = {
+      dbUser: dbParams.dbUser ?? this.config.get('DB_USER'),
+      dbPassword: dbParams.dbPassword ?? this.config.get('DB_PASSWORD'),
+      dbHost: dbParams.dbHost ?? this.config.get('DB_HOST'),
+      dbPort: dbParams.dbPort ?? this.config.get('DB_PORT'),
+      dbName: dbParams.dbName ?? this.config.get('DB_NAME')
+    };
+    const dbUri = this.databaseClient.getURI(dbParamVerified);
 
     return this.databaseClient.connect(
       dbUri,

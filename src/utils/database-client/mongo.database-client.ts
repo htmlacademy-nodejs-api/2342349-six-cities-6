@@ -1,4 +1,5 @@
 import {Component} from '#src/types/component.enum.js';
+import {DbParam} from '#src/types/db-param.type.js';
 import {DatabaseClient} from '#src/utils/database-client/database-client.interface.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {inject, injectable} from 'inversify';
@@ -52,8 +53,7 @@ export class MongoDatabaseClient implements DatabaseClient {
     this.logger.info('Database connection closed');
   }
 
-  //todo не получился статик из-за implements DatabaseClient
-  public getURI(username: string, password: string, host: string, port: string, databaseName: string): string {
-    return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=admin`;
+  public getURI({dbUser, dbPassword, dbHost, dbPort, dbName}: DbParam): string {
+    return `mongodb://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}?authSource=admin`;
   }
 }

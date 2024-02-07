@@ -61,9 +61,10 @@ docker compose --file ./docker-compose.yml --env-file ./.env --project-name \"si
 #### Запустить ts-модуль без компиляции
 
 ```bash
-npm run tsx -- <Путь к модулю с ts-кодом>
+npm run ts -- <Путь к модулю с ts-кодом>
 ```
-Пакет `tsx` позволяет выполнить TS-код в Node.js без предварительной компиляции. Используется только на этапе разработки.
+
+Пакет `ts` позволяет выполнить TS-код в Node.js без предварительной компиляции.
 
 #### Запуск
 
@@ -83,18 +84,18 @@ npm start:dev
 
 Запуск скрипта для получения версии приложения:
 ```bash
-npm run tsx ./src/main.cli.ts --version
+npm run ts -- ./src/main.cli.ts --version
 ```
 
 Импорт данных из TSV файла:
 ```bash
-npm run tsx ./src/main.cli.ts --import mocks/mock-data.tsv
+npm run ts -- ./src/main.cli.ts --import mocks/mock-data.tsv
 ```
 
 Импорт данных из нескольких TSV файлов:
 
 ```bash
-npm run tsx ./src/main.cli.ts --import data1.tsv data2.tsv data3.tsv
+npm run ts -- ./src/main.cli.ts --import data1.tsv data2.tsv data3.tsv
 ```
 
 Импорт данных из TSV файла с указанием соединения с базой данных:
@@ -106,18 +107,18 @@ npm run tsx ./src/main.cli.ts --import data1.tsv data2.tsv data3.tsv
 - -db-name [имя_базы_данных]
 
 ```bash
-npm run tsx ./src/main.cli.ts --import mocks/mock-data.tsv -db-user [user] -db-password [password] -db-host [host] -db-port [port] -db-name [dbname]
+npm run ts -- ./src/main.cli.ts --import mocks/mock-data.tsv -u [user] -p [password] -h [host] -P [port] -n [dbname]
 ```
 
 Импорт данных из нескольоких TSV файлов:
 
 ```bash
-npm run tsx ./src/main.cli.ts --import data1.tsv data2.tsv data3.tsv
+npm run ts -- ./src/main.cli.ts --import data1.tsv data2.tsv data3.tsv
 ```
 
 Генерация мок-данных и запись их в TSV файл:
 ```bash
-npm run tsx ./src/main.cli.ts --generate 100 ./mocks/mock-offers.tsv http://localhost:3123/api
+npm run ts -- ./src/main.cli.ts --generate 100 ./mocks/mock-offers.tsv http://localhost:3123/api
 ```
 
 Запуск мок-сервера:
