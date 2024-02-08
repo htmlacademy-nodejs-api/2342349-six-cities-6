@@ -1,12 +1,12 @@
-import {Citi} from '#src/types/citi.type.js';
-import {Location} from '#src/types/location.type.js';
-import {OfferType} from '#src/types/offer.type.js';
-import {UserType} from '#src/types/user.type.js';
+import {City} from '#src/rest/modules/city/city.type.js';
+import {Location} from '#src/rest/modules/location/location.type.js';
+import {OfferType} from '#src/rest/modules/offer/offer.type.js';
+import {UserType} from '#src/rest/modules/user/user.type.js';
 
 export interface MockServerData {
   titles: string[];
   descriptions: string[];
-  cities: Citi[];
+  cities: City[];
   previewImages: string[];
   images: string[];
   isPremium: boolean[];
