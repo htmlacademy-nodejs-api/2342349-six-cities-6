@@ -14,6 +14,10 @@ export type RestSchema = {
   DB_RETRY_COUNT: number;
   DB_RETRY_TIMEOUT: number;
   AVATAR_DEFAULT_URL: string;
+  REVIEW_LIST_LIMIT: number;
+  CITY_LIST_LIMIT: number;
+  OFFERS_LIST_LIMIT: number;
+  PREMIUM_LIST_LIMIT: number;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -77,4 +81,28 @@ export const configRestSchema = convict<RestSchema>({
     env: 'AVATAR_DEFAULT_URL',
     default: null,
   },
+  REVIEW_LIST_LIMIT: {
+    doc: 'Maximum number of reviews returned in a request',
+    format: Number,
+    env: 'REVIEW_LIST_LIMIT',
+    default: null,
+  },
+  CITY_LIST_LIMIT: {
+    doc: 'Maximum number of cities returned in a request',
+    format: Number,
+    env: 'CITY_LIST_LIMIT',
+    default: null,
+  },
+  OFFERS_LIST_LIMIT: {
+    doc: 'Maximum number of rental offers returned in a request',
+    format: Number,
+    env: 'OFFERS_LIST_LIMIT',
+    default: null,
+  },
+  PREMIUM_LIST_LIMIT: {
+    doc: 'Maximum number of premium offers returned in a request',
+    format: Number,
+    env: 'PREMIUM_LIST_LIMIT',
+    default: null,
+  }
 });

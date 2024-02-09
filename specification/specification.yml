@@ -36,6 +36,7 @@ paths:
           schema:
             type: integer
             default: 60
+            maximum: 60
           description: Количество возвращаемых предложений
       responses:
         '200':
@@ -89,22 +90,45 @@ paths:
           schema:
             type: string
           description: Название города для фильтрации предложений
-        - name: premium
-          in: query
-          required: false
-          schema:
-            type: boolean
-          description: Фильтр для возврата только премиальных предложений
         - name: limit
           in: query
           required: false
           schema:
             type: integer
             default: 60
+            maximum: 60
           description: Количество возвращаемых предложений
       responses:
         '200':
           description: Список предложений об аренде в выбранном городе, с учетом фильтрации по премиальности при необходимости
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+        '400':
+          description: Неверные параметры запроса.
+        '404':
+          description: Город не найден.
+        '500':
+          description: Внутренняя ошибка сервера.
+  /offers/premium/:
+    get:
+      tags:
+        - offers
+      summary: Возвращает список премиальных предложений по аренде недвижимости, независимо от города.
+      operationId: getPremiumOffers
+      parameters:
+        - name: city
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Название города для фильтрации предложений. Если не указан, возвращаются премиальные предложения из всех городов.
+      responses:
+        '200':
+          description: Список премиальных предложений, лимит фиксирован и равен 3.
           content:
             application/json:
               schema:
@@ -224,6 +248,14 @@ paths:
           schema:
             type: string
           description: ID предложения
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+          description: Количество возвращаемых комментарий
       responses:
         '200':
           description: Список комментариев
