@@ -1,6 +1,10 @@
 import {BaseCommand} from '#src/cli/commands/base-command.js';
 import {OfferParser} from '#src/offers/parser/offer-parser.interface.js';
 import {FileReader} from '#src/offers/reader/file-reader.interface.js';
+import {CityService} from '#src/rest/modules/city/services/city-service.interface.js';
+import {Offer} from '#src/rest/modules/offer/offer.type.js';
+import {OfferService} from '#src/rest/modules/offer/services/offer-service.interface.js';
+import {UserService} from '#src/rest/modules/user/services/user-service.interface.js';
 import {Component} from '#src/types/component.enum.js';
 import {DbParam} from '#src/types/db-param.type.js';
 import {Config} from '#src/utils/config/config.interface.js';
@@ -13,12 +17,17 @@ import {inject, injectable} from 'inversify';
 export class ImportCommand extends BaseCommand {
   protected readonly _name: string = '--import';
 
+  private saveQueue: Promise<void> = Promise.resolve();
+
   constructor(
     @inject(Component.OfferParser) private readonly offerParser: OfferParser,
     @inject(Component.FileReader) private readonly fileReader: FileReader,
     @inject(Component.DatabaseClient) private readonly databaseClient: DatabaseClient,
     @inject(Component.Config) private readonly config: Config<RestSchema>,
     @inject(Component.Logger) private readonly logger: Logger,
+    @inject(Component.CityService) private readonly cityService: CityService,
+    @inject(Component.UserService) private readonly userService: UserService,
+    @inject(Component.OfferService) private readonly offerService: OfferService,
   ) {
     super();
   }
@@ -32,10 +41,12 @@ export class ImportCommand extends BaseCommand {
 
     this.logger.info('Init database completed');
     await this.parseFileList(fileList);
+
+    await this.saveQueue;
     await this.databaseClient.disconnect();
   }
 
-  private parseInput(input: string[]): { fileList: string[], dbParam: DbParam } {
+  private parseInput(inputArgs: string[]): { fileList: string[], dbParam: DbParam } {
     const dbParamKeys: { [key: string]: keyof DbParam } = {
       '-u': 'dbUser',
       '-p': 'dbPassword',
@@ -43,26 +54,31 @@ export class ImportCommand extends BaseCommand {
       '-P': 'dbPort',
       '-n': 'dbName',
     };
+
     const dbParam: Partial<DbParam> = {};
     const fileList: string[] = [];
-
-    for (let i = 0; i < input.length; i++) {
-      const arg = input[i];
+    for (let i = 0; i < inputArgs.length; i++) {
+      const arg = inputArgs[i];
       if (dbParamKeys[arg]) {
-        const value = input[++i];
-        if (value && !value.startsWith('-')) {
+        const nextIndex = i + 1;
+        if (nextIndex < inputArgs.length && !inputArgs[nextIndex].startsWith('-')) {
+          const value = inputArgs[nextIndex];
           dbParam[dbParamKeys[arg]] = value;
-
           this.logger.info(`Read '${dbParamKeys[arg]}' from console: ${value}`);
+          i++;
         } else {
           throw new Error(`Value for ${arg} is missing`);
         }
-      } else if (!arg.startsWith('-')) {
-        fileList.push(arg);
       }
     }
 
-    return {fileList, dbParam: dbParam};
+    inputArgs.forEach((arg) => {
+      if (!arg.startsWith('-') && !Object.values(dbParam).includes(arg)) {
+        fileList.push(arg);
+      }
+    });
+
+    return {fileList, dbParam: dbParam as DbParam};
   }
 
 
@@ -76,12 +92,15 @@ export class ImportCommand extends BaseCommand {
   }
 
   private onImportedLine = (dataLine: string) => {
-    const offer = this.offerParser.parserOffer(dataLine);
-    console.info(offer);
+    const offerData = this.offerParser.parserOffer(dataLine);
+    this.saveQueue = this.saveQueue.then(
+      () => this.saveToBd(offerData),
+      () => this.saveToBd(offerData)
+    );
   };
 
   private onCompleteImport = (count: number) => {
-    this.logger.info(`${count} rows imported.`);
+    this.logger.info(`${count} rows import: `);
   };
 
   private async parseFileList(fileList: string[]): Promise<void> {
@@ -96,7 +115,7 @@ export class ImportCommand extends BaseCommand {
     }
   }
 
-  private async initDb(dbParams: Partial<DbParam>): Promise<void> {
+  private async initDb(dbParams: DbParam): Promise<void> {
     const dbParamVerified: DbParam = {
       dbUser: dbParams.dbUser ?? this.config.get('DB_USER'),
       dbPassword: dbParams.dbPassword ?? this.config.get('DB_PASSWORD'),
@@ -111,5 +130,13 @@ export class ImportCommand extends BaseCommand {
       this.config.get('DB_RETRY_COUNT'),
       this.config.get('DB_RETRY_TIMEOUT')
     );
+  }
+
+  private async saveToBd(offerData: Offer): Promise<void> {
+    const {city: offerCityData, host: offerUserData} = offerData;
+    const offerCity = await this.cityService.findOrCreate(offerCityData);
+    const offerUser = await this.userService.findOrCreate(offerUserData);
+    const offer = await this.offerService.findOrCreate(offerData);
+    this.logger.info(`Import  to DB: city '${offerCity?.name}', user '${offerUser?.email}', offer '${offer?.title}'`);
   }
 }

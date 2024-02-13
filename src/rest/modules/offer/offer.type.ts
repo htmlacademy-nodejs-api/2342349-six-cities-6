@@ -1,6 +1,6 @@
 import {City} from '#src/rest/modules/city/city.type.js';
-import {Location} from '#src/rest/modules/location/location.type.js';
 import {User} from '#src/rest/modules/user/user.type.js';
+import {Location} from '#src/types/location.type.js';
 
 export enum OfferType {
   apartment = 'apartment',

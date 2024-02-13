@@ -1,4 +1,5 @@
 import {User, UserType} from '#src/rest/modules/user/user.type.js';
+import {EntityConfig} from '#src/utils/config.constants.js';
 import {defaultClasses, getModelForClass, modelOptions, prop} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -28,15 +29,17 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({required: true, enum: UserType})
   public type: UserType;
 
+  @prop({required: true, type: [String]})
+  public favoriteOffers: string[] = [];
+
   constructor(
     userData: User,
-    passwordHash: string,
-    avatarUrlDefault: string
+    passwordHash: string
   ) {
     super();
     this.name = userData.name;
     this.email = userData.email;
-    this.avatarUrl = userData.avatarUrl ?? avatarUrlDefault;
+    this.avatarUrl = userData.avatarUrl ?? EntityConfig.AVATAR_DEFAULT_URL;
     this.type = userData.type;
     this.password = passwordHash;
   }

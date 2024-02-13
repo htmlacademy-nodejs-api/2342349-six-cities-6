@@ -22,16 +22,17 @@ export const Component = {
 
   UserModel: Symbol.for('UserModel'),
   UserService: Symbol.for('UserService'),
+  UserRepository: Symbol.for('UserRepository'),
 
   OfferModel: Symbol.for('OfferModel'),
   OfferService: Symbol.for('OfferService'),
-
-  LocationModel: Symbol.for('LocationModel'),
-  LocationService: Symbol.for('LocationService'),
+  OfferRepository: Symbol.for('OfferRepository'),
 
   CityModel: Symbol.for('CityModel'),
   CityService: Symbol.for('CityService'),
+  CityRepository: Symbol.for('CityRepository'),
 
   ReviewModel: Symbol.for('ReviewModel'),
   ReviewService: Symbol.for('ReviewService'),
+  ReviewRepository: Symbol.for('ReviewRepository'),
 } as const;
