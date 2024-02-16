@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import 'reflect-metadata';
 import {createCityContainer} from '#src/rest/modules/city/city.container.js';
-import {createLocationContainer} from '#src/rest/modules/location/location.container.js';
 import {createOfferContainer} from '#src/rest/modules/offer/offer.container.js';
 import {createReviewContainer} from '#src/rest/modules/review/review.container.js';
 import {createUserContainer} from '#src/rest/modules/user/user.container.js';
@@ -16,7 +15,6 @@ async function bootstrap() {
     createRestApplicationContainer(),
     createUserContainer(),
     createCityContainer(),
-    createLocationContainer(),
     createOfferContainer(),
     createReviewContainer()
   );

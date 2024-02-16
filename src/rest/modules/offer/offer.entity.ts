@@ -1,10 +1,10 @@
 import {CityEntity} from '#src/rest/modules/city/city.entity.js';
 import {City} from '#src/rest/modules/city/city.type.js';
-import {LocationEntity} from '#src/rest/modules/location/location.entity.js';
-import {Location} from '#src/rest/modules/location/location.type.js';
 import {Offer, OfferType} from '#src/rest/modules/offer/offer.type.js';
+import {GeoLocation} from '#src/rest/modules/schemas/geo.schema.js';
 import {UserEntity} from '#src/rest/modules/user/user.entity.js';
 import {User} from '#src/rest/modules/user/user.type.js';
+import {Location} from '#src/types/location.type.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -19,7 +19,7 @@ export interface OfferEntity extends defaultClasses.Base {
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
-  @prop({required: true, unique: true})
+  @prop({required: true, trim: true, unique: true})
   public title: string;
 
   @prop({required: true, enum: OfferType})
@@ -33,7 +33,7 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
 
   public city: City;
 
-  @prop({required: true})
+  @prop({required: true, trim: true})
   public description: string;
 
   @prop({required: true, type: [String]})
@@ -48,13 +48,12 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
   public images: string[];
 
   @prop({required: true})
-  public isFavorite: boolean;
-
-  @prop({required: true})
   public isPremium: boolean;
 
-  @prop({required: true, ref: LocationEntity})
-  public locationId: Ref<LocationEntity>;
+  isFavorite: boolean = false;
+
+  @prop({required: true})
+  public geoLocation: GeoLocation;
 
   public location: Location;
 
@@ -73,11 +72,13 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
   @prop({required: true})
   public room: number;
 
+  @prop({required: true})
+  public reviewCount: number = 0;
+
   constructor(
     offerData: Offer,
     cityId: Ref<CityEntity>,
     hostId: Ref<UserEntity>,
-    locationId: Ref<LocationEntity>
   ) {
     super();
     this.bedroom = offerData.bedroom;
@@ -86,7 +87,6 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
     this.goods = offerData.goods;
     this.host = offerData.host;
     this.images = offerData.images;
-    this.isFavorite = offerData.isFavorite;
     this.isPremium = offerData.isPremium;
     this.location = offerData.location;
     this.previewImage = offerData.previewImage;
@@ -98,7 +98,10 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
     this.type = offerData.type;
     this.cityId = cityId;
     this.hostId = hostId;
-    this.locationId = locationId;
+    this.geoLocation = {
+      type: 'Point',
+      coordinates: [offerData.location.longitude, offerData.location.latitude]
+    };
   }
 }
 

@@ -1,0 +1,8 @@
+export const EntityConfig = {
+  AVATAR_DEFAULT_URL: 'avatar.img',
+  REVIEW_LIST_LIMIT: 50,
+  CITY_LIST_LIMIT: 50,
+  OFFERS_LIST_LIMIT: 60,
+  PREMIUM_LIST_LIMIT: 3,
+  FAVORITE_LIST_LIMIT: 60,
+};

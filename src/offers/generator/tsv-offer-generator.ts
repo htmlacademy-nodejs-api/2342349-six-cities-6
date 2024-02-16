@@ -4,11 +4,12 @@ import {MockServerData} from '#src/types/mock-server-data.type.js';
 import {getRandomItem, getRandomItems, getRandomNumber} from '#src/utils/random.js';
 import dayjs from 'dayjs';
 import {injectable} from 'inversify';
+import {randomBytes} from 'node:crypto';
 
 @injectable()
 export class TsvOfferGenerator implements OfferGenerator {
   public generate(mockData: MockServerData): string {
-    const title = getRandomItem(mockData.titles);
+    const title = `${getRandomItem(mockData.titles)} (${randomBytes(10).toString('hex')})`;
     const description = getRandomItem(mockData.descriptions);
     const publicDate = dayjs()
       .subtract(getRandomNumber(GENERATOR_CONFIG.FIRST_WEEK_DAY, GENERATOR_CONFIG.LAST_WEEK_DAY), 'day')
@@ -17,7 +18,6 @@ export class TsvOfferGenerator implements OfferGenerator {
     const previewImage = getRandomItem(mockData.previewImages);
     const images = getRandomItems(mockData.images).join(';');
     const isPremium = getRandomItem(mockData.isPremium);
-    const isFavorite = getRandomItem(mockData.isFavorite);
     const rating = getRandomNumber(GENERATOR_CONFIG.MIN_RATING, GENERATOR_CONFIG.MAX_RATING);
     const type = getRandomItem(mockData.types);
     const room = getRandomNumber(GENERATOR_CONFIG.MIN_ROOM, GENERATOR_CONFIG.MAX_ROOM);
@@ -25,7 +25,7 @@ export class TsvOfferGenerator implements OfferGenerator {
     const price = getRandomNumber(GENERATOR_CONFIG.MIN_PRICE, GENERATOR_CONFIG.MAX_PRICE);
     const goods = getRandomItems(mockData.goods).join(';');
     const hostName = getRandomItem(mockData.hostNames);
-    const hostEmail = getRandomItem(mockData.hostEmails);
+    const hostEmail = `${randomBytes(10).toString('hex')}-${getRandomItem(mockData.hostEmails)}`;
     const hostAvatar = getRandomItem(mockData.hostAvatarUrls);
     const hostPassword = getRandomItem(mockData.hostPasswords);
     const hostType = getRandomItem(mockData.hostTypes);
@@ -33,7 +33,7 @@ export class TsvOfferGenerator implements OfferGenerator {
 
     return [
       title, description, publicDate, city.name, city.location.latitude, city.location.longitude,
-      previewImage, images, isPremium, isFavorite, rating, type, room, bedroom, price, goods,
+      previewImage, images, isPremium, rating, type, room, bedroom, price, goods,
       hostName, hostEmail, hostAvatar, hostPassword, hostType, location.latitude, location.longitude
     ].join('\t');
   }

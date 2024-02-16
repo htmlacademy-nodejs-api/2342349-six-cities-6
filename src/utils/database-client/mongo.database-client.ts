@@ -30,10 +30,8 @@ export class MongoDatabaseClient implements DatabaseClient {
       try {
         this.logger.info(`Trying to connect to MongoDB (${attempt} from ${retryCount})...`);
         this.mongoose = await Mongoose.connect(uri);
-        this.logger.info('Database connection established');
-        console.log(uri);
-        this.mongoose.set('debug', true);
 
+        this.logger.info('Database connection established');
         return;
       } catch (error) {
         attempt++;

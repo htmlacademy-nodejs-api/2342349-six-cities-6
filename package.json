@@ -11,11 +11,8 @@
   "scripts": {
     "start": "npm run build && node ./dist/main.rest.js",
     "start:dev": "npm run ts ./src/main.rest.ts",
-    "build": "npm run clean && npm run compile",
+    "start:dev2": "tsc || node --loader ts-node/esm ./dist/main.rest.js",
     "lint": "eslint src/ --ext .ts",
-    "compile": "tsc -p tsconfig.json",
-    "clean": "rimraf dist",
-    "ts": "node --loader ts-node/esm",
     "cli:version": "npm run ts -- ./src/main.cli.ts --version",
     "cli:help": "npm run ts -- ./src/main.cli.ts",
     "cli:import": "npm run ts -- ./src/main.cli.ts --import mocks/mock-offers.tsv",
@@ -23,7 +20,11 @@
     "cli:generate": "npm run ts -- ./src/main.cli.ts --generate 100 ./mocks/mock-offers.tsv http://localhost:3123/api",
     "mock:server": "json-server ./mocks/mock-server-data.json --port 3123",
     "docker-up": "docker compose --file ./docker-compose.yml --env-file ./.env --project-name \"six-cities\" up -d",
-    "docker-down": "docker compose --file ./docker-compose.yml --env-file ./.env --project-name \"six-cities\" down"
+    "docker-down": "docker compose --file ./docker-compose.yml --env-file ./.env --project-name \"six-cities\" down",
+    "build": "npm run clean && npm run compile",
+    "compile": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "ts": "node --loader ts-node/esm"
   },
   "type": "module",
   "imports": {
@@ -35,15 +36,15 @@
   },
   "dependencies": {
     "@typegoose/typegoose": "12.1.0",
-    "mongoose": "8.1.1",
     "argon2": "0.31.2",
     "chalk": "5.3.0",
     "convict": "6.2.4",
     "convict-format-with-validator": "6.2.0",
     "dayjs": "1.11.10",
-    "dotenv": "16.4.1",
+    "dotenv": "16.4.4",
     "got": "14.2.0",
     "inversify": "6.0.2",
+    "mongoose": "8.1.2",
     "pino": "8.18.0",
     "reflect-metadata": "0.2.1",
     "tslib": "2.6.2"
@@ -51,16 +52,16 @@
   "devDependencies": {
     "@types/convict": "6.1.6",
     "@types/convict-format-with-validator": "6.0.5",
-    "@types/node": "20.11.16",
-    "@typescript-eslint/eslint-plugin": "6.21.0",
-    "@typescript-eslint/parser": "6.21.0",
+    "@types/node": "20.11.19",
+    "@typescript-eslint/eslint-plugin": "7.0.1",
+    "@typescript-eslint/parser": "7.0.1",
     "eslint": "8.56.0",
     "eslint-config-htmlacademy": "10.0.1",
     "json-server": "0.17.4",
     "pino-pretty": "10.3.1",
     "rimraf": "5.0.5",
     "ts-node": "10.9.2",
-    "tsx": "4.7.0",
+    "tsx": "4.7.1",
     "typescript": "5.3.3"
   }
 }
