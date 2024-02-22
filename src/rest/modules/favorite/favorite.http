@@ -1,0 +1,18 @@
+@host = http://localhost:5001
+
+# Favorites
+## findByUser
+GET {{host}}/api/v1/favorites?limit=1&userId=65ca70eca83c67a5ac7d6887
+
+###
+
+## addByOfferId
+POST {{host}}/api/v1/favorites/65ca70eca83c67a5ac7d6847?limit=1&userId=65ca70eca83c67a5ac7d6887
+
+###
+
+## deleteByOfferId
+
+DELETE {{host}}/api/v1/favorites/65ca70eca83c67a5ac7d6847?limit=1&userId=65ca70eca83c67a5ac7d6887
+
+###

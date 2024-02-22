@@ -1,6 +1,6 @@
-import {City} from '#src/rest/modules/city/city.type.js';
-import {OfferType} from '#src/rest/modules/offer/offer.type.js';
-import {UserType} from '#src/rest/modules/user/user.type.js';
+import {City} from '#src/rest/modules/city/type/city.type.js';
+import {OfferType} from '#src/rest/modules/offer/type/offer.type.js';
+import {UserType} from '#src/rest/modules/user/type/user.type.js';
 import {Location} from '#src/types/location.type.js';
 
 export interface MockServerData {

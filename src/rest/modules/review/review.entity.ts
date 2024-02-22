@@ -1,8 +1,8 @@
 import {OfferEntity} from '#src/rest/modules/offer/offer.entity.js';
-import {Offer} from '#src/rest/modules/offer/offer.type.js';
-import {Review} from '#src/rest/modules/review/review.type.js';
+import {Offer} from '#src/rest/modules/offer/type/offer.type.js';
+import {Review} from '#src/rest/modules/review/type/review.type.js';
+import {User} from '#src/rest/modules/user/type/user.type.js';
 import {UserEntity} from '#src/rest/modules/user/user.entity.js';
-import {User} from '#src/rest/modules/user/user.type.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging

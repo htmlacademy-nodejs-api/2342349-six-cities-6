@@ -1,11 +1,11 @@
 import {CityEntity} from '#src/rest/modules/city/city.entity.js';
-import {City} from '#src/rest/modules/city/city.type.js';
-import {Offer, OfferType} from '#src/rest/modules/offer/offer.type.js';
+import {City} from '#src/rest/modules/city/type/city.type.js';
+import {Offer, OfferType} from '#src/rest/modules/offer/type/offer.type.js';
 import {GeoLocation} from '#src/rest/modules/schemas/geo.schema.js';
+import {User} from '#src/rest/modules/user/type/user.type.js';
 import {UserEntity} from '#src/rest/modules/user/user.entity.js';
-import {User} from '#src/rest/modules/user/user.type.js';
 import {Location} from '#src/types/location.type.js';
-import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
+import {defaultClasses, getModelForClass, modelOptions, prop, Ref, Severity} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {
@@ -15,6 +15,9 @@ export interface OfferEntity extends defaultClasses.Base {
   schemaOptions: {
     collection: 'offers',
     timestamps: true,
+  },
+  options: {
+    allowMixed: Severity.ALLOW
   }
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -67,10 +70,10 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
   public publicDate: Date;
 
   @prop({required: true})
-  public rating: number;
+  public room: number;
 
   @prop({required: true})
-  public room: number;
+  public rating: number = 0;
 
   @prop({required: true})
   public reviewCount: number = 0;
@@ -92,7 +95,6 @@ export class OfferEntity extends defaultClasses.TimeStamps implements Offer {
     this.previewImage = offerData.previewImage;
     this.price = offerData.price;
     this.publicDate = offerData.publicDate;
-    this.rating = offerData.rating;
     this.room = offerData.room;
     this.title = offerData.title;
     this.type = offerData.type;

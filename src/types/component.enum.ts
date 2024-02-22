@@ -10,7 +10,6 @@ export const Component = {
   FileWriter: Symbol.for('FileWriter'),
   FileReader: Symbol.for('FileReader'),
 
-
   CliApplication: Symbol.for('CliApplication'),
 
   GenerateCommand: Symbol.for('GenerateCommand'),
@@ -19,20 +18,29 @@ export const Component = {
   VersionCommand: Symbol.for('VersionCommand'),
 
   DatabaseClient: Symbol.for('DatabaseClient'),
+  ExceptionFilter: Symbol.for('ExceptionFilter'),
 
   UserModel: Symbol.for('UserModel'),
   UserService: Symbol.for('UserService'),
   UserRepository: Symbol.for('UserRepository'),
+  UserController: Symbol.for('UserController'),
 
   OfferModel: Symbol.for('OfferModel'),
   OfferService: Symbol.for('OfferService'),
   OfferRepository: Symbol.for('OfferRepository'),
+  OfferController: Symbol.for('OfferController'),
 
   CityModel: Symbol.for('CityModel'),
   CityService: Symbol.for('CityService'),
   CityRepository: Symbol.for('CityRepository'),
+  CityController: Symbol.for('CityController'),
 
   ReviewModel: Symbol.for('ReviewModel'),
   ReviewService: Symbol.for('ReviewService'),
   ReviewRepository: Symbol.for('ReviewRepository'),
+  ReviewController: Symbol.for('ReviewController'),
+
+  FavoriteService: Symbol.for('FavoriteService'),
+  FavoriteController: Symbol.for('FavoriteController'),
+
 } as const;

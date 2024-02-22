@@ -1,3 +1,5 @@
+import {AppExceptionFilter} from '#src/rest/exception-filter/app-exception-filter.js';
+import {ExceptionFilter} from '#src/rest/exception-filter/exception-filter.interface.js';
 import {RestApplication} from '#src/rest/rest.application.js';
 import {Component} from '#src/types/component.enum.js';
 import {Config} from '#src/utils/config/config.interface.js';
@@ -20,6 +22,7 @@ export function createRestApplicationContainer(): Container {
   restApplicationContainer.bind<Config<RestSchema>>(Component.Config).to(RestConfig).inSingletonScope();
 
   restApplicationContainer.bind<DatabaseClient>(Component.DatabaseClient).to(MongoDatabaseClient).inSingletonScope();
+  restApplicationContainer.bind<ExceptionFilter>(Component.ExceptionFilter).to(AppExceptionFilter).inSingletonScope();
 
   return restApplicationContainer;
 }

@@ -1,7 +1,7 @@
-import {City} from '#src/rest/modules/city/city.type.js';
+import {City} from '#src/rest/modules/city/type/city.type.js';
 import {GeoLocation} from '#src/rest/modules/schemas/geo.schema.js';
 import {Location} from '#src/types/location.type.js';
-import {defaultClasses, getModelForClass, modelOptions, prop} from '@typegoose/typegoose';
+import {defaultClasses, getModelForClass, modelOptions, prop, Severity} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface CityEntity extends defaultClasses.Base {
@@ -11,6 +11,9 @@ export interface CityEntity extends defaultClasses.Base {
   schemaOptions: {
     collection: 'cities',
     timestamps: true,
+  },
+  options: {
+    allowMixed: Severity.ALLOW
   }
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging

@@ -1,0 +1,8 @@
+@host = http://localhost:5001
+
+# Review
+
+## get reviews
+GET {{host}}/api/v1/comments/65ca70eda83c67a5ac7d68da
+
+###

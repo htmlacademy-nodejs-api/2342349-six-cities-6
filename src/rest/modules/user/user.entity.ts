@@ -1,5 +1,5 @@
-import {User, UserType} from '#src/rest/modules/user/user.type.js';
-import {EntityConfig} from '#src/utils/config.constants.js';
+import {User, UserType} from '#src/rest/modules/user/type/user.type.js';
+import {UserProfileConfig} from '#src/utils/config.constants.js';
 import {defaultClasses, getModelForClass, modelOptions, prop} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -39,7 +39,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     super();
     this.name = userData.name;
     this.email = userData.email;
-    this.avatarUrl = userData.avatarUrl ?? EntityConfig.AVATAR_DEFAULT_URL;
+    this.avatarUrl = userData.avatarUrl ?? UserProfileConfig.AVATAR_DEFAULT_URL;
     this.type = userData.type;
     this.password = passwordHash;
   }
