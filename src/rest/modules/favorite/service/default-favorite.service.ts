@@ -89,7 +89,7 @@ export class DefaultFavoriteService implements FavoriteService {
       );
     }
 
-    this.logger.info(`Offer ID ${offerId} added to favorite for user '${currentUser.email}'.`);
+    this.logger.info(`Offer ID '${offerId}' added to favorite for user '${currentUser.email}'.`);
   }
 
   public async deleteByOfferId(offerId: string, userId: string): Promise<void> {
@@ -120,6 +120,6 @@ export class DefaultFavoriteService implements FavoriteService {
       );
     }
 
-    this.logger.info(`Offer ID ${offerId} deleted from favorite for user '${currentUser.email}'.`);
+    this.logger.info(`Offer ID '${offerId}' deleted from favorite for user '${currentUser.email}'.`);
   }
 }

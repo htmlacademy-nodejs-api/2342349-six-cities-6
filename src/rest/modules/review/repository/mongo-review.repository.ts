@@ -14,15 +14,28 @@ export class MongoReviewRepository implements ReviewRepository {
   ) {
   }
 
-  public async create(reviewData: Review): Promise<DocumentType<ReviewEntity>> {
+  public async create(reviewData: Review): Promise<boolean> {
     const createdReview = await this.reviewModel.create(reviewData);
-    return createdReview.populate(['authorId', 'offerId']);
+    return !!createdReview;
   }
 
   public async findById(reviewId: string): Promise<DocumentType<ReviewEntity> | null> {
     return this.reviewModel
       .findById(reviewId)
-      .populate(['authorId', 'offerId']);
+      .populate({
+        path: 'offerId',
+        populate: [
+          {
+            path: 'hostId',
+            model: 'UserEntity'
+          },
+          {
+            path: 'cityId',
+            model: 'CityEntity'
+          }
+        ]
+      })
+      .populate('authorId');
   }
 
   public async findByComment(offerId: string, reviewComment: string): Promise<DocumentType<ReviewEntity> | null> {

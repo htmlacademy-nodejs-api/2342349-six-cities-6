@@ -25,7 +25,7 @@ Content-Type: application/json
   "goods": [],
   "host": {
     "name": "Мария Васильева",
-    "email": "a2898ef78e901df0a7e3-alexey@example.com",
+    "email": "alex1@example.com",
     "avatarUrl": "avatar5.jpg",
     "password": "123",
     "type": "pro"

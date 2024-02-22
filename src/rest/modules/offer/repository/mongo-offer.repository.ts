@@ -50,7 +50,7 @@ export class MongoOfferRepository implements OfferRepository {
       .populate(['cityId', 'hostId']);
   }
 
-  public async findByIdList(offerIds: string[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
+  public async findByIdList(offerIds: Ref<OfferEntity>[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find({_id: {$in: offerIds}}, {}, {effectiveLimit})
       .sort({publishDate: -1})

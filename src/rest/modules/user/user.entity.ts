@@ -1,6 +1,8 @@
+import {OfferEntity} from '#src/rest/modules/offer/offer.entity.js';
 import {User, UserType} from '#src/rest/modules/user/type/user.type.js';
 import {UserProfileConfig} from '#src/utils/config.constants.js';
-import {defaultClasses, getModelForClass, modelOptions, prop} from '@typegoose/typegoose';
+import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
+
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface UserEntity extends defaultClasses.Base {
@@ -29,8 +31,8 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({required: true, enum: UserType})
   public type: UserType;
 
-  @prop({required: true, type: [String]})
-  public favoriteOffers: string[] = [];
+  @prop({required: true, ref: 'OfferEntity'})
+  public favoriteOffers: Ref<OfferEntity>[] = [];
 
   constructor(
     userData: User,

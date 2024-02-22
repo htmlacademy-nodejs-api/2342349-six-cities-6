@@ -22,7 +22,7 @@ export interface OfferRepository {
 
   exists(offerId: mongoose.Types.ObjectId): Promise<boolean>;
 
-  findByIdList(offerIds: string[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]>;
+  findByIdList(offerIds: Ref<OfferEntity>[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]>;
 
   incrementReviewCount(offerIdRef: Ref<OfferEntity>): Promise<boolean>;
 

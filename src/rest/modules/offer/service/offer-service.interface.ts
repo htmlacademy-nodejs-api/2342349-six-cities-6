@@ -24,7 +24,7 @@ export interface OfferService {
 
   findPremiumByCity(cityId: string, requestedLimit?: number): Promise<OfferEntity[]>;
 
-  findByIdList(offerIds: string[], limit: number): Promise<OfferEntity[]>;
+  findByIdList(offerIds: Ref<OfferEntity>[], limit: number): Promise<OfferEntity[]>;
 
   incrementOfferReviewCount(offerIdRef: Ref<OfferEntity>): Promise<boolean>;
 

@@ -197,7 +197,7 @@ export class DefaultOfferService implements OfferService {
     return foundOffer?.id ?? null;
   }
 
-  public async findByIdList(offerIds: string[], limit: number): Promise<OfferEntity[]> {
+  public async findByIdList(offerIds: Ref<OfferEntity>[], limit: number): Promise<OfferEntity[]> {
     return this.offerRepository.findByIdList(offerIds, limit);
   }
 

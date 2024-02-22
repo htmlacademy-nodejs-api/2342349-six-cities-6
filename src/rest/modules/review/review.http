@@ -2,7 +2,59 @@
 
 # Review
 
-## get reviews
-GET {{host}}/api/v1/comments/65ca70eda83c67a5ac7d68da
+## get
+GET {{host}}/api/v1/comments/65d772d75a8feb07571441ba
+
+###
+
+## create
+POST {{host}}/api/v1/comments/65d772d75a8feb07571441ba
+Content-Type: application/json
+
+{
+  "comment": "aaa1234678",
+  "publishDate": "2024-02-20T12:00:00.000Z",
+  "rating": 1,
+  "author": {
+    "name": "Мария Васильева",
+    "email": "alex1@example.com",
+    "avatarUrl": "avatar5.jpg",
+    "password": "123",
+    "type": "pro"
+  },
+  "offer": {
+    "title": "Квартира-1",
+    "type": "apartment",
+    "bedroom": 1,
+    "city": {
+      "name": "Cologne",
+      "location": {
+        "latitude": 1,
+        "longitude": 1
+      }
+    },
+    "description": "description-description",
+    "goods": [],
+    "host": {
+      "name": "Мария Васильева",
+      "email": "a2898ef78e901df0a7e3-alexey@example.com",
+      "avatarUrl": "avatar5.jpg",
+      "password": "123",
+      "type": "pro"
+    },
+    "images": [],
+    "isPremium": true,
+    "isFavorite": false,
+    "location": {
+      "latitude": 1,
+      "longitude": 1
+    },
+    "previewImage": "previewImage7.jpg",
+    "price": 163,
+    "publicDate": "2024-02-20T12:00:00.000Z",
+    "rating": 3,
+    "room": 4
+  }
+}
 
 ###

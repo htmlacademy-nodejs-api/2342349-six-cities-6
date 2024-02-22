@@ -24,7 +24,7 @@ export class DefaultReviewService implements ReviewService {
   ) {
   }
 
-  public async create(offerId: string, reviewParams: Omit<Review, 'offer' | 'publishDate'>): Promise<Review> {
+  public async create(offerId: string, reviewParams: Omit<Review, 'offer' | 'publishDate'>): Promise<boolean> {
     const commentTrimmed = reviewParams.comment.trim();
     const existingReview = await this.reviewRepository.findByComment(offerId, commentTrimmed);
     if (existingReview) {
@@ -50,8 +50,52 @@ export class DefaultReviewService implements ReviewService {
       offer: existedOffer,
       publishDate: new Date(),
     };
-
     return await this.createReviewInternal(reviewData);
+  }
+
+  private async createReviewInternal(reviewData: Review): Promise<boolean> {
+    const {offer: offerData, author: authorData} = reviewData;
+
+    const offerIdRef = await this.offerService.getIdRefByTitle(offerData.title);
+    if (!offerIdRef) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer '${offerData.title}' not found`,
+        'ReviewService'
+      );
+    }
+
+    const authorIdRef = await this.userService.getIdRefByMail(authorData.email);
+    if (!authorIdRef) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Author '${authorData.email}' not found`,
+        'ReviewService'
+      );
+    }
+
+    const review = new ReviewEntity(reviewData, offerIdRef, authorIdRef);
+    const isCreatedSuccessfully = await this.reviewRepository.create(review);
+    if (!isCreatedSuccessfully || !review) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        `Error creating review '${offerData.title}. An unknown error occurred.'}`,
+        'ReviewService'
+      );
+    }
+
+    const isOfferReviewCountUpdated = await this.offerService.incrementOfferReviewCount(offerIdRef);
+    if (!isOfferReviewCountUpdated) {
+      this.logger.error(`Can't update review count for offer '${offerData.title}'`);
+    }
+
+    const isCalculateAndSetRating = await this.calculateAndSetOfferRating(offerIdRef);
+    if (!isCalculateAndSetRating) {
+      this.logger.error(`Can't calculate rating for offer '${offerData.title}'`);
+    }
+
+    this.logger.info(`New [review] with publish date '${review.publishDate}' created`);
+    return isCreatedSuccessfully;
   }
 
   public async findByOffer(offerId: string, requestedLimit?: number): Promise<ReviewEntity[]> {
@@ -94,52 +138,5 @@ export class DefaultReviewService implements ReviewService {
     }
 
     return true;
-  }
-
-  private async createReviewInternal(reviewData: Review): Promise<ReviewEntity> {
-    const {offer: offerData, author: authorData} = reviewData;
-
-    const offerIdRef = await this.offerService.getIdRefByTitle(offerData.title);
-    if (!offerIdRef) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer '${offerData.title}' not found`,
-        'ReviewService'
-      );
-    }
-
-    const authorIdRef = await this.userService.getIdRefByMail(authorData.email);
-    if (!authorIdRef) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Author '${authorData.email}' not found`,
-        'ReviewService'
-      );
-    }
-
-    try {
-      const review = new ReviewEntity(reviewData, offerIdRef, authorIdRef);
-      const createdReview = await this.reviewRepository.create(review);
-
-      const isOfferReviewCountUpdated = await this.offerService.incrementOfferReviewCount(offerIdRef);
-      if (!isOfferReviewCountUpdated) {
-        this.logger.error(`Can't update review count for offer '${offerData.title}'`);
-      }
-
-      const isCalculateAndSetRating = await this.calculateAndSetOfferRating(offerIdRef);
-      if (!isCalculateAndSetRating) {
-        this.logger.error(`Can't calculate rating for offer '${offerData.title}'`);
-      }
-
-      this.logger.info(`New [review] with publish date '${review.publishDate}' created`);
-      return createdReview.populate(['authorId', 'offerId']);
-
-    } catch (error) {
-      throw new HttpError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        `Error creating review '${offerData.title}'. ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
-        'ReviewService'
-      );
-    }
   }
 }

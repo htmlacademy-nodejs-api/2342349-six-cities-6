@@ -21,6 +21,15 @@ export class DefaultUserService implements UserService {
   ) {
   }
 
+  public async addFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
+    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
+    if (favoriteOfferIndex === -1) {
+      user.favoriteOffers.push(offer._id);
+    }
+
+    return this.saveUser(user);
+  }
+
   public async create(userData: User): Promise<UserEntity> {
     const existingUser = await this.findByMail(userData.email);
     if (existingUser) {
@@ -99,15 +108,6 @@ export class DefaultUserService implements UserService {
     return foundUser ?? null;
   }
 
-  public async addFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
-    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer.id);
-    if (favoriteOfferIndex === -1) {
-      user.favoriteOffers.push(offer.id);
-    }
-
-    return this.saveUser(user);
-  }
-
   public async getIdRefByMail(userEmail: string): Promise<Ref<UserEntity> | null> {
     const userEmailTrimmed = userEmail.trim();
     const foundUser = await this.userRepository.findByMail(userEmailTrimmed);
@@ -115,8 +115,25 @@ export class DefaultUserService implements UserService {
     return foundUser?.id ?? null;
   }
 
+  private async saveUser(user: UserEntity): Promise<boolean> {
+    try {
+      const userDocument = user as DocumentType<UserEntity>;
+      await userDocument.save();
+
+      this.logger.info(`User '${user.email}' updated`);
+      return true;
+
+    } catch (error) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        `Error saving user '${user.email}'. ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
+        'UserService'
+      );
+    }
+  }
+
   public async deleteFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
-    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer.id);
+    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
     if (favoriteOfferIndex !== -1) {
       user.favoriteOffers.splice(favoriteOfferIndex, 1);
     }
@@ -149,24 +166,4 @@ export class DefaultUserService implements UserService {
       );
     }
   }
-
-  //todo
-
-  private async saveUser(user: UserEntity): Promise<boolean> {
-    try {
-      const userDocument = user as DocumentType<UserEntity>;
-      await userDocument.save();
-
-      this.logger.info(`User '${user.email}' updated`);
-      return true;
-
-    } catch (error) {
-      throw new HttpError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        `Error saving user '${user.email}'. ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
-        'UserService'
-      );
-    }
-  }
-
 }

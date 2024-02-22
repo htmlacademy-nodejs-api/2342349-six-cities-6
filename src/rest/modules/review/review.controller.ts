@@ -1,6 +1,5 @@
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
-import {OfferRdo} from '#src/rest/modules/offer/dto/offer.rdo.js';
 import {ParamOfferId} from '#src/rest/modules/offer/type/param-offerid.type.js';
 import {CreateReviewDto} from '#src/rest/modules/review/dto/create-review.dto.js';
 import {ReviewRdo} from '#src/rest/modules/review/dto/review.rdo.js';
@@ -56,7 +55,7 @@ export class ReviewController extends BaseController {
     body,
     params
   }: Request<ParamOfferId, RequestBody, CreateReviewDto>, res: Response): Promise<void> {
-    const createdOffer = await this.reviewService.create(params.offerId, body);
-    this.created(res, fillDTO(OfferRdo, createdOffer));
+    await this.reviewService.create(params.offerId, body);
+    this.created(res, {});
   }
 }
