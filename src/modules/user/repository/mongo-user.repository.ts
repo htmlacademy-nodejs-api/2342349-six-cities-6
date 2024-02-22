@@ -21,7 +21,7 @@ export class MongoUserRepository implements UserRepository {
     return this.userModel.findById(userId);
   }
 
-  public async findByMail(userEmail: string): Promise<DocumentType<UserEntity> | null> {
+  public async findByEmail(userEmail: string): Promise<DocumentType<UserEntity> | null> {
     return this.userModel.findOne({email: userEmail});
   }
 

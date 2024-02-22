@@ -26,7 +26,7 @@ export class DefaultReviewService implements ReviewService {
 
   public async create(offerId: string, reviewParams: Omit<Review, 'offer' | 'publishDate'>): Promise<boolean> {
     const commentTrimmed = reviewParams.comment.trim();
-    const existingReview = await this.reviewRepository.findByComment(offerId, commentTrimmed);
+    const existingReview = await this.reviewRepository.findByOfferAndComment(offerId, commentTrimmed);
     if (existingReview) {
       throw new HttpError(
         StatusCodes.CONFLICT,
@@ -53,49 +53,21 @@ export class DefaultReviewService implements ReviewService {
     return await this.createReviewInternal(reviewData);
   }
 
-  private async createReviewInternal(reviewData: Review): Promise<boolean> {
-    const {offer: offerData, author: authorData} = reviewData;
-
-    const offerIdRef = await this.offerService.getIdRefByTitle(offerData.title);
-    if (!offerIdRef) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer '${offerData.title}' not found`,
-        'ReviewService'
-      );
+  public async calculateAndSetRating(offerIdRef: Ref<OfferEntity>): Promise<boolean> {
+    const aggregationResult = await this.reviewRepository.calculateAverageRating(offerIdRef);
+    if (aggregationResult.length < 1) {
+      this.logger.error(`Error get rating aggregation result for offer ID: '${offerIdRef.toString()}'`);
+      return false;
     }
 
-    const authorIdRef = await this.userService.getIdRefByMail(authorData.email);
-    if (!authorIdRef) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Author '${authorData.email}' not found`,
-        'ReviewService'
-      );
+    const {averageRating} = aggregationResult[0];
+    const isOfferRatingUpdated = await this.offerService.setRating(offerIdRef, averageRating);
+    if (!isOfferRatingUpdated) {
+      this.logger.error(`Can't update review count for offer ID '${offerIdRef.toString()}'`);
+      return false;
     }
 
-    const review = new ReviewEntity(reviewData, offerIdRef, authorIdRef);
-    const isCreatedSuccessfully = await this.reviewRepository.create(review);
-    if (!isCreatedSuccessfully || !review) {
-      throw new HttpError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        `Error creating review '${offerData.title}. An unknown error occurred.'}`,
-        'ReviewService'
-      );
-    }
-
-    const isOfferReviewCountUpdated = await this.offerService.incrementOfferReviewCount(offerIdRef);
-    if (!isOfferReviewCountUpdated) {
-      this.logger.error(`Can't update review count for offer '${offerData.title}'`);
-    }
-
-    const isCalculateAndSetRating = await this.calculateAndSetOfferRating(offerIdRef);
-    if (!isCalculateAndSetRating) {
-      this.logger.error(`Can't calculate rating for offer '${offerData.title}'`);
-    }
-
-    this.logger.info(`New [review] with publish date '${review.publishDate}' created`);
-    return isCreatedSuccessfully;
+    return true;
   }
 
   public async findByOffer(offerId: string, requestedLimit?: number): Promise<ReviewEntity[]> {
@@ -123,20 +95,48 @@ export class DefaultReviewService implements ReviewService {
     return this.reviewRepository.exists(objectId);
   }
 
-  public async calculateAndSetOfferRating(offerIdRef: Ref<OfferEntity>): Promise<boolean> {
-    const aggregationResult = await this.reviewRepository.getAverageRatingByOfferId(offerIdRef);
-    if (aggregationResult.length < 1) {
-      this.logger.error(`Error get rating aggregation result for offer ID: '${offerIdRef.toString()}'`);
-      return false;
+  private async createReviewInternal(reviewData: Review): Promise<boolean> {
+    const {offer: offerData, author: authorData} = reviewData;
+
+    const offerIdRef = await this.offerService.getIdRefByTitle(offerData.title);
+    if (!offerIdRef) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer '${offerData.title}' not found`,
+        'ReviewService'
+      );
     }
 
-    const {averageRating} = aggregationResult[0];
-    const isOfferRatingUpdated = await this.offerService.setOfferAverageRating(offerIdRef, averageRating);
-    if (!isOfferRatingUpdated) {
-      this.logger.error(`Can't update review count for offer ID '${offerIdRef.toString()}'`);
-      return false;
+    const authorIdRef = await this.userService.getIdRefByEmail(authorData.email);
+    if (!authorIdRef) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Author '${authorData.email}' not found`,
+        'ReviewService'
+      );
     }
 
-    return true;
+    const review = new ReviewEntity(reviewData, offerIdRef, authorIdRef);
+    const isCreatedSuccessfully = await this.reviewRepository.create(review);
+    if (!isCreatedSuccessfully || !review) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        `Error creating review '${offerData.title}. An unknown error occurred.'}`,
+        'ReviewService'
+      );
+    }
+
+    const isOfferReviewCountUpdated = await this.offerService.incrementReviewCount(offerIdRef);
+    if (!isOfferReviewCountUpdated) {
+      this.logger.error(`Can't update review count for offer '${offerData.title}'`);
+    }
+
+    const isCalculateAndSetRating = await this.calculateAndSetRating(offerIdRef);
+    if (!isCalculateAndSetRating) {
+      this.logger.error(`Can't calculate rating for offer '${offerData.title}'`);
+    }
+
+    this.logger.info(`New [review] with publish date '${review.publishDate}' created`);
+    return isCreatedSuccessfully;
   }
 }

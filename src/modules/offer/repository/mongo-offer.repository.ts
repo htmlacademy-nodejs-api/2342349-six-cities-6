@@ -29,7 +29,7 @@ export class MongoOfferRepository implements OfferRepository {
     return this.offerModel.findOne({title: offerTitle});
   }
 
-  public async findAllWithLimit(effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
+  public async findAll(effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find({}, {}, {limit: effectiveLimit})
       .sort({publishDate: -1})
@@ -50,7 +50,7 @@ export class MongoOfferRepository implements OfferRepository {
       .populate(['cityId', 'hostId']);
   }
 
-  public async findByIdList(offerIds: Ref<OfferEntity>[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
+  public async findByIds(offerIds: Ref<OfferEntity>[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find({_id: {$in: offerIds}}, {}, {effectiveLimit})
       .sort({publishDate: -1})
@@ -79,7 +79,7 @@ export class MongoOfferRepository implements OfferRepository {
     return !!updatedOffer;
   }
 
-  public async updateOfferRatingById(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean> {
+  public async updateRating(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean> {
     const updatedOffer = await this.offerModel.findByIdAndUpdate(offerIdRef, {rating: averageRating}, {new: true});
     return !!updatedOffer;
   }

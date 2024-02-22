@@ -9,11 +9,11 @@ export interface ReviewRepository {
 
   findById(reviewId: string): Promise<DocumentType<ReviewEntity> | null>;
 
-  findByComment(offerId: string, reviewComment: string): Promise<DocumentType<ReviewEntity> | null>;
+  findByOfferAndComment(offerId: string, reviewComment: string): Promise<DocumentType<ReviewEntity> | null>;
 
   findByOffer(offerId: string, effectiveLimit: number): Promise<DocumentType<ReviewEntity>[]>;
 
   exists(reviewId: mongoose.Types.ObjectId): Promise<boolean>;
 
-  getAverageRatingByOfferId(offerIdRef: Ref<OfferEntity>): Promise<{ _id: Ref<OfferEntity>; averageRating: number; }[]>;
+  calculateAverageRating(offerIdRef: Ref<OfferEntity>): Promise<{ _id: Ref<OfferEntity>; averageRating: number; }[]>;
 }

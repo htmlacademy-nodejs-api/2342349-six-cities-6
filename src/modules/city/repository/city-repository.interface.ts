@@ -10,7 +10,7 @@ export interface CityRepository {
 
   findByName(cityName: string): Promise<DocumentType<CityEntity> | null>;
 
-  findAllWithLimit(effectiveLimit: number): Promise<DocumentType<CityEntity>[]>;
+  listLimited(effectiveLimit: number): Promise<DocumentType<CityEntity>[]>;
 
   exists(cityId: mongoose.Types.ObjectId): Promise<boolean>;
 }

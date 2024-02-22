@@ -10,7 +10,7 @@ export interface OfferRepository {
 
   findByTitle(offerTitle: string): Promise<DocumentType<OfferEntity> | null>;
 
-  findAllWithLimit(effectiveLimit: number): Promise<DocumentType<OfferEntity>[]>;
+  findAll(effectiveLimit: number): Promise<DocumentType<OfferEntity>[]>;
 
   findByCity(cityId: string, requestedLimit?: number): Promise<DocumentType<OfferEntity>[]>;
 
@@ -22,9 +22,9 @@ export interface OfferRepository {
 
   exists(offerId: mongoose.Types.ObjectId): Promise<boolean>;
 
-  findByIdList(offerIds: Ref<OfferEntity>[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]>;
+  findByIds(offerIds: Ref<OfferEntity>[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]>;
 
   incrementReviewCount(offerIdRef: Ref<OfferEntity>): Promise<boolean>;
 
-  updateOfferRatingById(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean>;
+  updateRating(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean>;
 }

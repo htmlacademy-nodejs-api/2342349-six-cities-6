@@ -19,6 +19,14 @@ export class DefaultCityService implements CityService {
   ) {
   }
 
+  public async listAll(): Promise<CityEntity[]> {
+    const limit = ListLimitsConfig.CITY_LIST_LIMIT;
+    const cities = await this.cityRepository.listLimited(limit);
+
+    this.logger.info(`Retrieving all cities. Found ${cities.length} cities.`);
+    return cities;
+  }
+
   public async findOrCreate(cityData: City): Promise<CityEntity> {
     const cityNameTrimmed = cityData.name.trim();
     const existedCity = await this.cityRepository.findByName(cityNameTrimmed);
@@ -26,12 +34,21 @@ export class DefaultCityService implements CityService {
     return existedCity ?? await this.createCityInternal(cityData);
   }
 
-  public async getAllCities(): Promise<CityEntity[]> {
-    const limit = ListLimitsConfig.CITY_LIST_LIMIT;
-    const cities = await this.cityRepository.findAllWithLimit(limit);
+  private async createCityInternal(cityData: City): Promise<CityEntity> {
+    try {
+      const city = new CityEntity(cityData);
+      const createdCity = await this.cityRepository.create(city);
 
-    this.logger.info(`Retrieving all cities. Found ${cities.length} cities.`);
-    return cities;
+      this.logger.info(`New [city] created: ${city.name}`);
+      return createdCity;
+
+    } catch (error) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        `Error creating city '${cityData.name}'. ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
+        'CityService'
+      );
+    }
   }
 
   public async getIdRefByName(cityName: string): Promise<Ref<CityEntity> | null> {
@@ -54,22 +71,5 @@ export class DefaultCityService implements CityService {
     const foundCity = await this.cityRepository.findByName(cityNameTrimmed);
 
     return foundCity ?? null;
-  }
-
-  private async createCityInternal(cityData: City): Promise<CityEntity> {
-    try {
-      const city = new CityEntity(cityData);
-      const createdCity = await this.cityRepository.create(city);
-
-      this.logger.info(`New [city] created: ${city.name}`);
-      return createdCity;
-
-    } catch (error) {
-      throw new HttpError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        `Error creating city '${cityData.name}'. ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
-        'CityService'
-      );
-    }
   }
 }

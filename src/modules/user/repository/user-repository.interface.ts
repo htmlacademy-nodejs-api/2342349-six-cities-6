@@ -8,7 +8,7 @@ export interface UserRepository {
 
   findById(userId: string): Promise<DocumentType<UserEntity> | null>;
 
-  findByMail(userEmail: string): Promise<DocumentType<UserEntity> | null>;
+  findByEmail(userEmail: string): Promise<DocumentType<UserEntity> | null>;
 
   exists(userId: mongoose.Types.ObjectId): Promise<boolean>;
 }

@@ -5,7 +5,7 @@ import {Ref} from '@typegoose/typegoose';
 export interface CityService {
   findOrCreate(cityData: City): Promise<CityEntity>;
 
-  getAllCities(): Promise<CityEntity[]>;
+  listAll(): Promise<CityEntity[]>;
 
   findByName(cityName: string): Promise<CityEntity | null>;
 

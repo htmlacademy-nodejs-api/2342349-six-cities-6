@@ -8,11 +8,11 @@ export interface UserService {
 
   create(userData: User): Promise<UserEntity>;
 
-  findByMail(email: string): Promise<UserEntity | null>;
+  findByEmail(email: string): Promise<UserEntity | null>;
 
   findById(userId: string): Promise<UserEntity | null>;
 
-  getIdRefByMail(userEmail: string): Promise<Ref<UserEntity> | null>;
+  getIdRefByEmail(userEmail: string): Promise<Ref<UserEntity> | null>;
 
   addFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean>;
 
@@ -22,7 +22,7 @@ export interface UserService {
 
   login(userLogin: string, userPassword: string): Promise<boolean>;
 
-  isLogin(): Promise<boolean>;
+  isLoggedIn(): Promise<boolean>;
 
   logout(): Promise<boolean>;
 }

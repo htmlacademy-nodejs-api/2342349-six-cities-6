@@ -21,17 +21,8 @@ export class DefaultUserService implements UserService {
   ) {
   }
 
-  public async addFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
-    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
-    if (favoriteOfferIndex === -1) {
-      user.favoriteOffers.push(offer._id);
-    }
-
-    return this.saveUser(user);
-  }
-
   public async create(userData: User): Promise<UserEntity> {
-    const existingUser = await this.findByMail(userData.email);
+    const existingUser = await this.findByEmail(userData.email);
     if (existingUser) {
       throw new HttpError(
         StatusCodes.CONFLICT,
@@ -43,17 +34,8 @@ export class DefaultUserService implements UserService {
     return await this.createUserInternal(userData);
   }
 
-  public async checkExists(userId: string): Promise<boolean> {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return false;
-    }
-
-    const objectId = new mongoose.Types.ObjectId(userId);
-    return this.userRepository.exists(objectId);
-  }
-
   public async login(userLogin: string, _userPassword: string): Promise<boolean> {
-    const existingUser = await this.findByMail(userLogin);
+    const existingUser = await this.findByEmail(userLogin);
     if (!existingUser) {
       throw new HttpError(
         StatusCodes.CONFLICT,
@@ -69,12 +51,28 @@ export class DefaultUserService implements UserService {
     );
   }
 
-  public async isLogin(): Promise<boolean> {
+  public async checkExists(userId: string): Promise<boolean> {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return false;
+    }
+
+    const objectId = new mongoose.Types.ObjectId(userId);
+    return this.userRepository.exists(objectId);
+  }
+
+  public async isLoggedIn(): Promise<boolean> {
     throw new HttpError(
       StatusCodes.NOT_IMPLEMENTED,
       'Not implemented',
       'UserService',
     );
+  }
+
+  public async findOrCreate(userData: User): Promise<UserEntity> {
+    const userEmailTrimmed = userData.email.trim();
+    const existedUser = await this.findByEmail(userEmailTrimmed);
+
+    return existedUser ?? await this.createUserInternal(userData);
   }
 
   public async logout(): Promise<boolean> {
@@ -85,18 +83,18 @@ export class DefaultUserService implements UserService {
     );
   }
 
-  public async findOrCreate(userData: User): Promise<UserEntity> {
-    const userEmailTrimmed = userData.email.trim();
-    const existedUser = await this.findByMail(userEmailTrimmed);
-
-    return existedUser ?? await this.createUserInternal(userData);
-  }
-
-  public async findByMail(userEmail: string): Promise<DocumentType<UserEntity> | null> {
+  public async findByEmail(userEmail: string): Promise<DocumentType<UserEntity> | null> {
     const userEmailTrimmed = userEmail.trim();
-    const foundUser = await this.userRepository.findByMail(userEmailTrimmed);
+    const foundUser = await this.userRepository.findByEmail(userEmailTrimmed);
 
     return foundUser ?? null;
+  }
+
+  public async getIdRefByEmail(userEmail: string): Promise<Ref<UserEntity> | null> {
+    const userEmailTrimmed = userEmail.trim();
+    const foundUser = await this.userRepository.findByEmail(userEmailTrimmed);
+
+    return foundUser?.id ?? null;
   }
 
   public async findById(userId: string): Promise<UserEntity | null> {
@@ -108,11 +106,13 @@ export class DefaultUserService implements UserService {
     return foundUser ?? null;
   }
 
-  public async getIdRefByMail(userEmail: string): Promise<Ref<UserEntity> | null> {
-    const userEmailTrimmed = userEmail.trim();
-    const foundUser = await this.userRepository.findByMail(userEmailTrimmed);
+  public async addFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
+    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
+    if (favoriteOfferIndex === -1) {
+      user.favoriteOffers.push(offer._id);
+    }
 
-    return foundUser?.id ?? null;
+    return this.saveUser(user);
   }
 
   private async saveUser(user: UserEntity): Promise<boolean> {
@@ -130,15 +130,6 @@ export class DefaultUserService implements UserService {
         'UserService'
       );
     }
-  }
-
-  public async deleteFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
-    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
-    if (favoriteOfferIndex !== -1) {
-      user.favoriteOffers.splice(favoriteOfferIndex, 1);
-    }
-
-    return this.saveUser(user);
   }
 
   private async createUserInternal(userData: User): Promise<UserEntity> {
@@ -165,5 +156,14 @@ export class DefaultUserService implements UserService {
         'UserService'
       );
     }
+  }
+
+  public async deleteFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
+    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
+    if (favoriteOfferIndex !== -1) {
+      user.favoriteOffers.splice(favoriteOfferIndex, 1);
+    }
+
+    return this.saveUser(user);
   }
 }

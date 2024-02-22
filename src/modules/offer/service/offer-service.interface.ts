@@ -12,7 +12,7 @@ export interface OfferService {
 
   findById(offerId: string): Promise<OfferEntity | null>;
 
-  findShortOffers(cityId?: string, requestedLimit?: number): Promise<ShortOfferRdo[]>;
+  findShorts(cityId?: string, requestedLimit?: number): Promise<ShortOfferRdo[]>;
 
   checkExists(offerId: string): Promise<boolean>;
 
@@ -26,9 +26,9 @@ export interface OfferService {
 
   findByIdList(offerIds: Ref<OfferEntity>[], limit: number): Promise<OfferEntity[]>;
 
-  incrementOfferReviewCount(offerIdRef: Ref<OfferEntity>): Promise<boolean>;
+  incrementReviewCount(offerIdRef: Ref<OfferEntity>): Promise<boolean>;
 
-  setOfferAverageRating(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean>;
+  setRating(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean>;
 
   addFavoriteFlag<T>(input: T): T;
 

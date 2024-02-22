@@ -54,12 +54,12 @@ export class UserController extends BaseController {
   }
 
   private async isLogin(_req: Request, res: Response): Promise<void> {
-    const isSuccess = await this.userService.isLogin();
+    const isSuccess = await this.userService.isLoggedIn();
     this.ok(res, isSuccess);
   }
 
   private async logout(_req: Request, res: Response): Promise<void> {
-    const isSuccess = await this.userService.isLogin();
+    const isSuccess = await this.userService.isLoggedIn();
     this.ok(res, isSuccess);
   }
 }

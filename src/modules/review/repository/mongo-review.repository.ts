@@ -38,7 +38,7 @@ export class MongoReviewRepository implements ReviewRepository {
       .populate('authorId');
   }
 
-  public async findByComment(offerId: string, reviewComment: string): Promise<DocumentType<ReviewEntity> | null> {
+  public async findByOfferAndComment(offerId: string, reviewComment: string): Promise<DocumentType<ReviewEntity> | null> {
     return this.reviewModel
       .findOne({
         offerId: offerId,
@@ -72,7 +72,7 @@ export class MongoReviewRepository implements ReviewRepository {
     return !!isReviewExists;
   }
 
-  public async getAverageRatingByOfferId(offerIdRef: Ref<OfferEntity>): Promise<{
+  public async calculateAverageRating(offerIdRef: Ref<OfferEntity>): Promise<{
     _id: Ref<OfferEntity>;
     averageRating: number;
   }[]> {

@@ -68,7 +68,7 @@ export class OfferController extends BaseController {
       );
     }
 
-    const shortOfferRDOs = await this.offerService.findShortOffers(cityId, limit);
+    const shortOfferRDOs = await this.offerService.findShorts(cityId, limit);
     this.ok(res, shortOfferRDOs);
   }
 

@@ -27,7 +27,7 @@ export class CityController extends BaseController {
   }
 
   public async index(_req: Request, res: Response): Promise<void> {
-    const cities = await this.cityService.getAllCities();
+    const cities = await this.cityService.listAll();
     this.ok(res, fillDTO(CityRdo, cities));
   }
 }

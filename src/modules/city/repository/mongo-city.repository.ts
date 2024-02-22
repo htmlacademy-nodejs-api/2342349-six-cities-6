@@ -25,7 +25,7 @@ export class MongoCityRepository implements CityRepository {
     return this.cityModel.findOne({name: cityName});
   }
 
-  public async findAllWithLimit(effectiveLimit: number): Promise<DocumentType<CityEntity>[]> {
+  public async listLimited(effectiveLimit: number): Promise<DocumentType<CityEntity>[]> {
     return this.cityModel.find({}, {}, {limit: effectiveLimit});
   }
 
