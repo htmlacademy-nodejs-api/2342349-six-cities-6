@@ -68,7 +68,7 @@ export class DefaultOfferService implements OfferService {
     return premiumCityOffers;
   }
 
-  public async findShortOffers(cityId?: string, requestedLimit?: number): Promise<ShortOfferRdo[]> {
+  public async findShortOffers(cityId?: string, requestedLimit: number = ListLimitsConfig.OFFERS_LIST_LIMIT_DEFAULT): Promise<ShortOfferRdo[]> {
     if (requestedLimit && requestedLimit > ListLimitsConfig.OFFERS_LIST_LIMIT) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
