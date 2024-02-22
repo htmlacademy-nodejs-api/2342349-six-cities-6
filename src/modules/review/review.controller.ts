@@ -55,7 +55,7 @@ export class ReviewController extends BaseController {
     body,
     params
   }: Request<ParamOfferId, RequestBody, CreateReviewDto>, res: Response): Promise<void> {
-    await this.reviewService.create(params.offerId, body);
-    this.created(res, {});
+    const createdReview = await this.reviewService.create(params.offerId, body);
+    this.created(res, fillDTO(ReviewRdo, createdReview));
   }
 }

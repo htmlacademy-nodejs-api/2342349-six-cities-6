@@ -24,7 +24,7 @@ export class DefaultReviewService implements ReviewService {
   ) {
   }
 
-  public async create(offerId: string, reviewParams: Omit<Review, 'offer' | 'publishDate'>): Promise<boolean> {
+  public async create(offerId: string, reviewParams: Omit<Review, 'offer' | 'publishDate'>): Promise<ReviewEntity> {
     const commentTrimmed = reviewParams.comment.trim();
     const existingReview = await this.reviewRepository.findByOfferAndComment(offerId, commentTrimmed);
     if (existingReview) {
@@ -95,7 +95,7 @@ export class DefaultReviewService implements ReviewService {
     return this.reviewRepository.exists(objectId);
   }
 
-  private async createReviewInternal(reviewData: Review): Promise<boolean> {
+  private async createReviewInternal(reviewData: Review): Promise<ReviewEntity> {
     const {offer: offerData, author: authorData} = reviewData;
 
     const offerIdRef = await this.offerService.getIdRefByTitle(offerData.title);
@@ -117,8 +117,8 @@ export class DefaultReviewService implements ReviewService {
     }
 
     const review = new ReviewEntity(reviewData, offerIdRef, authorIdRef);
-    const isCreatedSuccessfully = await this.reviewRepository.create(review);
-    if (!isCreatedSuccessfully || !review) {
+    const createdReview = await this.reviewRepository.create(review);
+    if (!createdReview || !review) {
       throw new HttpError(
         StatusCodes.INTERNAL_SERVER_ERROR,
         `Error creating review '${offerData.title}. An unknown error occurred.'}`,
@@ -137,6 +137,6 @@ export class DefaultReviewService implements ReviewService {
     }
 
     this.logger.info(`New [review] with publish date '${review.publishDate}' created`);
-    return isCreatedSuccessfully;
+    return createdReview;
   }
 }

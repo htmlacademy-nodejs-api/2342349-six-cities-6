@@ -5,7 +5,7 @@ import {DocumentType, Ref} from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 
 export interface ReviewRepository {
-  create(reviewData: Review): Promise<boolean>;
+  create(reviewData: Review): Promise<DocumentType<ReviewEntity> | null>;
 
   findById(reviewId: string): Promise<DocumentType<ReviewEntity> | null>;
 

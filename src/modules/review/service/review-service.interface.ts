@@ -4,7 +4,7 @@ import {Review} from '#src/modules/review/type/review.type.js';
 import {Ref} from '@typegoose/typegoose';
 
 export interface ReviewService {
-  create(offerId: string, reviewData: Omit<Review, 'offer' | 'publishDate'>): Promise<boolean>;
+  create(offerId: string, reviewData: Omit<Review, 'offer' | 'publishDate'>): Promise<ReviewEntity>;
 
   findByOffer(offerId: string, requestedLimit?: number): Promise<ReviewEntity[]>;
 

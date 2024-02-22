@@ -12,7 +12,7 @@ POST {{host}}/api/v1/comments/65d772d75a8feb07571441ba
 Content-Type: application/json
 
 {
-  "comment": "aaa1234678",
+  "comment": "aaa123467891",
   "publishDate": "2024-02-20T12:00:00.000Z",
   "rating": 1,
   "author": {

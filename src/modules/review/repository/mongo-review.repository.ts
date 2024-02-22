@@ -14,9 +14,9 @@ export class MongoReviewRepository implements ReviewRepository {
   ) {
   }
 
-  public async create(reviewData: Review): Promise<boolean> {
+  public async create(reviewData: Review): Promise<DocumentType<ReviewEntity> | null> {
     const createdReview = await this.reviewModel.create(reviewData);
-    return !!createdReview;
+    return this.findById(createdReview.id);
   }
 
   public async findById(reviewId: string): Promise<DocumentType<ReviewEntity> | null> {
