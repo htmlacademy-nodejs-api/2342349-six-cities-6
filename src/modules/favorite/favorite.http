@@ -1,0 +1,20 @@
+@host = http://localhost:5001
+@userId = 65d772d05a8feb07571441b5
+@offerId = 65d772d75a8feb07571441ba
+
+# Favorites
+## findByUser
+GET {{host}}/api/v1/favorites?limit=1&userId={{userId}}
+
+###
+
+## addByOfferId
+POST {{host}}/api/v1/favorites/{{offerId}}?limit=1&userId={{userId}}
+
+###
+
+## deleteByOfferId
+
+DELETE {{host}}/api/v1/favorites/{{offerId}}?limit=1&userId={{userId}}
+
+###

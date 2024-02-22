@@ -25,12 +25,12 @@ paths:
       description: Возвращает список всех доступных предложений по аренде недвижимости, с возможностью фильтрации по городу и ограничением количества предложений через параметр limit. Список автоматически сортируется по дате публикации в порядке убывания.
       operationId: getOffers
       parameters:
-        - name: city
+        - name: cityId
           in: query
           required: false
           schema:
             type: string
-          description: Название города для фильтрации предложений. Если не указан, возвращаются предложения из всех городов.
+          description: ID города для фильтрации предложений. Если не указан, возвращаются предложения из всех городов.
         - name: limit
           in: query
           required: false
@@ -65,7 +65,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Offer'
+              $ref: '#/components/schemas/OfferCreateUpdate'
       responses:
         '201':
           description: Предложение успешно создано
@@ -89,19 +89,19 @@ paths:
       description: Возвращает список премиальных предложений по аренде недвижимости. Предложения могут быть отфильтрованы по городу. Доступно для всех пользователей.
       operationId: getPremiumOffers
       parameters:
-        - name: city
+        - name: cityId
           in: query
           required: false
           schema:
             type: string
-          description: Название города для фильтрации премиальных предложений. Если не указан, возвращаются премиальные предложения из всех городов.
+          description: ID города для фильтрации премиальных предложений. Если не указан, возвращаются премиальные предложения из всех городов.
         - name: limit
           in: query
           required: false
           schema:
             type: integer
-            default: 60
-            maximum: 60
+            default: 3
+            maximum: 3
           description: Количество возвращаемых предложений
       responses:
         '200':
@@ -141,10 +141,6 @@ paths:
                 $ref: '#/components/schemas/Offer'
         '400':
           description: Неверный запрос или данные.
-        '401':
-          description: Требуется аутентификация для обновления или удаления.
-        '403':
-          description: Недостаточно прав для выполнения операции.
         '404':
           description: Предложение не найдено.
         '500':
@@ -166,7 +162,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Offer'
+              $ref: '#/components/schemas/OfferCreateUpdate'
       responses:
         '200':
           description: Предложение успешно обновлено
@@ -214,7 +210,7 @@ paths:
           description: Внутренняя ошибка сервера.
       security:
         - bearerAuth: [ ]
-  /comments:
+  /comments/{offerId}:
     get:
       tags:
         - comments
@@ -223,7 +219,7 @@ paths:
       operationId: getComments
       parameters:
         - name: offerId
-          in: query
+          in: path
           required: true
           schema:
             type: string
@@ -259,7 +255,7 @@ paths:
       operationId: addComment
       parameters:
         - name: offerId
-          in: query
+          in: path
           required: true
           schema:
             type: string
@@ -392,12 +388,14 @@ paths:
       description: Возвращает список предложений, добавленных в избранное текущим авторизованным пользователем. Требуется аутентификация.
       operationId: getFavorites
       parameters:
-        - name: userId
+        - name: limit
           in: query
-          required: true
+          required: false
           schema:
-            type: string
-          description: ID пользователя у которого нужно получить избранные преложения.
+            type: integer
+            default: 60
+            maximum: 60
+          description: Количество возвращаемых предложений
       responses:
         '200':
           description: Список избранных предложений
@@ -406,33 +404,30 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Offer'
+                  $ref: '#/components/schemas/ShortOffer'
         '401':
           description: Требуется аутентификация.
         '500':
           description: Внутренняя ошибка сервера.
       security:
         - bearerAuth: [ ]
+  /favorites/{offerId}:
     post:
       tags:
         - favorites
       summary: Добавление предложения в избранное.
-      description: Позволяет авторизованному пользователю добавить предложение в список избранных. Требуется указать ID предложения в теле запроса.
+      description: Позволяет авторизованному пользователю добавить предложение в свой список избранных. Требуется указать ID предложения в пути запроса.
       operationId: addOfferToFavorites
       parameters:
-        - name: userId
-          in: query
+        - name: offerId
+          in: path
           required: true
           schema:
             type: string
-          description: ID пользователя для которого нужно добавить избранное преложение.
+            description: ID предложения для добавление из избранного.
       responses:
         '201':
           description: Предложение добавлено в избранное
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Offer'
         '400':
           description: Неверный запрос или данные.
         '401':
@@ -447,21 +442,15 @@ paths:
       tags:
         - favorites
       summary: Удаление предложения из избранных.
-      description: Позволяет авторизованному пользователю удалить предложение из списка избранных. Требуется указать ID предложения в теле запроса.
+      description: Позволяет авторизованному пользователю удалить предложение из своего списка избранных. Требуется указать ID предложения в пути запроса.
       operationId: removeOfferFromFavorites
       parameters:
-        - name: userId
-          in: query
-          required: true
-          schema:
-            type: string
-          description: ID пользователя у которого нужно удалить избранные преложение.
         - name: offerId
-          in: query
+          in: path
           required: true
           schema:
             type: string
-          description: ID предложения для удаления.
+            description: ID предложения для удаления из избранного.
       responses:
         '204':
           description: Предложение удалено из избранных
@@ -536,6 +525,64 @@ components:
           $ref: '#/components/schemas/User'
         location:
           $ref: '#/components/schemas/Location'
+    OfferCreateUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        publicDate:
+          type: string
+          format: date-time
+        city:
+          $ref: '#/components/schemas/City'
+        previewImage:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        isPremium:
+          type: boolean
+        room:
+          type: integer
+        bedroom:
+          type: integer
+        price:
+          type: number
+        goods:
+          type: array
+          items:
+            type: string
+        host:
+          $ref: '#/components/schemas/User'
+        location:
+          $ref: '#/components/schemas/Location'
+        type:
+          $ref: '#/components/schemas/OfferType'
+    ShortOffer:
+      type: object
+      properties:
+        title:
+          type: string
+        publicDate:
+          type: string
+          format: date-time
+        city:
+          $ref: '#/components/schemas/City'
+        previewImage:
+          type: string
+        isPremium:
+          type: boolean
+        price:
+          type: number
+        host:
+          $ref: '#/components/schemas/User'
+        location:
+          $ref: '#/components/schemas/Location'
+        type:
+          $ref: '#/components/schemas/OfferType'
     Review:
       type: object
       properties:

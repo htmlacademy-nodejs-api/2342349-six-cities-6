@@ -1,6 +1,6 @@
+import {Offer, OfferType} from '#src/modules/offer/type/offer.type.js';
+import {UserType} from '#src/modules/user/type/user.type.js';
 import {OfferParser} from '#src/offers/parser/offer-parser.interface.js';
-import {Offer, OfferType} from '#src/rest/modules/offer/offer.type.js';
-import {UserType} from '#src/rest/modules/user/user.type.js';
 import {injectable} from 'inversify';
 
 @injectable()

@@ -1,0 +1,27 @@
+@host = http://localhost:5001
+
+# User
+## create
+POST {{host}}/api/v1/users/
+Content-Type: application/json
+
+{
+  "name": "Мария Васильева",
+  "email": "alex1@example.com",
+  "avatarUrl": "avatar.jpg",
+  "password": "123",
+  "type": "pro"
+}
+
+###
+
+## login
+POST {{host}}/api/v1/users/login/
+Content-Type: application/json
+
+{
+  "email": "a1-alexey@example.com",
+  "password": "123"
+}
+
+###
