@@ -1,14 +1,8 @@
-import {LocationValidationConstant} from '#src/modules/location/validation/location-validation.constant.js';
-
 export const LocationValidationMessage = {
   latitude: {
-    isNumber: 'Latitude must be a number',
-    min: `Latitude must be at least ${LocationValidationConstant.latitude.min}`,
-    max: `Latitude must be no more than ${LocationValidationConstant.latitude.max}`,
+    isLatitude: 'Latitude must be a valid latitude value between -90 and 90',
   },
   longitude: {
-    isNumber: 'Longitude must be a number',
-    min: `Longitude must be at least ${LocationValidationConstant.longitude.min}`,
-    max: `Longitude must be no more than ${LocationValidationConstant.longitude.max}`,
+    isLongitude: 'Longitude must be a valid longitude value between -180 and 180',
   },
 };
