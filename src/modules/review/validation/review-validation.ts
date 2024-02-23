@@ -5,7 +5,7 @@ import {UserValidation} from '#src/modules/user/validation/user-validation.js';
 import {Type} from 'class-transformer';
 import {IsNumber, IsString, Length, Max, Min, ValidateNested} from 'class-validator';
 
-export class CreateReviewDto {
+export class ReviewValidation {
   @ValidateNested()
   @Type(() => UserValidation)
   public author!: UserValidation;

@@ -85,9 +85,8 @@ export class DefaultUserService implements UserService {
 
   public async findByEmail(userEmail: string): Promise<DocumentType<UserEntity> | null> {
     const userEmailTrimmed = userEmail.trim();
-    const foundUser = await this.userRepository.findByEmail(userEmailTrimmed);
 
-    return foundUser ?? null;
+    return await this.userRepository.findByEmail(userEmailTrimmed);
   }
 
   public async getIdRefByEmail(userEmail: string): Promise<Ref<UserEntity> | null> {
@@ -101,9 +100,8 @@ export class DefaultUserService implements UserService {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return null;
     }
-    const foundUser = await this.userRepository.findById(userId);
 
-    return foundUser ?? null;
+    return await this.userRepository.findById(userId);
   }
 
   public async addFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {

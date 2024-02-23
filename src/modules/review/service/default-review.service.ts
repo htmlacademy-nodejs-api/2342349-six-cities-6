@@ -5,9 +5,9 @@ import {ReviewEntity} from '#src/modules/review/review.entity.js';
 import {ReviewService} from '#src/modules/review/service/review-service.interface.js';
 import {Review} from '#src/modules/review/type/review.type.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
+import {ListLimitsConfig} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/types/component.enum.js';
-import {ListLimitsConfig} from '#src/utils/config.constants.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {Ref} from '@typegoose/typegoose';
 import {StatusCodes} from 'http-status-codes';
@@ -84,6 +84,14 @@ export class DefaultReviewService implements ReviewService {
 
     this.logger.info(`Completed search for reviews for offer '${offerId}'. Found ${offerReviews.length} reviews.`);
     return offerReviews;
+  }
+
+  public async findById(reviewId: string): Promise<ReviewEntity | null> {
+    if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+      return null;
+    }
+
+    return await this.reviewRepository.findById(reviewId);
   }
 
   public async checkExists(reviewId: string): Promise<boolean> {

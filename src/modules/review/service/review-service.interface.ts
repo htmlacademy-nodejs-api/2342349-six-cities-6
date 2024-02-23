@@ -8,6 +8,8 @@ export interface ReviewService {
 
   findByOffer(offerId: string, requestedLimit?: number): Promise<ReviewEntity[]>;
 
+  findById(reviewId: string): Promise<ReviewEntity | null>;
+
   calculateAndSetRating(offerIdRef: Ref<OfferEntity>): Promise<boolean>;
 
   checkExists(reviewId: string): Promise<boolean>;

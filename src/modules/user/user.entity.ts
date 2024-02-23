@@ -1,6 +1,6 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {User, UserType} from '#src/modules/user/type/user.type.js';
-import {UserProfileConfig} from '#src/utils/config.constants.js';
+import {UserProfileConfig} from '#src/rest/config.constant.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
 
 

@@ -19,7 +19,7 @@ Content-Type: application/json
     "name": "Мария Васильева",
     "email": "alex1@example.com",
     "avatarUrl": "avatar5.jpg",
-    "password": "123",
+    "password": "123456",
     "type": "pro"
   },
   "offer": {
@@ -39,7 +39,7 @@ Content-Type: application/json
       "name": "Мария Васильева",
       "email": "a2898ef78e901df0a7e3-alexey@example.com",
       "avatarUrl": "avatar5.jpg",
-      "password": "123",
+      "password": "123456",
       "type": "pro"
     },
     "images": [],

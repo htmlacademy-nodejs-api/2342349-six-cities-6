@@ -11,13 +11,13 @@ POST {{host}}/api/v1/offers
 Content-Type: application/json
 
 {
-  "title": "Квартира-1",
+  "title": "Квартира-12345",
   "type": "apartment",
   "bedroom": 1,
   "city": {
     "name": "Cologne",
     "location": {
-      "latitude": 1,
+      "latitude": 12,
       "longitude": 1
     }
   },
@@ -27,10 +27,17 @@ Content-Type: application/json
     "name": "Мария Васильева",
     "email": "alex1@example.com",
     "avatarUrl": "avatar5.jpg",
-    "password": "123",
+    "password": "123456",
     "type": "pro"
   },
-  "images": [],
+  "images": [
+    "https://a.com",
+    "https://a.com",
+    "https://a.com",
+    "https://a.com",
+    "https://a.com",
+    "https://a.com"
+  ],
   "isPremium": true,
   "isFavorite": false,
   "location": {
@@ -47,7 +54,7 @@ Content-Type: application/json
 ###
 
 ## show
-GET {{host}}/api/v1/offers/65ca70eda83c67a5ac7d68da
+GET {{host}}/api/v1/offers/65ca70eda83c67a5ac7d68da2
 
 ###
 
