@@ -4,6 +4,8 @@ import {ReviewRdo} from '#src/modules/review/dto/review.rdo.js';
 import {ReviewService} from '#src/modules/review/service/review-service.interface.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
+import {ValidateDtoMiddleware} from '#src/rest/middleware/validate-dto.middleware.js';
+import {ValidateObjectIdMiddleware} from '#src/rest/middleware/validate-objectid.middleware.js';
 import {Component} from '#src/types/component.enum.js';
 import {HttpMethod} from '#src/types/http-method.enum.js';
 import {RequestBody} from '#src/types/request-body.type.js';
@@ -26,12 +28,17 @@ export class ReviewController extends BaseController {
     this.addRoute({
       method: HttpMethod.Get,
       path: '/:offerId',
-      handler: this.show
+      handler: this.show,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
     });
     this.addRoute({
       method: HttpMethod.Post,
       path: '/:offerId',
-      handler: this.create
+      handler: this.create,
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new ValidateDtoMiddleware(CreateReviewDto)
+      ]
     });
 
   }

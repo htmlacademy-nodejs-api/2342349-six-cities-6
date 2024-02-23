@@ -2,9 +2,9 @@ import {CityEntity} from '#src/modules/city/city.entity.js';
 import {CityRepository} from '#src/modules/city/repository/city-repository.interface.js';
 import {CityService} from '#src/modules/city/service/city-service.interface.js';
 import {City} from '#src/modules/city/type/city.type.js';
+import {ListLimitsConfig} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/types/component.enum.js';
-import {ListLimitsConfig} from '#src/utils/config.constants.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {Ref} from '@typegoose/typegoose';
 import {StatusCodes} from 'http-status-codes';
@@ -17,6 +17,13 @@ export class DefaultCityService implements CityService {
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.CityRepository) private readonly cityRepository: CityRepository,
   ) {
+  }
+
+  public async findById(cityId: string): Promise<CityEntity | null> {
+    if (!mongoose.Types.ObjectId.isValid(cityId)) {
+      return null;
+    }
+    return await this.cityRepository.findById(cityId);
   }
 
   public async listAll(): Promise<CityEntity[]> {
@@ -62,6 +69,7 @@ export class DefaultCityService implements CityService {
     if (!mongoose.Types.ObjectId.isValid(cityId)) {
       return false;
     }
+
     const objectId = new mongoose.Types.ObjectId(cityId);
     return this.cityRepository.exists(objectId);
   }

@@ -5,9 +5,9 @@ import {OfferRepository} from '#src/modules/offer/repository/offer-repository.in
 import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
+import {ListLimitsConfig} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/types/component.enum.js';
-import {ListLimitsConfig} from '#src/utils/config.constants.js';
 import {fillDTO} from '#src/utils/dto.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {Ref} from '@typegoose/typegoose';
@@ -121,6 +121,7 @@ export class DefaultOfferService implements OfferService {
     if (!mongoose.Types.ObjectId.isValid(offerId)) {
       return null;
     }
+
     return await this.offerRepository.findById(offerId);
   }
 

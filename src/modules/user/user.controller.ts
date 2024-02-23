@@ -3,6 +3,7 @@ import {LoginUserDto} from '#src/modules/user/dto/login-user.dto.js';
 import {UserRdo} from '#src/modules/user/dto/user.rdo.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
+import {ValidateDtoMiddleware} from '#src/rest/middleware/validate-dto.middleware.js';
 import {Component} from '#src/types/component.enum.js';
 import {HttpMethod} from '#src/types/http-method.enum.js';
 import {RequestBody} from '#src/types/request-body.type.js';
@@ -24,12 +25,14 @@ export class UserController extends BaseController {
     this.addRoute({
       method: HttpMethod.Post,
       path: '/',
-      handler: this.create
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
     });
     this.addRoute({
       method: HttpMethod.Get,
       path: '/login',
-      handler: this.isLogin
+      handler: this.isLogin,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
     });
     this.addRoute({
       method: HttpMethod.Post,

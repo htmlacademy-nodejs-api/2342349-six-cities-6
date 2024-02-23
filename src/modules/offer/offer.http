@@ -11,7 +11,7 @@ POST {{host}}/api/v1/offers
 Content-Type: application/json
 
 {
-  "title": "Квартира-1",
+  "title": "Квартира-1234",
   "type": "apartment",
   "bedroom": 1,
   "city": {
@@ -30,7 +30,14 @@ Content-Type: application/json
     "password": "123",
     "type": "pro"
   },
-  "images": [],
+  "images": [
+    "https://a.com",
+    "https://a.com",
+    "https://a.com",
+    "https://a.com",
+    "https://a.com",
+    "https://a.com"
+  ],
   "isPremium": true,
   "isFavorite": false,
   "location": {
@@ -47,7 +54,7 @@ Content-Type: application/json
 ###
 
 ## show
-GET {{host}}/api/v1/offers/65ca70eda83c67a5ac7d68da
+GET {{host}}/api/v1/offers/65ca70eda83c67a5ac7d68da2
 
 ###
 

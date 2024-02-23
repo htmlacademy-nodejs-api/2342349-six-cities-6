@@ -12,4 +12,6 @@ export interface CityService {
   getIdRefByName(cityName: string): Promise<Ref<CityEntity> | null>;
 
   checkExists(cityId: string): Promise<boolean>;
+
+  findById(cityId: string): Promise<CityEntity | null>;
 }

@@ -2,6 +2,7 @@ import {FavoriteService} from '#src/modules/favorite/service/favorite-service.in
 import {ParamOfferId} from '#src/modules/offer/type/param-offerid.type.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
+import {ValidateObjectIdMiddleware} from '#src/rest/middleware/validate-objectid.middleware.js';
 import {Component} from '#src/types/component.enum.js';
 import {HttpMethod} from '#src/types/http-method.enum.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
@@ -27,12 +28,14 @@ export class FavoriteController extends BaseController {
     this.addRoute({
       method: HttpMethod.Post,
       path: '/:offerId',
-      handler: this.create
+      handler: this.create,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
     });
     this.addRoute({
       method: HttpMethod.Delete,
       path: '/:offerId',
-      handler: this.delete
+      handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
     });
   }
 

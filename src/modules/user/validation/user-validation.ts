@@ -3,7 +3,7 @@ import {UserValidationConstant} from '#src/modules/user/validation/user-validati
 import {UserValidationMessage} from '#src/modules/user/validation/user-validation.message.js';
 import {IsEmail, IsEnum, IsOptional, IsString, IsUrl, Length, Matches} from 'class-validator';
 
-export class CreateUserDto {
+export class UserValidation {
   @IsString({message: UserValidationMessage.name.isString})
   @Length(UserValidationConstant.name.minLength, UserValidationConstant.name.maxLength, {message: UserValidationMessage.name.length})
   public name!: string;
