@@ -1,8 +1,9 @@
 import {CityEntity} from '#src/modules/city/city.entity.js';
 import {City} from '#src/modules/city/type/city.type.js';
+import {DocumentExists} from '#src/rest/middleware/document-exists.interface.js';
 import {Ref} from '@typegoose/typegoose';
 
-export interface CityService {
+export interface CityService extends DocumentExists {
   findOrCreate(cityData: City): Promise<CityEntity>;
 
   listAll(): Promise<CityEntity[]>;
@@ -11,7 +12,7 @@ export interface CityService {
 
   getIdRefByName(cityName: string): Promise<Ref<CityEntity> | null>;
 
-  checkExists(cityId: string): Promise<boolean>;
+  exists(cityId: string): Promise<boolean>;
 
   findById(cityId: string): Promise<CityEntity | null>;
 }

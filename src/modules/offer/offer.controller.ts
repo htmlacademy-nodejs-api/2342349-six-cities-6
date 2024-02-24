@@ -5,6 +5,7 @@ import {OfferService} from '#src/modules/offer/service/offer-service.interface.j
 import {ParamOfferId} from '#src/modules/offer/type/param-offerid.type.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
+import {DocumentExistsMiddleware} from '#src/rest/middleware/document-exists.middleware.js';
 import {ValidateDtoMiddleware} from '#src/rest/middleware/validate-dto.middleware.js';
 import {ValidateObjectIdMiddleware} from '#src/rest/middleware/validate-objectid.middleware.js';
 import {Component} from '#src/types/component.enum.js';
@@ -41,7 +42,10 @@ export class OfferController extends BaseController {
       method: HttpMethod.Get,
       path: '/:offerId',
       handler: this.show,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ]
     });
     this.addRoute({
       method: HttpMethod.Patch,
@@ -49,14 +53,18 @@ export class OfferController extends BaseController {
       handler: this.update,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(UpdateOfferDto)
+        new ValidateDtoMiddleware(UpdateOfferDto),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
     this.addRoute({
       method: HttpMethod.Delete,
       path: '/:offerId',
       handler: this.delete,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ]
     });
     this.addRoute({
       method: HttpMethod.Get,

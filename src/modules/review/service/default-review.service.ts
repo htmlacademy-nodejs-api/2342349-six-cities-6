@@ -94,7 +94,7 @@ export class DefaultReviewService implements ReviewService {
     return await this.reviewRepository.findById(reviewId);
   }
 
-  public async checkExists(reviewId: string): Promise<boolean> {
+  public async exists(reviewId: string): Promise<boolean> {
     if (!mongoose.Types.ObjectId.isValid(reviewId)) {
       return false;
     }

@@ -11,3 +11,4 @@ coverage
 *.log
 *.env
 /mocks/mock-offers.tsv
+/upload/

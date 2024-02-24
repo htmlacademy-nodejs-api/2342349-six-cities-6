@@ -11,7 +11,7 @@ POST {{host}}/api/v1/offers
 Content-Type: application/json
 
 {
-  "title": "Квартира-12345",
+  "title": "Квартира-3",
   "type": "apartment",
   "bedroom": 1,
   "city": {
@@ -63,7 +63,7 @@ PATCH {{host}}/api/v1/offers/65ca70eca83c67a5ac7d688c
 Content-Type: application/json
 
 {
-  "bedroom": 100,
+  "bedroom": 7,
   "price": 163
 }
 

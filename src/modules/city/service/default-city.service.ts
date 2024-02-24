@@ -65,7 +65,7 @@ export class DefaultCityService implements CityService {
     return foundCity?.id ?? null;
   }
 
-  public async checkExists(cityId: string): Promise<boolean> {
+  public async exists(cityId: string): Promise<boolean> {
     if (!mongoose.Types.ObjectId.isValid(cityId)) {
       return false;
     }
