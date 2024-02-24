@@ -13,6 +13,7 @@ export type RestSchema = {
   DB_NAME: string;
   DB_RETRY_COUNT: number;
   DB_RETRY_TIMEOUT: number;
+  UPLOAD_DIRECTORY: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -68,6 +69,12 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'The timeout in milliseconds between database connection retry attempts (MongoDB)',
     format: Number,
     env: 'DB_RETRY_TIMEOUT',
+    default: null
+  },
+  UPLOAD_DIRECTORY: {
+    doc: 'Directory for upload files',
+    format: String,
+    env: 'UPLOAD_DIRECTORY',
     default: null
   },
 });

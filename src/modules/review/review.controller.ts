@@ -4,6 +4,7 @@ import {ReviewRdo} from '#src/modules/review/dto/review.rdo.js';
 import {ReviewService} from '#src/modules/review/service/review-service.interface.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
+import {DocumentExistsMiddleware} from '#src/rest/middleware/document-exists.middleware.js';
 import {ValidateDtoMiddleware} from '#src/rest/middleware/validate-dto.middleware.js';
 import {ValidateObjectIdMiddleware} from '#src/rest/middleware/validate-objectid.middleware.js';
 import {Component} from '#src/types/component.enum.js';
@@ -29,7 +30,10 @@ export class ReviewController extends BaseController {
       method: HttpMethod.Get,
       path: '/:offerId',
       handler: this.show,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.reviewService, 'Offer', 'offerId'),
+      ]
     });
     this.addRoute({
       method: HttpMethod.Post,
@@ -37,7 +41,8 @@ export class ReviewController extends BaseController {
       handler: this.create,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(CreateReviewDto)
+        new ValidateDtoMiddleware(CreateReviewDto),
+        new DocumentExistsMiddleware(this.reviewService, 'Offer', 'offerId'),
       ]
     });
 

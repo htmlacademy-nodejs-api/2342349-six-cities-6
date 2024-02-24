@@ -33,7 +33,7 @@ export class DefaultOfferService implements OfferService {
         'OfferService'
       );
     }
-    if (cityId && !await this.cityService.checkExists(cityId)) {
+    if (cityId && !await this.cityService.exists(cityId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `City with ID '${cityId}' not found.`,
@@ -83,7 +83,7 @@ export class DefaultOfferService implements OfferService {
         'OfferService'
       );
     }
-    if (!await this.cityService.checkExists(cityId)) {
+    if (!await this.cityService.exists(cityId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `City with ID '${cityId}' not found.`,
@@ -125,7 +125,7 @@ export class DefaultOfferService implements OfferService {
     return await this.offerRepository.findById(offerId);
   }
 
-  public async checkExists(offerId: string): Promise<boolean> {
+  public async exists(offerId: string): Promise<boolean> {
     if (!mongoose.Types.ObjectId.isValid(offerId)) {
       return false;
     }
@@ -135,7 +135,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async updateById(offerId: string, offerData: Partial<Offer>): Promise<Offer> {
-    if (!await this.checkExists(offerId)) {
+    if (!await this.exists(offerId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `Offer with ID '${offerId}' not found.`,
@@ -157,7 +157,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async deleteById(offerId: string): Promise<Offer> {
-    if (!await this.checkExists(offerId)) {
+    if (!await this.exists(offerId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `Offer with ID '${offerId}' not found.`,

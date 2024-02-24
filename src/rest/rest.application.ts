@@ -50,89 +50,8 @@ export class RestApplication {
     this.logger.info('Init server...');
     await this.initServer();
     this.logger.info('Init server completed');
+
     this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
-
-    {
-      //todo
-      // console.log('TEST');
-      // const cityId = '65ca70eca83c67a5ac7d680f';
-      // const userId = '65ca70eca83c67a5ac7d6887';
-      // const offerId1 = '65ca70eca83c67a5ac7d681a';
-      // const offerId2 = '65ca70eca83c67a5ac7d68a6';
-
-      // console.log('findFavoriteByUser');
-      // let resultList = await this.offerService.findFavoriteByUser(userId);
-      // console.log(resultList);
-      //
-      // console.log('addFavoriteByUser 1');
-      // resultList = await this.offerService.addFavoriteByUser(userId, offerId1);
-      // console.log(resultList);
-      //
-      // console.log('addFavoriteByUser 2');
-      // resultList = await this.offerService.addFavoriteByUser(userId, offerId2);
-      // console.log(resultList);
-
-      // const resultList = await this.offerService.findByCityWithFavorite(cityId, userId);
-      // console.log(resultList);
-
-
-      // const offerReviewId = '65ca70eca83c67a5ac7d681a';
-      // const review1 = {
-      //   comment: 'aaa123',
-      //   publishDate: new Date(),
-      //   rating: 1,
-      //   author: {
-      //     name: 'Мария Васильева',
-      //     email: 'a2898ef78e901df0a7e3-alexey@example.com',
-      //     avatarUrl: 'avatar5.jpg',
-      //     password: '123',
-      //     type: UserType.pro,
-      //   },
-      //   offer: {
-      //     title: 'Уютная квартира в центре (0a69265093662887e7a7)',
-      //     type: OfferType.apartment,
-      //     bedroom: 1,
-      //     city: {
-      //       name: 'Cologne',
-      //       location: {latitude: 1, longitude: 1}
-      //     },
-      //     description: '.',
-      //     goods: [],
-      //     host: {
-      //       name: 'Мария Васильева',
-      //       email: 'a2898ef78e901df0a7e3-alexey@example.com',
-      //       avatarUrl: 'avatar5.jpg',
-      //       password: '123',
-      //       type: UserType.pro,
-      //     },
-      //     images: [],
-      //     isPremium: true,
-      //     isFavorite: false,
-      //     location: {latitude: 1, longitude: 1},
-      //     previewImage: 'previewImage7.jpg',
-      //     price: 163,
-      //     publicDate: new Date(),
-      //     rating: 3,
-      //     room: 4,
-      //   }
-      // };
-      //
-      // console.log('[reviewService] findByOffer');
-      // let resultList = await this.reviewService.findByOffer(offerReviewId);
-      // // console.log(resultList);
-      //
-      // console.log('[reviewService] findOrCreate');
-      // const result = await this.reviewService.findOrCreate(review1);
-      // // console.log(result);
-      //
-      // console.log('[reviewService] findByOffer');
-      // resultList = await this.reviewService.findByOffer(offerReviewId);
-      // console.log(resultList);
-
-
-      // console.log('TEST');
-      // throw new Error('exit');
-    }
   }
 
   private async initDb(): Promise<void> {
@@ -159,6 +78,10 @@ export class RestApplication {
 
   private async initMiddleware() {
     this.server.use(express.json());
+    this.server.use(
+      '/upload',
+      express.static(this.config.get('UPLOAD_DIRECTORY'))
+    );
   }
 
   private async initExceptionFilters() {

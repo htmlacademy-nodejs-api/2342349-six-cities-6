@@ -122,4 +122,8 @@ export class DefaultFavoriteService implements FavoriteService {
 
     this.logger.info(`Offer ID '${offerId}' deleted from favorite for user '${currentUser.email}'.`);
   }
+
+  public async exists(offerId: string): Promise<boolean> {
+    return this.offerService.exists(offerId);
+  }
 }

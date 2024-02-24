@@ -51,7 +51,7 @@ export class DefaultUserService implements UserService {
     );
   }
 
-  public async checkExists(userId: string): Promise<boolean> {
+  public async exists(userId: string): Promise<boolean> {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return false;
     }
