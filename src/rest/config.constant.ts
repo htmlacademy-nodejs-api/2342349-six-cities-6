@@ -10,3 +10,8 @@ export const ListLimitsConfig = {
 export const UserProfileConfig = {
   AVATAR_DEFAULT_URL: 'avatar.img',
 };
+
+export const AuthConfig = {
+  JWT_ALGORITHM: 'HS512',
+  JWT_EXPIRED: '2d',
+};

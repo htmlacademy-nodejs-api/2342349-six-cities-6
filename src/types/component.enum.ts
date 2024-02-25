@@ -19,6 +19,8 @@ export const Component = {
 
   DatabaseClient: Symbol.for('DatabaseClient'),
   ExceptionFilter: Symbol.for('ExceptionFilter'),
+  AuthExceptionFilter: Symbol.for('AuthExceptionFilter'),
+  AuthService: Symbol.for('AuthService'),
 
   UserModel: Symbol.for('UserModel'),
   UserService: Symbol.for('UserService'),

@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
   "name": "Мария Васильева",
-  "email": "alex2@example.com",
+  "email": "alex23@example.com",
   "avatarUrl": "avatar.jpg",
   "password": "123456",
   "type": "pro"
@@ -20,8 +20,8 @@ POST {{host}}/api/v1/users/login/
 Content-Type: application/json
 
 {
-  "email": "a1-alexey@example.com",
-  "password": "123"
+  "email": "alex2@example.com",
+  "password": "123456"
 }
 
 ###

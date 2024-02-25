@@ -1,4 +1,5 @@
 import {Controller} from '#src/rest/controller/controller.interface.js';
+import {AuthExceptionFilter} from '#src/rest/exception-filter/auth.exception-filter.js';
 import {ExceptionFilter} from '#src/rest/exception-filter/exception-filter.interface.js';
 import {Component} from '#src/types/component.enum.js';
 import {DbParam} from '#src/types/db-param.type.js';
@@ -19,6 +20,7 @@ export class RestApplication {
     @inject(Component.Config) private readonly config: Config<RestSchema>,
     @inject(Component.DatabaseClient) private readonly databaseClient: DatabaseClient,
     @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
+    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: AuthExceptionFilter,
     @inject(Component.CityController) private readonly cityController: Controller,
     @inject(Component.OfferController) private readonly offerController: Controller,
     @inject(Component.ReviewController) private readonly reviewController: Controller,
@@ -85,6 +87,7 @@ export class RestApplication {
   }
 
   private async initExceptionFilters() {
+    this.server.use(this.authExceptionFilter.catch.bind(this.appExceptionFilter));
     this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
   }
 

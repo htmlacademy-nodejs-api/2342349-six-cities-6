@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import 'reflect-metadata';
+import {createAuthContainer} from '#src/modules/auth/auth.container.js';
 import {createCityContainer} from '#src/modules/city/city.container.js';
 import {createFavoriteContainer} from '#src/modules/favorite/favorite.container.js';
 import {createOfferContainer} from '#src/modules/offer/offer.container.js';
@@ -18,7 +19,8 @@ async function bootstrap() {
     createCityContainer(),
     createOfferContainer(),
     createReviewContainer(),
-    createFavoriteContainer()
+    createFavoriteContainer(),
+    createAuthContainer()
   );
   const restApplication = restApplicationContainer.get<RestApplication>(Component.RestApplication);
   await restApplication.init();

@@ -1,4 +1,5 @@
 import {CreateUserDto} from '#src/modules/user/dto/create-user.dto.js';
+import {LoggedUserRdo} from '#src/modules/user/dto/logged-user.rdo.js';
 import {LoginUserDto} from '#src/modules/user/dto/login-user.dto.js';
 import {UserRdo} from '#src/modules/user/dto/user.rdo.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
@@ -69,8 +70,12 @@ export class UserController extends BaseController {
   }
 
   private async login({body}: Request<RequestParams, RequestBody, LoginUserDto>, res: Response): Promise<void> {
-    const isSuccess = await this.userService.login(body.email, body.password);
-    this.ok(res, isSuccess);
+    const authenticatedUserToken = await this.userService.login(body.email, body.password);
+    const responseData = fillDTO(LoggedUserRdo, {
+      email: body.email,
+      token: authenticatedUserToken,
+    });
+    this.ok(res, responseData);
   }
 
   private async isLogin(_req: Request, res: Response): Promise<void> {

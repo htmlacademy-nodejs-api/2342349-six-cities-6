@@ -16,9 +16,9 @@ export class Argon2Crypto implements CryptoProtocol {
     }
   }
 
-  public async verifyPasswordArgon2(hash: string, password: string): Promise<boolean> {
+  public async verifyPassword(storedHash: string, inputPassword: string): Promise<boolean> {
     try {
-      return await argon2.verify(hash, password);
+      return await argon2.verify(storedHash, inputPassword);
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to verify the password: ${error.message}`);
