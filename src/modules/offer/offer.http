@@ -1,8 +1,14 @@
 @host = http://localhost:5001
+@offerId = 65d76e93445c9ba6ea84a855
 
 # Offer
 ## findOffers
 GET {{host}}/api/v1/offers/?limit=2
+
+###
+
+## show
+GET {{host}}/api/v1/offers/{{offerId}}
 
 ###
 
@@ -53,13 +59,9 @@ Content-Type: application/json
 
 ###
 
-## show
-GET {{host}}/api/v1/offers/65ca70eda83c67a5ac7d68da2
-
-###
 
 ## update
-PATCH {{host}}/api/v1/offers/65ca70eca83c67a5ac7d688c
+PATCH {{host}}/api/v1/offers/{{offerId}}
 Content-Type: application/json
 
 {
@@ -70,7 +72,7 @@ Content-Type: application/json
 ###
 
 ## delete
-DELETE {{host}}/api/v1/offers/65ca70eca83c67a5ac7d6829
+DELETE {{host}}/api/v1/offers/{{offerId}}
 Content-Type: application/json
 
 ###

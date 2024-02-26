@@ -1,4 +1,5 @@
 import {FavoriteService} from '#src/modules/favorite/service/favorite-service.interface.js';
+import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
 import {ParamOfferId} from '#src/modules/offer/type/param-offerid.type.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
@@ -17,6 +18,7 @@ export class FavoriteController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.FavoriteService) private readonly favoriteService: FavoriteService,
+    @inject(Component.OfferService) private readonly offerService: OfferService,
   ) {
     super(logger);
 
@@ -32,7 +34,7 @@ export class FavoriteController extends BaseController {
       handler: this.create,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.favoriteService, 'Offer', 'offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
     this.addRoute({
@@ -41,7 +43,7 @@ export class FavoriteController extends BaseController {
       handler: this.delete,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.favoriteService, 'Offer', 'offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
   }

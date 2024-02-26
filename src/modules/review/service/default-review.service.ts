@@ -1,10 +1,11 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
+import {CreateReviewDto} from '#src/modules/review/dto/create-review.dto.js';
+import {ReviewDTO} from '#src/modules/review/dto/review.dto.js';
 import {ReviewRepository} from '#src/modules/review/repository/review-repository.interface.js';
 import {ReviewEntity} from '#src/modules/review/review.entity.js';
 import {ReviewService} from '#src/modules/review/service/review-service.interface.js';
-import {Review} from '#src/modules/review/type/review.type.js';
-import {UserService} from '#src/modules/user/service/user-service.interface.js';
+import {UserEntity} from '#src/modules/user/user.entity.js';
 import {ListLimitsConfig} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/types/component.enum.js';
@@ -19,38 +20,36 @@ export class DefaultReviewService implements ReviewService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.ReviewRepository) private readonly reviewRepository: ReviewRepository,
-    @inject(Component.UserService) private readonly userService: UserService,
     @inject(Component.OfferService) private readonly offerService: OfferService,
   ) {
   }
 
-  public async create(offerId: string, reviewParams: Omit<Review, 'offer' | 'publishDate'>): Promise<ReviewEntity> {
+  public async create(authorIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>, reviewParams: CreateReviewDto): Promise<ReviewEntity> {
     const commentTrimmed = reviewParams.comment.trim();
-    const existingReview = await this.reviewRepository.findByOfferAndComment(offerId, commentTrimmed);
+    const existingReview = await this.reviewRepository.findByOfferAndComment(offerIdRef, commentTrimmed);
     if (existingReview) {
       throw new HttpError(
         StatusCodes.CONFLICT,
-        `Review with same text for offer ID '${offerId}' already exists.`,
+        `A review with the same text already exists for offer ID '${offerIdRef}'.`,
         'ReviewService'
       );
     }
-
-    const existedOffer = await this.offerService.findById(offerId);
-    if (!existedOffer) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with ID '${offerId}' not found.`,
-        'ReviewService'
-      );
-    }
-
-    // todo создание ревью
-    const reviewData: Review = {
+    const reviewData: ReviewDTO = {
       ...reviewParams,
-      offer: existedOffer,
       publishDate: new Date(),
     };
-    return await this.createReviewInternal(reviewData);
+
+    const reviewCreationResult = await this.createReviewInternal(authorIdRef, offerIdRef, reviewData);
+    const createdReview = await this.findById(reviewCreationResult.id);
+    if (!createdReview) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        `An unknown error occurred error creating review for offer ID '${offerIdRef}' and user ID '${authorIdRef}.`,
+        'ReviewService'
+      );
+    }
+
+    return createdReview;
   }
 
   public async calculateAndSetRating(offerIdRef: Ref<OfferEntity>): Promise<boolean> {
@@ -103,48 +102,26 @@ export class DefaultReviewService implements ReviewService {
     return this.reviewRepository.exists(objectId);
   }
 
-  private async createReviewInternal(reviewData: Review): Promise<ReviewEntity> {
-    const {offer: offerData, author: authorData} = reviewData;
+  private async createReviewInternal(authorIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>, reviewData: ReviewDTO): Promise<ReviewEntity> {
+    try {
+      const review = new ReviewEntity(authorIdRef, offerIdRef, reviewData);
+      const createdReview = await this.reviewRepository.create(review);
 
-    const offerIdRef = await this.offerService.getIdRefByTitle(offerData.title);
-    if (!offerIdRef) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer '${offerData.title}' not found`,
-        'ReviewService'
-      );
-    }
+      if (!await this.offerService.incrementReviewCount(offerIdRef)) {
+        this.logger.error(`Can't update review count for offer ID '${offerIdRef}'`);
+      }
+      if (!await this.calculateAndSetRating(offerIdRef)) {
+        this.logger.error(`Can't calculate rating for offer ID '${offerIdRef}'`);
+      }
 
-    const authorIdRef = await this.userService.getIdRefByEmail(authorData.email);
-    if (!authorIdRef) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Author '${authorData.email}' not found`,
-        'ReviewService'
-      );
-    }
-
-    const review = new ReviewEntity(reviewData, offerIdRef, authorIdRef);
-    const createdReview = await this.reviewRepository.create(review);
-    if (!createdReview || !review) {
+      this.logger.info(`New [review] with publish date '${review.publishDate}' created`);
+      return createdReview;
+    } catch (error) {
       throw new HttpError(
         StatusCodes.INTERNAL_SERVER_ERROR,
-        `Error creating review '${offerData.title}. An unknown error occurred.'}`,
+        `Error creating review for offer ID '${offerIdRef}' and user ID '${authorIdRef}. ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
         'ReviewService'
       );
     }
-
-    const isOfferReviewCountUpdated = await this.offerService.incrementReviewCount(offerIdRef);
-    if (!isOfferReviewCountUpdated) {
-      this.logger.error(`Can't update review count for offer '${offerData.title}'`);
-    }
-
-    const isCalculateAndSetRating = await this.calculateAndSetRating(offerIdRef);
-    if (!isCalculateAndSetRating) {
-      this.logger.error(`Can't calculate rating for offer '${offerData.title}'`);
-    }
-
-    this.logger.info(`New [review] with publish date '${review.publishDate}' created`);
-    return createdReview;
   }
 }

@@ -122,6 +122,15 @@ export class DefaultUserService implements UserService {
     }
   }
 
+  public async deleteFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
+    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
+    if (favoriteOfferIndex !== -1) {
+      user.favoriteOffers.splice(favoriteOfferIndex, 1);
+    }
+
+    return this.saveUser(user);
+  }
+
   private async createUserInternal(userData: User): Promise<UserEntity> {
     try {
       const passwordHash = await this.authService.encryptInputPassword(userData.password);
@@ -138,14 +147,5 @@ export class DefaultUserService implements UserService {
         'UserService'
       );
     }
-  }
-
-  public async deleteFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
-    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
-    if (favoriteOfferIndex !== -1) {
-      user.favoriteOffers.splice(favoriteOfferIndex, 1);
-    }
-
-    return this.saveUser(user);
   }
 }

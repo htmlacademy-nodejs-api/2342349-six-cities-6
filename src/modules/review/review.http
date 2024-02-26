@@ -1,18 +1,20 @@
 @host = http://localhost:5001
-
+@offerId = 65d76e93445c9ba6ea84a855
+@token = eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6ImFsZXgyQGV4YW1wbGUuY29tIiwibmFtZSI6ItCc0LDRgNC40Y8g0JLQsNGB0LjQu9GM0LXQstCwIiwiaWQiOiI2NWQ4ZThhNzQyN2U2ZjViODMxM2JkMDUiLCJpYXQiOjE3MDg5NzI0NzIsImV4cCI6MTcwOTE0NTI3Mn0.xNYdGIn0ogsVvjCHRTaynERWldVGrTLhMk13pj_XR6IVnB_ps4MJzOgyYpapfaO4Hd47vuwczzzykui3qshqKQ
 # Review
 
 ## get
-GET {{host}}/api/v1/comments/65d772d75a8feb07571441ba
+GET {{host}}/api/v1/comments/{{offerId}}
 
 ###
 
 ## create
-POST {{host}}/api/v1/comments/65d772d75a8feb07571441ba
+POST {{host}}/api/v1/comments/{{offerId}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "comment": "aaa123467891",
+  "comment": "aaa12346789111",
   "publishDate": "2024-02-20T12:00:00.000Z",
   "rating": 1,
   "author": {

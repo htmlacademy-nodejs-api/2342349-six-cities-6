@@ -1,7 +1,7 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
+import {ReviewDTO} from '#src/modules/review/dto/review.dto.js';
 import {ReviewRepository} from '#src/modules/review/repository/review-repository.interface.js';
 import {ReviewEntity} from '#src/modules/review/review.entity.js';
-import {Review} from '#src/modules/review/type/review.type.js';
 import {Component} from '#src/types/component.enum.js';
 import {DocumentType, Ref, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
@@ -14,9 +14,8 @@ export class MongoReviewRepository implements ReviewRepository {
   ) {
   }
 
-  public async create(reviewData: Review): Promise<DocumentType<ReviewEntity> | null> {
-    const createdReview = await this.reviewModel.create(reviewData);
-    return this.findById(createdReview.id);
+  public async create(reviewData: ReviewDTO): Promise<DocumentType<ReviewEntity>> {
+    return await this.reviewModel.create(reviewData);
   }
 
   public async findById(reviewId: string): Promise<DocumentType<ReviewEntity> | null> {
@@ -38,7 +37,7 @@ export class MongoReviewRepository implements ReviewRepository {
       .populate('authorId');
   }
 
-  public async findByOfferAndComment(offerId: string, reviewComment: string): Promise<DocumentType<ReviewEntity> | null> {
+  public async findByOfferAndComment(offerId: Ref<OfferEntity>, reviewComment: string): Promise<DocumentType<ReviewEntity> | null> {
     return this.reviewModel
       .findOne({
         offerId: offerId,

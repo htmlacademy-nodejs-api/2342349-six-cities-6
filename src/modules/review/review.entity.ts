@@ -1,7 +1,5 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
-import {Offer} from '#src/modules/offer/type/offer.type.js';
-import {Review} from '#src/modules/review/type/review.type.js';
-import {User} from '#src/modules/user/type/user.type.js';
+import {ReviewDTO} from '#src/modules/review/dto/review.dto.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
 
@@ -16,16 +14,12 @@ export interface ReviewEntity extends defaultClasses.Base {
   }
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export class ReviewEntity extends defaultClasses.TimeStamps implements Review {
+export class ReviewEntity extends defaultClasses.TimeStamps {
   @prop({required: true, ref: UserEntity})
   public authorId: Ref<UserEntity>;
 
-  public author: User;
-
   @prop({required: true, ref: OfferEntity})
   public offerId: Ref<OfferEntity>;
-
-  public offer: Offer;
 
   @prop({required: true, trim: true})
   public comment: string;
@@ -37,13 +31,11 @@ export class ReviewEntity extends defaultClasses.TimeStamps implements Review {
   public rating: number;
 
   constructor(
-    reviewData: Review,
-    offerId: Ref<OfferEntity>,
     authorId: Ref<UserEntity>,
+    offerId: Ref<OfferEntity>,
+    reviewData: ReviewDTO,
   ) {
     super();
-    this.author = reviewData.author;
-    this.offer = reviewData.offer;
     this.comment = reviewData.comment;
     this.publishDate = reviewData.publishDate;
     this.rating = reviewData.rating;

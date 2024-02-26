@@ -15,7 +15,6 @@ import {SignJWT} from 'jose';
 
 @injectable()
 export class DefaultAuthService implements AuthService {
-
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.Config) private readonly config: Config<RestSchema>,

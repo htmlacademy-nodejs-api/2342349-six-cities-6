@@ -1,6 +1,7 @@
 import {Controller} from '#src/rest/controller/controller.interface.js';
 import {AuthExceptionFilter} from '#src/rest/exception-filter/auth.exception-filter.js';
 import {ExceptionFilter} from '#src/rest/exception-filter/exception-filter.interface.js';
+import {ParseTokenMiddleware} from '#src/rest/middleware/parse-token.middleware.js';
 import {Component} from '#src/types/component.enum.js';
 import {DbParam} from '#src/types/db-param.type.js';
 import {Config} from '#src/utils/config/config.interface.js';
@@ -73,25 +74,27 @@ export class RestApplication {
     );
   }
 
-  private async initServer() {
+  private async initServer(): Promise<void> {
     const port = this.config.get('PORT');
     this.server.listen(port);
   }
 
-  private async initMiddleware() {
+  private async initMiddleware(): Promise<void> {
+    const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
     this.server.use(express.json());
     this.server.use(
       '/upload',
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
+    this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
   }
 
-  private async initExceptionFilters() {
+  private async initExceptionFilters(): Promise<void> {
     this.server.use(this.authExceptionFilter.catch.bind(this.appExceptionFilter));
     this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
   }
 
-  private async initController() {
+  private async initController(): Promise<void> {
     this.server.use(`${this.apiVersion}/cities`, this.cityController.router);
     this.server.use('/cities', this.cityController.router);
 
