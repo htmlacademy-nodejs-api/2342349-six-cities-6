@@ -12,7 +12,7 @@ export enum OfferType {
 export interface Offer {
   title: string,
   description: string,
-  publicDate: Date,
+  publishDate: Date,
   city: City,
   previewImage: string,
   images: string[],

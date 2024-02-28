@@ -1,10 +1,10 @@
-export const ReviewValidationConstant = {
-  comment: {
-    minLength: 5,
-    maxLength: 1024,
+export const REVIEWVALIDATIONCONSTANT = {
+  COMMENT: {
+    MINLENGTH: 5,
+    MAXLENGTH: 1024,
   },
-  rating: {
-    min: 1,
-    max: 5,
+  RATING: {
+    MIN: 1,
+    MAX: 5,
   },
 };

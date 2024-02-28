@@ -11,7 +11,7 @@ export class TsvOfferParser implements OfferParser {
   }
 
   public parserOffer(tsvString: string): Offer {
-    const [title, description, publicDate, cityName, cityLocationLatitude, cityLocationLongitude,
+    const [title, description, publishDate, cityName, cityLocationLatitude, cityLocationLongitude,
       previewImage, images, isPremium, rating, type, room, bedroom, price, goods,
       hostName, hostEmail, hostAvatarUrl, hostPassword, hostType, offerLocationLatitude, offerLocationLongitude] = tsvString.split('\t');
 
@@ -19,7 +19,7 @@ export class TsvOfferParser implements OfferParser {
     return {
       title,
       description,
-      publicDate: new Date(publicDate),
+      publishDate: new Date(publishDate),
       city: {
         name: cityName,
         location: {

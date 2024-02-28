@@ -14,6 +14,9 @@ export type RestSchema = {
   DB_RETRY_COUNT: number;
   DB_RETRY_TIMEOUT: number;
   UPLOAD_DIRECTORY: string;
+  JWT_SECRET: string;
+  JWT_ALGORITHM: string;
+  JWT_EXPIRED: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -75,6 +78,24 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Directory for upload files',
     format: String,
     env: 'UPLOAD_DIRECTORY',
+    default: null
+  },
+  JWT_SECRET: {
+    doc: 'Secret for sign JWT',
+    format: String,
+    env: 'JWT_SECRET',
+    default: null
+  },
+  JWT_ALGORITHM: {
+    doc: 'Algorithm for JWT',
+    format: String,
+    env: 'JWT_ALGORITHM',
+    default: null
+  },
+  JWT_EXPIRED: {
+    doc: 'JWT Expiration time',
+    format: String,
+    env: 'JWT_EXPIRED',
     default: null
   },
 });

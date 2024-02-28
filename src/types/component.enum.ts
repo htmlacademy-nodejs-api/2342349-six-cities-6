@@ -19,6 +19,8 @@ export const Component = {
 
   DatabaseClient: Symbol.for('DatabaseClient'),
   ExceptionFilter: Symbol.for('ExceptionFilter'),
+  AuthExceptionFilter: Symbol.for('AuthExceptionFilter'),
+  AuthService: Symbol.for('AuthService'),
 
   UserModel: Symbol.for('UserModel'),
   UserService: Symbol.for('UserService'),
@@ -39,8 +41,5 @@ export const Component = {
   ReviewService: Symbol.for('ReviewService'),
   ReviewRepository: Symbol.for('ReviewRepository'),
   ReviewController: Symbol.for('ReviewController'),
-
-  FavoriteService: Symbol.for('FavoriteService'),
-  FavoriteController: Symbol.for('FavoriteController'),
 
 } as const;

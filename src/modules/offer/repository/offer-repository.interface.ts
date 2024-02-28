@@ -1,28 +1,28 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
 import {DocumentType, Ref} from '@typegoose/typegoose';
-import mongoose from 'mongoose';
 
 export interface OfferRepository {
-  create(offerData: Offer): Promise<DocumentType<OfferEntity>>;
-
-  findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  create(offerData: OfferEntity): Promise<DocumentType<OfferEntity>>;
 
   findByTitle(offerTitle: string): Promise<DocumentType<OfferEntity> | null>;
 
-  findAll(effectiveLimit: number): Promise<DocumentType<OfferEntity>[]>;
+  findAll(limit: number): Promise<DocumentType<OfferEntity>[]>;
 
   findByCity(cityId: string, requestedLimit?: number): Promise<DocumentType<OfferEntity>[]>;
 
   findPremiumByCity(cityId: string, requestedLimit?: number): Promise<DocumentType<OfferEntity>[]>;
 
-  deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  findById(offerIdRef: Ref<OfferEntity>): Promise<DocumentType<OfferEntity> | null>;
 
-  updateById(offerId: string, offerData: Partial<Offer>): Promise<DocumentType<OfferEntity> | null>
+  deleteById(offerIdRef: Ref<OfferEntity>): Promise<DocumentType<OfferEntity> | null>;
 
-  exists(offerId: mongoose.Types.ObjectId): Promise<boolean>;
+  updateById(offerIdRef: Ref<OfferEntity>, offerData: Partial<Offer>): Promise<DocumentType<OfferEntity> | null>
 
-  findByIds(offerIds: Ref<OfferEntity>[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]>;
+  exists(offerId: MongooseObjectId): Promise<boolean>;
+
+  findByIds(offerIds: Ref<OfferEntity>[], limit: number): Promise<DocumentType<OfferEntity>[]>;
 
   incrementReviewCount(offerIdRef: Ref<OfferEntity>): Promise<boolean>;
 

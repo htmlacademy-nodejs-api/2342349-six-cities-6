@@ -1,25 +1,25 @@
-import {ShortOfferRdo} from '#src/modules/offer/dto/short-offer.rdo.js';
+import {CreateOfferDTO} from '#src/modules/offer/dto/create-offer.dto.js';
+import {ShortOfferRDO} from '#src/modules/offer/dto/short-offer.rdo.js';
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
+import {UserEntity} from '#src/modules/user/user.entity.js';
 import {DocumentExists} from '#src/rest/middleware/document-exists.interface.js';
 import {Ref} from '@typegoose/typegoose';
 
 export interface OfferService extends DocumentExists {
-  create(offerParams: Omit<Offer, 'rating' | 'isFavorite'>): Promise<Offer>;
-
-  find(offerId: string): Promise<Offer>;
+  create(hostIdRef: Ref<UserEntity>, offerParams: CreateOfferDTO): Promise<Offer>;
 
   findOrCreate(offerData: Offer): Promise<Offer>;
 
-  findById(offerId: string): Promise<OfferEntity | null>;
-
-  findShorts(cityId?: string, requestedLimit?: number): Promise<ShortOfferRdo[]>;
+  findShorts(cityId?: string, requestedLimit?: number): Promise<ShortOfferRDO[]>;
 
   exists(offerId: string): Promise<boolean>;
 
-  updateById(offerId: string, offerData: Partial<Offer>): Promise<Offer>;
+  findById(offerIdRef: Ref<OfferEntity>): Promise<OfferEntity | null>;
 
-  deleteById(offerId: string): Promise<Offer>;
+  updateById(offerIdRef: Ref<OfferEntity>, offerData: Partial<Offer>): Promise<Offer>;
+
+  deleteById(offerIdRef: Ref<OfferEntity>): Promise<Offer>;
 
   getIdRefByTitle(offerTitle: string): Promise<Ref<OfferEntity> | null>;
 
@@ -31,7 +31,5 @@ export interface OfferService extends DocumentExists {
 
   setRating(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean>;
 
-  addFavoriteFlag<T>(input: T): T;
-
-  addFavoriteFlag<T>(input: T[]): T[];
+  findFavorites(userIdRef: Ref<UserEntity>, requestedLimit?: number): Promise<ShortOfferRDO[]>;
 }

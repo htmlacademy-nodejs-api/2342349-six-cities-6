@@ -1,13 +1,20 @@
 @host = http://localhost:5001
+@offerId = 65de146c89047dbf6d3a3f69
+@token = eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6ImFsZXgyM0BleGFtcGxlLmNvbSIsIm5hbWUiOiLQnNCw0YDQuNGPINCS0LDRgdC40LvRjNC10LLQsCIsImlkIjoiNjVkZTM4N2QxNTMyYjFlNjU0MThiNzk2IiwiaWF0IjoxNzA5MDYyMjk2LCJleHAiOjE3MDkyMzUwOTZ9.829pxSkXy5LPjPTPREJA2unC-avj0y6K0KswFCL55KvmnEbr75bJ95ynT06y3SGgvmhMuCk5novuw7mksgekSw
 
 # Offer
 ## findOffers
-GET {{host}}/api/v1/offers/?limit=2
+GET {{host}}/offers/?limit=2
+
+###
+
+## show
+GET {{host}}/offers/{{offerId}}
 
 ###
 
 ## create
-POST {{host}}/api/v1/offers
+POST {{host}}/offers
 Content-Type: application/json
 
 {
@@ -46,20 +53,16 @@ Content-Type: application/json
   },
   "previewImage": "previewImage7.jpg",
   "price": 163,
-  "publicDate": "2024-02-20T12:00:00.000Z",
+  "publishDate": "2024-02-20T12:00:00.000Z",
   "rating": 3,
   "room": 4
 }
 
 ###
 
-## show
-GET {{host}}/api/v1/offers/65ca70eda83c67a5ac7d68da2
-
-###
 
 ## update
-PATCH {{host}}/api/v1/offers/65ca70eca83c67a5ac7d688c
+PATCH {{host}}/offers/{{offerId}}
 Content-Type: application/json
 
 {
@@ -70,12 +73,20 @@ Content-Type: application/json
 ###
 
 ## delete
-DELETE {{host}}/api/v1/offers/65ca70eca83c67a5ac7d6829
+DELETE {{host}}/offers/{{offerId}}
 Content-Type: application/json
 
 ###
 
 ## getPremium
-GET {{host}}/api/v1/offers/premium/?cityId=65ca70eca83c67a5ac7d6821
+GET {{host}}/offers/premium/?cityId=65ca70eca83c67a5ac7d6821
+
+###
+
+# Favorites
+## getFavorites
+GET {{host}}/offers/favorites?limit=3
+Authorization: Bearer {{token}}
+Content-Type: application/json
 
 ###

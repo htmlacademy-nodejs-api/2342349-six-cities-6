@@ -1,6 +1,6 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
+import {UserDTO} from '#src/modules/user/dto/user.dto.js';
 import {User, UserType} from '#src/modules/user/type/user.type.js';
-import {UserProfileConfig} from '#src/rest/config.constant.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
 
 
@@ -31,17 +31,17 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({required: true, enum: UserType})
   public type: UserType;
 
-  @prop({required: true, ref: 'OfferEntity'})
+  @prop({required: true, ref: () => 'OfferEntity'})
   public favoriteOffers: Ref<OfferEntity>[] = [];
 
   constructor(
-    userData: User,
+    userData: UserDTO,
     passwordHash: string
   ) {
     super();
     this.name = userData.name;
     this.email = userData.email;
-    this.avatarUrl = userData.avatarUrl ?? UserProfileConfig.AVATAR_DEFAULT_URL;
+    this.avatarUrl = userData.avatarUrl;
     this.type = userData.type;
     this.password = passwordHash;
   }

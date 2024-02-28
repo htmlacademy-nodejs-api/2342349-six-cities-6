@@ -11,7 +11,7 @@ export class TsvOfferGenerator implements OfferGenerator {
   public generate(mockData: MockServerData): string {
     const title = `${getRandomItem(mockData.titles)} (${randomBytes(10).toString('hex')})`;
     const description = getRandomItem(mockData.descriptions);
-    const publicDate = dayjs()
+    const publishDate = dayjs()
       .subtract(getRandomNumber(GENERATOR_CONFIG.FIRST_WEEK_DAY, GENERATOR_CONFIG.LAST_WEEK_DAY), 'day')
       .toISOString();
     const city = getRandomItem(mockData.cities);
@@ -32,7 +32,7 @@ export class TsvOfferGenerator implements OfferGenerator {
     const location = getRandomItem(mockData.locations);
 
     return [
-      title, description, publicDate, city.name, city.location.latitude, city.location.longitude,
+      title, description, publishDate, city.name, city.location.latitude, city.location.longitude,
       previewImage, images, isPremium, rating, type, room, bedroom, price, goods,
       hostName, hostEmail, hostAvatar, hostPassword, hostType, location.latitude, location.longitude
     ].join('\t');

@@ -7,23 +7,25 @@ import {Ref} from '@typegoose/typegoose';
 export interface UserService extends DocumentExists {
   findOrCreate(userData: User): Promise<UserEntity>;
 
-  create(userData: User): Promise<UserEntity>;
+  create(CreateUserDto: User): Promise<UserEntity>;
 
   findByEmail(email: string): Promise<UserEntity | null>;
 
-  findById(userId: string): Promise<UserEntity | null>;
+  findById(userIdRef: Ref<UserEntity>): Promise<UserEntity | null>;
 
   getIdRefByEmail(userEmail: string): Promise<Ref<UserEntity> | null>;
 
-  addFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean>;
+  getFavoriteOffers(userIdRef: Ref<UserEntity>): Promise<Ref<OfferEntity>[]>;
 
-  deleteFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean>;
+  addOfferToFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean>;
+
+  removeOfferFromFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean>;
 
   exists(userId: string): Promise<boolean>;
 
-  login(userLogin: string, userPassword: string): Promise<boolean>;
+  login(inputLogin: string, inputPassword: string): Promise<string>;
 
-  isLoggedIn(): Promise<boolean>;
+  checkAuthenticate(email: string): Promise<boolean>;
 
   logout(): Promise<boolean>;
 }

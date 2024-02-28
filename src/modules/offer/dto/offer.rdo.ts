@@ -1,12 +1,12 @@
-import {CityRdo} from '#src/modules/city/dto/city.rdo.js';
+import {CityRDO} from '#src/modules/city/dto/city.rdo.js';
 import {City} from '#src/modules/city/type/city.type.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
-import {UserRdo} from '#src/modules/user/dto/user.rdo.js';
+import {UserRDO} from '#src/modules/user/dto/user.rdo.js';
 import {User} from '#src/modules/user/type/user.type.js';
 import {Location} from '#src/types/location.type.js';
 import {Expose, Transform, Type} from 'class-transformer';
 
-export class OfferRdo {
+export class OfferRDO {
   @Expose()
   public id!: string;
 
@@ -14,7 +14,7 @@ export class OfferRdo {
   public bedroom!: number;
 
   @Expose({name: 'cityId'})
-  @Type(() => CityRdo)
+  @Type(() => CityRDO)
   public city!: City;
 
   @Expose()
@@ -24,7 +24,7 @@ export class OfferRdo {
   public goods!: string[];
 
   @Expose({name: 'hostId'})
-  @Type(() => UserRdo)
+  @Type(() => UserRDO)
   public host!: User;
 
   @Expose()
@@ -50,7 +50,7 @@ export class OfferRdo {
   public price!: number;
 
   @Expose()
-  public publicDate!: Date;
+  public publishDate!: Date;
 
   @Expose()
   public rating!: number;

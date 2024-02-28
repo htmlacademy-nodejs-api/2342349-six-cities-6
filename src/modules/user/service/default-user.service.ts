@@ -1,74 +1,77 @@
+import {AuthService} from '#src/modules/auth/auth-service.interface.js';
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
+import {CreateUserDTO} from '#src/modules/user/dto/create-user.dto.js';
+import {UserDTO} from '#src/modules/user/dto/user.dto.js';
 import {UserRepository} from '#src/modules/user/repository/user-repository.interface.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
-import {User} from '#src/modules/user/type/user.type.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
+import {USERPROFILECONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/types/component.enum.js';
-import {CryptoProtocol} from '#src/utils/crypto/crypto.interface.js';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {DocumentType, Ref} from '@typegoose/typegoose';
 import {StatusCodes} from 'http-status-codes';
 import {inject, injectable} from 'inversify';
-import mongoose from 'mongoose';
 
 @injectable()
 export class DefaultUserService implements UserService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
-    @inject(Component.Crypto) private readonly cryptoProtocol: CryptoProtocol,
-    @inject(Component.UserRepository) private readonly userRepository: UserRepository
+    @inject(Component.UserRepository) private readonly userRepository: UserRepository,
+    @inject(Component.AuthService) private readonly authService: AuthService,
   ) {
   }
 
-  public async create(userData: User): Promise<UserEntity> {
-    const existingUser = await this.findByEmail(userData.email);
+  public async create(userParams: CreateUserDTO): Promise<UserEntity> {
+    const existingUser = await this.findByEmail(userParams.email);
     if (existingUser) {
       throw new HttpError(
         StatusCodes.CONFLICT,
-        `User with email '${userData.email}' exists.`,
+        `User with email '${userParams.email}' exists.`,
         'UserService'
       );
     }
+    const userData: UserDTO = {
+      ...userParams,
+      avatarUrl: userParams.avatarUrl ?? USERPROFILECONFIG.AVATAR_DEFAULT_URL
+    };
 
-    return await this.createUserInternal(userData);
+    return this.createUserInternal(userData);
   }
 
-  public async login(userLogin: string, _userPassword: string): Promise<boolean> {
-    const existingUser = await this.findByEmail(userLogin);
-    if (!existingUser) {
-      throw new HttpError(
-        StatusCodes.CONFLICT,
-        `User with email '${userLogin}' not exists.`,
-        'UserService'
-      );
-    }
+  public async login(inputLogin: string, inputPassword: string): Promise<string> {
+    const existingUser = await this.findByEmail(inputLogin);
+    const userVerified = await this.authService.verify(inputLogin, inputPassword, existingUser);
+    const authenticatedUserToken = await this.authService.authenticate(userVerified);
 
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Not implemented',
-      'UserService',
-    );
+    this.logger.info(`User '${userVerified.email}' successfully authenticated.`);
+    return authenticatedUserToken;
   }
 
   public async exists(userId: string): Promise<boolean> {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!MongooseObjectId.isValid(userId)) {
       return false;
     }
 
-    const objectId = new mongoose.Types.ObjectId(userId);
+    const objectId = new MongooseObjectId(userId);
     return this.userRepository.exists(objectId);
   }
 
-  public async isLoggedIn(): Promise<boolean> {
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Not implemented',
-      'UserService',
-    );
+  public async checkAuthenticate(email: string): Promise<boolean> {
+    const foundUser = await this.userRepository.findByEmail(email);
+    if (!foundUser) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserService'
+      );
+    }
+
+    return true;
   }
 
-  public async findOrCreate(userData: User): Promise<UserEntity> {
+  public async findOrCreate(userData: UserDTO): Promise<UserEntity> {
     const userEmailTrimmed = userData.email.trim();
     const existedUser = await this.findByEmail(userEmailTrimmed);
 
@@ -86,7 +89,7 @@ export class DefaultUserService implements UserService {
   public async findByEmail(userEmail: string): Promise<DocumentType<UserEntity> | null> {
     const userEmailTrimmed = userEmail.trim();
 
-    return await this.userRepository.findByEmail(userEmailTrimmed);
+    return this.userRepository.findByEmail(userEmailTrimmed);
   }
 
   public async getIdRefByEmail(userEmail: string): Promise<Ref<UserEntity> | null> {
@@ -96,21 +99,8 @@ export class DefaultUserService implements UserService {
     return foundUser?.id ?? null;
   }
 
-  public async findById(userId: string): Promise<UserEntity | null> {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return null;
-    }
-
-    return await this.userRepository.findById(userId);
-  }
-
-  public async addFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
-    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
-    if (favoriteOfferIndex === -1) {
-      user.favoriteOffers.push(offer._id);
-    }
-
-    return this.saveUser(user);
+  public async findById(userIdRef: Ref<UserEntity>): Promise<UserEntity | null> {
+    return this.userRepository.findById(userIdRef);
   }
 
   private async saveUser(user: UserEntity): Promise<boolean> {
@@ -130,17 +120,60 @@ export class DefaultUserService implements UserService {
     }
   }
 
-  private async createUserInternal(userData: User): Promise<UserEntity> {
-    const passwordHash = await this.cryptoProtocol.hashPassword(userData.password);
-    if (!passwordHash) {
+  public async getFavoriteOffers(userIdRef: Ref<UserEntity>): Promise<Ref<OfferEntity>[]> {
+    const currentUser = await this.findById(userIdRef);
+    if (!currentUser) {
       throw new HttpError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        `Can't create hash password for user '${userData.email}'`,
+        StatusCodes.NOT_FOUND,
+        `User with ID '${userIdRef.toString()}' not found.`,
         'UserService'
       );
     }
 
+    return currentUser.favoriteOffers;
+  }
+
+  public async addOfferToFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
+    const currentUser = await this.findById(userIdRef);
+    if (!currentUser) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `User with ID '${userIdRef.toString()}' not found.`,
+        'UserService'
+      );
+    }
+
+    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
+    if (favoriteOfferIndex === -1) {
+      currentUser.favoriteOffers.push(offerIdRef);
+    }
+
+    this.logger.info(`Offer ID '${offerIdRef.toString()}' added to favorite for user '${currentUser.email}'.`);
+    return this.saveUser(currentUser);
+  }
+
+  public async removeOfferFromFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
+    const currentUser = await this.findById(userIdRef);
+    if (!currentUser) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `User with ID '${userIdRef.toString()}' not found.`,
+        'UserService'
+      );
+    }
+
+    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
+    if (favoriteOfferIndex !== -1) {
+      currentUser.favoriteOffers.splice(favoriteOfferIndex, 1);
+    }
+
+    this.logger.info(`Offer ID '${offerIdRef.toString()}' deleted from favorite for user '${currentUser.email}'.`);
+    return this.saveUser(currentUser);
+  }
+
+  private async createUserInternal(userData: UserDTO): Promise<UserEntity> {
     try {
+      const passwordHash = await this.authService.encryptInputPassword(userData.password);
       const user = new UserEntity(userData, passwordHash);
       const createdUser = await this.userRepository.create(user);
 
@@ -154,14 +187,5 @@ export class DefaultUserService implements UserService {
         'UserService'
       );
     }
-  }
-
-  public async deleteFavoriteOffer(user: UserEntity, offer: OfferEntity): Promise<boolean> {
-    const favoriteOfferIndex = user.favoriteOffers.indexOf(offer._id);
-    if (favoriteOfferIndex !== -1) {
-      user.favoriteOffers.splice(favoriteOfferIndex, 1);
-    }
-
-    return this.saveUser(user);
   }
 }

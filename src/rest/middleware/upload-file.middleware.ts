@@ -3,12 +3,13 @@ import {NextFunction, Request, Response} from 'express';
 import {extension} from 'mime-types';
 import multer, {diskStorage} from 'multer';
 import crypto from 'node:crypto';
+import path from 'node:path';
 
 export class UploadFileMiddleware implements Middleware {
   constructor(
     private uploadDirectory: string,
     private fieldName: string,
-    private allowedMimeTypes: string[] = ['image/jpeg', 'image/png']
+    private allowedExtensions: string[] = ['jpeg', 'png']
   ) {
   }
 
@@ -23,10 +24,15 @@ export class UploadFileMiddleware implements Middleware {
     });
 
     const fileFilter = (_req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) => {
-      if (this.allowedMimeTypes.includes(file.mimetype)) {
+      const mimeExtension = extension(file.mimetype);
+      const actualExtension = path.extname(file.originalname).slice(1);
+      if (
+        mimeExtension && this.allowedExtensions.includes(mimeExtension) &&
+        actualExtension && this.allowedExtensions.includes(actualExtension)
+      ) {
         return callback(null, true);
       } else {
-        return callback(new Error('Invalid file type.'));
+        return callback(new Error('Invalid file extension.'));
       }
     };
 

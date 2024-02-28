@@ -1,19 +1,18 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {ReviewEntity} from '#src/modules/review/review.entity.js';
-import {Review} from '#src/modules/review/type/review.type.js';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
 import {DocumentType, Ref} from '@typegoose/typegoose';
-import mongoose from 'mongoose';
 
 export interface ReviewRepository {
-  create(reviewData: Review): Promise<DocumentType<ReviewEntity> | null>;
+  create(reviewData: ReviewEntity): Promise<DocumentType<ReviewEntity>>;
 
   findById(reviewId: string): Promise<DocumentType<ReviewEntity> | null>;
 
-  findByOfferAndComment(offerId: string, reviewComment: string): Promise<DocumentType<ReviewEntity> | null>;
+  findByOfferAndComment(offerId: Ref<OfferEntity>, reviewComment: string): Promise<DocumentType<ReviewEntity> | null>;
 
-  findByOffer(offerId: string, effectiveLimit: number): Promise<DocumentType<ReviewEntity>[]>;
+  findByOffer(offerIdRef: Ref<OfferEntity>, limit: number): Promise<DocumentType<ReviewEntity>[]>;
 
-  exists(reviewId: mongoose.Types.ObjectId): Promise<boolean>;
+  exists(reviewId: MongooseObjectId): Promise<boolean>;
 
   calculateAverageRating(offerIdRef: Ref<OfferEntity>): Promise<{ _id: Ref<OfferEntity>; averageRating: number; }[]>;
 }

@@ -1,4 +1,4 @@
-export const ListLimitsConfig = {
+export const LISTLIMITSCONFIG = {
   REVIEW_LIST_LIMIT: 50,
   CITY_LIST_LIMIT: 50,
   OFFERS_LIST_LIMIT: 300,
@@ -7,6 +7,6 @@ export const ListLimitsConfig = {
   FAVORITE_LIST_LIMIT: 60,
 };
 
-export const UserProfileConfig = {
+export const USERPROFILECONFIG = {
   AVATAR_DEFAULT_URL: 'avatar.img',
 };

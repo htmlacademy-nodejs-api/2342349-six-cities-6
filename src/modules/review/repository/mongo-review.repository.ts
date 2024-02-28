@@ -1,11 +1,10 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {ReviewRepository} from '#src/modules/review/repository/review-repository.interface.js';
 import {ReviewEntity} from '#src/modules/review/review.entity.js';
-import {Review} from '#src/modules/review/type/review.type.js';
 import {Component} from '#src/types/component.enum.js';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
 import {DocumentType, Ref, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
-import mongoose from 'mongoose';
 
 @injectable()
 export class MongoReviewRepository implements ReviewRepository {
@@ -14,9 +13,8 @@ export class MongoReviewRepository implements ReviewRepository {
   ) {
   }
 
-  public async create(reviewData: Review): Promise<DocumentType<ReviewEntity> | null> {
-    const createdReview = await this.reviewModel.create(reviewData);
-    return this.findById(createdReview.id);
+  public async create(reviewData: ReviewEntity): Promise<DocumentType<ReviewEntity>> {
+    return this.reviewModel.create(reviewData);
   }
 
   public async findById(reviewId: string): Promise<DocumentType<ReviewEntity> | null> {
@@ -38,7 +36,7 @@ export class MongoReviewRepository implements ReviewRepository {
       .populate('authorId');
   }
 
-  public async findByOfferAndComment(offerId: string, reviewComment: string): Promise<DocumentType<ReviewEntity> | null> {
+  public async findByOfferAndComment(offerId: Ref<OfferEntity>, reviewComment: string): Promise<DocumentType<ReviewEntity> | null> {
     return this.reviewModel
       .findOne({
         offerId: offerId,
@@ -47,9 +45,9 @@ export class MongoReviewRepository implements ReviewRepository {
       .populate(['authorId', 'offerId']);
   }
 
-  public async findByOffer(offerId: string, effectiveLimit: number): Promise<DocumentType<ReviewEntity>[]> {
+  public async findByOffer(offerIdRef: Ref<OfferEntity>, limit: number): Promise<DocumentType<ReviewEntity>[]> {
     return this.reviewModel
-      .find({offerId}, {}, {limit: effectiveLimit})
+      .find({offerId: offerIdRef}, {}, {limit: limit})
       .sort({publishDate: -1})
       .populate({
         path: 'offerId',
@@ -67,7 +65,7 @@ export class MongoReviewRepository implements ReviewRepository {
       .populate('authorId');
   }
 
-  public async exists(reviewId: mongoose.Types.ObjectId): Promise<boolean> {
+  public async exists(reviewId: MongooseObjectId): Promise<boolean> {
     const isReviewExists = await this.reviewModel.exists({_id: reviewId});
     return !!isReviewExists;
   }
@@ -76,7 +74,7 @@ export class MongoReviewRepository implements ReviewRepository {
     _id: Ref<OfferEntity>;
     averageRating: number;
   }[]> {
-    const objectId = new mongoose.Types.ObjectId(offerIdRef.toString());
+    const objectId = new MongooseObjectId(offerIdRef.toString());
     return this.reviewModel.aggregate([
       {
         $match: {offerId: objectId}

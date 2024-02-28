@@ -1,11 +1,11 @@
-export const UserValidationConstant = {
-  name: {
-    minLength: 1,
-    maxLength: 15,
+export const USERVALIDATIONCONSTANT = {
+  NAME: {
+    MINLENGTH: 1,
+    MAXLENGTH: 15,
   },
-  password: {
-    minLength: 6,
-    maxLength: 12,
+  PASSWORD: {
+    MINLENGTH: 6,
+    MAXLENGTH: 12,
   },
-  avatarUrlPattern: /\.(jpg|jpeg|png)$/i
+  AVATARURLPATTERN: /\.(jpg|jpeg|png)$/i
 };

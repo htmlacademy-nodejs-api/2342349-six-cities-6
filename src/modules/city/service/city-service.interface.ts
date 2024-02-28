@@ -6,7 +6,7 @@ import {Ref} from '@typegoose/typegoose';
 export interface CityService extends DocumentExists {
   findOrCreate(cityData: City): Promise<CityEntity>;
 
-  listAll(): Promise<CityEntity[]>;
+  find(requestedLimit?: number): Promise<CityEntity[]>;
 
   findByName(cityName: string): Promise<CityEntity | null>;
 

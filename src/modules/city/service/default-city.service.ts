@@ -2,14 +2,16 @@ import {CityEntity} from '#src/modules/city/city.entity.js';
 import {CityRepository} from '#src/modules/city/repository/city-repository.interface.js';
 import {CityService} from '#src/modules/city/service/city-service.interface.js';
 import {City} from '#src/modules/city/type/city.type.js';
-import {ListLimitsConfig} from '#src/rest/config.constant.js';
+import {LISTLIMITSCONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/types/component.enum.js';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
+import {validateAndResolveLimit} from '#src/utils/validator.js';
 import {Ref} from '@typegoose/typegoose';
 import {StatusCodes} from 'http-status-codes';
 import {inject, injectable} from 'inversify';
-import mongoose from 'mongoose';
+
 
 @injectable()
 export class DefaultCityService implements CityService {
@@ -20,15 +22,15 @@ export class DefaultCityService implements CityService {
   }
 
   public async findById(cityId: string): Promise<CityEntity | null> {
-    if (!mongoose.Types.ObjectId.isValid(cityId)) {
+    if (!MongooseObjectId.isValid(cityId)) {
       return null;
     }
-    return await this.cityRepository.findById(cityId);
+    return this.cityRepository.findById(cityId);
   }
 
-  public async listAll(): Promise<CityEntity[]> {
-    const limit = ListLimitsConfig.CITY_LIST_LIMIT;
-    const cities = await this.cityRepository.listLimited(limit);
+  public async find(requestedLimit?: number): Promise<CityEntity[]> {
+    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.CITY_LIST_LIMIT, 'CityService', requestedLimit);
+    const cities = await this.cityRepository.find(limit);
 
     this.logger.info(`Retrieving all cities. Found ${cities.length} cities.`);
     return cities;
@@ -66,11 +68,11 @@ export class DefaultCityService implements CityService {
   }
 
   public async exists(cityId: string): Promise<boolean> {
-    if (!mongoose.Types.ObjectId.isValid(cityId)) {
+    if (!MongooseObjectId.isValid(cityId)) {
       return false;
     }
 
-    const objectId = new mongoose.Types.ObjectId(cityId);
+    const objectId = new MongooseObjectId(cityId);
     return this.cityRepository.exists(objectId);
   }
 
