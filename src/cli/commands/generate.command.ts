@@ -1,8 +1,8 @@
 import {BaseCommand} from '#src/cli/commands/base-command.js';
 import {OfferGenerator} from '#src/offers/generator/offer-generator.interface.js';
 import {FileWriter} from '#src/offers/writer/file-writer.interface.js';
-import {Component} from '#src/types/component.enum.js';
-import {MockServerData} from '#src/types/mock-server-data.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {MockServerData} from '#src/type/mock-server-data.type.js';
 import {loadDataAsync} from '#src/utils/load-data-async.js';
 import {inject, injectable} from 'inversify';
 

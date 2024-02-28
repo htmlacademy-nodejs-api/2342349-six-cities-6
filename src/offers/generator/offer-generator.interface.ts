@@ -1,4 +1,4 @@
-import {MockServerData} from '#src/types/mock-server-data.type.js';
+import {MockServerData} from '#src/type/mock-server-data.type.js';
 
 export interface OfferGenerator {
   generate(mockData: MockServerData): string;

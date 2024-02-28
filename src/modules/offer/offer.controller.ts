@@ -11,10 +11,10 @@ import {DocumentExistsMiddleware} from '#src/rest/middleware/document-exists.mid
 import {PrivateRouteMiddleware} from '#src/rest/middleware/private-route.middleware.js';
 import {ValidateDtoMiddleware} from '#src/rest/middleware/validate-dto.middleware.js';
 import {ValidateObjectIdMiddleware} from '#src/rest/middleware/validate-objectid.middleware.js';
-import {Component} from '#src/types/component.enum.js';
-import {HttpMethod} from '#src/types/http-method.enum.js';
-import {RequestBody} from '#src/types/request-body.type.js';
-import {RequestParams} from '#src/types/request.params.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {HttpMethod} from '#src/type/http-method.enum.js';
+import {RequestBody} from '#src/type/request-body.type.js';
+import {RequestParams} from '#src/type/request.params.type.js';
 import {fillDTO} from '#src/utils/dto.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {Ref} from '@typegoose/typegoose';

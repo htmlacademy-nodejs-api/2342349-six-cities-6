@@ -5,7 +5,7 @@ import {OfferRepository} from '#src/modules/offer/repository/offer-repository.in
 import {DefaultOfferService} from '#src/modules/offer/service/default-offer.service.js';
 import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
 import {Controller} from '#src/rest/controller/controller.interface.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {types} from '@typegoose/typegoose';
 import {Container} from 'inversify';
 

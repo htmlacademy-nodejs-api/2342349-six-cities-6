@@ -1,5 +1,5 @@
-import {Component} from '#src/types/component.enum.js';
-import {DbParam} from '#src/types/db-param.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {DbParam} from '#src/type/db-param.type.js';
 import {DatabaseClient} from '#src/utils/database-client/database-client.interface.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {inject, injectable} from 'inversify';

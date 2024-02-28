@@ -5,7 +5,7 @@ import {UserService} from '#src/modules/user/service/user-service.interface.js';
 import {UserController} from '#src/modules/user/user.controller.js';
 import {UserEntity, UserModel} from '#src/modules/user/user.entity.js';
 import {Controller} from '#src/rest/controller/controller.interface.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {types} from '@typegoose/typegoose';
 import {Container} from 'inversify';
 

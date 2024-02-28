@@ -8,8 +8,8 @@ import {ReviewService} from '#src/modules/review/service/review-service.interfac
 import {UserEntity} from '#src/modules/user/user.entity.js';
 import {LISTLIMITSCONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
-import {Component} from '#src/types/component.enum.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {validateAndResolveLimit} from '#src/utils/validator.js';
 import {Ref} from '@typegoose/typegoose';

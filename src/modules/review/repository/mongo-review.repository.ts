@@ -1,8 +1,8 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {ReviewRepository} from '#src/modules/review/repository/review-repository.interface.js';
 import {ReviewEntity} from '#src/modules/review/review.entity.js';
-import {Component} from '#src/types/component.enum.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {DocumentType, Ref, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
 

@@ -1,6 +1,6 @@
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Middleware} from '#src/rest/middleware/middleware.interface.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {NextFunction, Request, Response} from 'express';
 import {StatusCodes} from 'http-status-codes';
 

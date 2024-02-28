@@ -3,7 +3,7 @@ import {OfferDTO} from '#src/modules/offer/dto/offer.dto.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
 import {GeoLocation} from '#src/modules/schemas/geo.schema.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {Location} from '#src/types/location.type.js';
+import {Location} from '#src/type/location.type.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref, Severity} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging

@@ -1,7 +1,7 @@
 import {UserRepository} from '#src/modules/user/repository/user-repository.interface.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {Component} from '#src/types/component.enum.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {DocumentType, Ref, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
 

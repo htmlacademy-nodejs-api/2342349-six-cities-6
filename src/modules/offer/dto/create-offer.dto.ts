@@ -3,7 +3,7 @@ import {CityValidation} from '#src/modules/city/validation/city-validation.js';
 import {LocationValidation} from '#src/modules/location/validation/location-validation.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
 import {OFFERVALIDATIONCONSTANT} from '#src/modules/offer/validation/offer-validation.constant.js';
-import {Location} from '#src/types/location.type.js';
+import {Location} from '#src/type/location.type.js';
 import {Type} from 'class-transformer';
 import {
   ArrayMaxSize,

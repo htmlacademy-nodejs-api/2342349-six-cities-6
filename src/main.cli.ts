@@ -6,7 +6,7 @@ import {GenerateCommand} from '#src/cli/commands/generate.command.js';
 import {HelpCommand} from '#src/cli/commands/help.command.js';
 import {ImportCommand} from '#src/cli/commands/import.command.js';
 import {VersionCommand} from '#src/cli/commands/version.command.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 
 function bootstrap() {
   const cliApplicationContainer = createCliApplicationContainer();

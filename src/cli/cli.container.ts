@@ -29,7 +29,7 @@ import {FileReader} from '#src/offers/reader/file-reader.interface.js';
 import {TsvFileReader} from '#src/offers/reader/tsv-file-reader.js';
 import {FileWriter} from '#src/offers/writer/file-writer.interface.js';
 import {TsvFileWriter} from '#src/offers/writer/tsv-file-writer.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {Config} from '#src/utils/config/config.interface.js';
 import {RestConfig} from '#src/utils/config/rest.config.js';
 import {RestSchema} from '#src/utils/config/rest.schema.js';
