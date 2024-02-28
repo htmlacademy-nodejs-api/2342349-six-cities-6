@@ -1,25 +1,24 @@
 import {UserType} from '#src/modules/user/type/user.type.js';
-import {UserValidationConstant} from '#src/modules/user/validation/user-validation.constant.js';
-import {UserValidationMessage} from '#src/modules/user/validation/user-validation.message.js';
+import {USERVALIDATIONCONSTANT} from '#src/modules/user/validation/user-validation.constant.js';
 import {IsEmail, IsEnum, IsOptional, IsString, IsUrl, Length, Matches} from 'class-validator';
 
-export class CreateUserDto {
-  @IsString({message: UserValidationMessage.name.isString})
-  @Length(UserValidationConstant.name.minLength, UserValidationConstant.name.maxLength, {message: UserValidationMessage.name.length})
+export class CreateUserDTO {
+  @IsString()
+  @Length(USERVALIDATIONCONSTANT.NAME.MINLENGTH, USERVALIDATIONCONSTANT.NAME.MAXLENGTH)
   public name!: string;
 
-  @IsEmail({}, {message: UserValidationMessage.email.isEmail})
+  @IsEmail()
   public email!: string;
 
-  @IsUrl({}, {message: UserValidationMessage.avatarUrl.isUrl})
+  @IsUrl()
   @IsOptional()
-  @Matches(UserValidationConstant.avatarUrlPattern, {message: UserValidationMessage.avatarUrl.pattern})
+  @Matches(USERVALIDATIONCONSTANT.AVATARURLPATTERN)
   public avatarUrl?: string;
 
-  @IsString({message: UserValidationMessage.password.isString})
-  @Length(UserValidationConstant.password.minLength, UserValidationConstant.password.maxLength, {message: UserValidationMessage.password.length})
+  @IsString()
+  @Length(USERVALIDATIONCONSTANT.PASSWORD.MINLENGTH, USERVALIDATIONCONSTANT.PASSWORD.MAXLENGTH)
   public password!: string;
 
-  @IsEnum(UserType, {message: UserValidationMessage.type.isEnum})
+  @IsEnum(UserType)
   public type!: UserType;
 }

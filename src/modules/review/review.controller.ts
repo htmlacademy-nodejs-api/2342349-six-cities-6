@@ -1,8 +1,8 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
 import {ParamOfferId} from '#src/modules/offer/type/param-offerid.type.js';
-import {CreateReviewDto} from '#src/modules/review/dto/create-review.dto.js';
-import {ReviewRdo} from '#src/modules/review/dto/review.rdo.js';
+import {CreateReviewDTO} from '#src/modules/review/dto/create-review.dto.js';
+import {ReviewRDO} from '#src/modules/review/dto/review.rdo.js';
 import {ReviewService} from '#src/modules/review/service/review-service.interface.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
@@ -48,7 +48,7 @@ export class ReviewController extends BaseController {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(CreateReviewDto),
+        new ValidateDtoMiddleware(CreateReviewDTO),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
@@ -56,6 +56,7 @@ export class ReviewController extends BaseController {
   }
 
   public async show({params, query}: Request<ParamOfferId>, res: Response): Promise<void> {
+    const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
     const limit = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined;
 
     if (limit && isNaN(limit)) {
@@ -66,16 +67,18 @@ export class ReviewController extends BaseController {
       );
     }
 
-    const reviews = await this.reviewService.findByOffer(params.offerId, limit);
-    this.ok(res, fillDTO(ReviewRdo, reviews));
+    const reviews = await this.reviewService.findByOffer(offerIdRef, limit);
+    this.ok(res, fillDTO(ReviewRDO, reviews));
   }
 
   public async create(
-    {body, tokenPayload, params}: Request<ParamOfferId, RequestBody, CreateReviewDto>, res: Response): Promise<void> {
+    {body, tokenPayload, params}: Request<ParamOfferId, RequestBody, CreateReviewDTO>,
+    res: Response
+  ): Promise<void> {
     const authorIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
     const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
 
     const createdReview = await this.reviewService.create(authorIdRef, offerIdRef, body);
-    this.created(res, fillDTO(ReviewRdo, createdReview));
+    this.created(res, fillDTO(ReviewRDO, createdReview));
   }
 }

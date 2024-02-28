@@ -13,7 +13,6 @@ import {inject, injectable} from 'inversify';
 
 @injectable()
 export class RestApplication {
-  private readonly apiVersion = '/api/v1';
   private readonly server: Express;
 
   constructor(
@@ -26,7 +25,6 @@ export class RestApplication {
     @inject(Component.OfferController) private readonly offerController: Controller,
     @inject(Component.ReviewController) private readonly reviewController: Controller,
     @inject(Component.UserController) private readonly userController: Controller,
-    @inject(Component.FavoriteController) private readonly favoriteController: Controller,
   ) {
     this.server = express();
   }
@@ -95,19 +93,9 @@ export class RestApplication {
   }
 
   private async initController(): Promise<void> {
-    this.server.use(`${this.apiVersion}/cities`, this.cityController.router);
     this.server.use('/cities', this.cityController.router);
-
-    this.server.use(`${this.apiVersion}/offers`, this.offerController.router);
     this.server.use('/offers', this.offerController.router);
-
-    this.server.use(`${this.apiVersion}/comments`, this.reviewController.router);
     this.server.use('/comments', this.reviewController.router);
-
-    this.server.use(`${this.apiVersion}/users`, this.userController.router);
     this.server.use('/users', this.userController.router);
-
-    this.server.use(`${this.apiVersion}/favorites`, this.favoriteController.router);
-    this.server.use('/favorites', this.favoriteController.router);
   }
 }

@@ -1,22 +1,22 @@
 @host = http://localhost:5001
-@offerId = 65d76e93445c9ba6ea84a855
-@token = eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6ImFsZXgyQGV4YW1wbGUuY29tIiwibmFtZSI6ItCc0LDRgNC40Y8g0JLQsNGB0LjQu9GM0LXQstCwIiwiaWQiOiI2NWQ4ZThhNzQyN2U2ZjViODMxM2JkMDUiLCJpYXQiOjE3MDg5NzI0NzIsImV4cCI6MTcwOTE0NTI3Mn0.xNYdGIn0ogsVvjCHRTaynERWldVGrTLhMk13pj_XR6IVnB_ps4MJzOgyYpapfaO4Hd47vuwczzzykui3qshqKQ
+@offerId = 65de146c89047dbf6d3a3f69
+@token = eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6ImFsZXgyM0BleGFtcGxlLmNvbSIsIm5hbWUiOiLQnNCw0YDQuNGPINCS0LDRgdC40LvRjNC10LLQsCIsImlkIjoiNjVkZTM4N2QxNTMyYjFlNjU0MThiNzk2IiwiaWF0IjoxNzA5MDYyMjk2LCJleHAiOjE3MDkyMzUwOTZ9.829pxSkXy5LPjPTPREJA2unC-avj0y6K0KswFCL55KvmnEbr75bJ95ynT06y3SGgvmhMuCk5novuw7mksgekSw
 # Review
 
 ## get
-GET {{host}}/api/v1/comments/{{offerId}}
+GET {{host}}/comments/{{offerId}}
 
 ###
 
 ## create
-POST {{host}}/api/v1/comments/{{offerId}}
+POST {{host}}/comments/{{offerId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "comment": "aaa12346789111",
+  "comment": "aaaaa1",
   "publishDate": "2024-02-20T12:00:00.000Z",
-  "rating": 1,
+  "rating": 2,
   "author": {
     "name": "Мария Васильева",
     "email": "alex1@example.com",
@@ -53,7 +53,7 @@ Content-Type: application/json
     },
     "previewImage": "previewImage7.jpg",
     "price": 163,
-    "publicDate": "2024-02-20T12:00:00.000Z",
+    "publishDate": "2024-02-20T12:00:00.000Z",
     "rating": 3,
     "room": 4
   }

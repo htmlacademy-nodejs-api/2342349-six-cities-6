@@ -1,10 +1,9 @@
 import {CityEntity} from '#src/modules/city/city.entity.js';
 import {CityRepository} from '#src/modules/city/repository/city-repository.interface.js';
-import {City} from '#src/modules/city/type/city.type.js';
 import {Component} from '#src/types/component.enum.js';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
-import mongoose from 'mongoose';
 
 @injectable()
 export class MongoCityRepository implements CityRepository {
@@ -13,7 +12,7 @@ export class MongoCityRepository implements CityRepository {
   ) {
   }
 
-  public async create(cityData: City): Promise<DocumentType<CityEntity>> {
+  public async create(cityData: CityEntity): Promise<DocumentType<CityEntity>> {
     return this.cityModel.create(cityData);
   }
 
@@ -25,11 +24,11 @@ export class MongoCityRepository implements CityRepository {
     return this.cityModel.findOne({name: cityName});
   }
 
-  public async listLimited(effectiveLimit: number): Promise<DocumentType<CityEntity>[]> {
-    return this.cityModel.find({}, {}, {limit: effectiveLimit});
+  public async find(limit: number): Promise<DocumentType<CityEntity>[]> {
+    return this.cityModel.find({}, {}, {limit: limit});
   }
 
-  public async exists(cityId: mongoose.Types.ObjectId): Promise<boolean> {
+  public async exists(cityId: MongooseObjectId): Promise<boolean> {
     const isCityExists = await this.cityModel.exists({_id: cityId});
     return !!isCityExists;
   }

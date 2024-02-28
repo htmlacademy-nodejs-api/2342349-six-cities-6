@@ -2,7 +2,7 @@
 
 # City
 ## getAllCities
-GET {{host}}/api/v1/cities
+GET {{host}}/cities
 Content-Type: application/json
 
 ###

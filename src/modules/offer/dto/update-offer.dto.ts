@@ -2,8 +2,7 @@ import {City} from '#src/modules/city/type/city.type.js';
 import {CityValidation} from '#src/modules/city/validation/city-validation.js';
 import {LocationValidation} from '#src/modules/location/validation/location-validation.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
-import {OfferValidationConstant} from '#src/modules/offer/validation/offer-validation.constant.js';
-import {OfferValidationMessage} from '#src/modules/offer/validation/offer-validation.message.js';
+import {OFFERVALIDATIONCONSTANT} from '#src/modules/offer/validation/offer-validation.constant.js';
 import {User} from '#src/modules/user/type/user.type.js';
 import {UserValidation} from '#src/modules/user/validation/user-validation.js';
 import {Location} from '#src/types/location.type.js';
@@ -25,20 +24,20 @@ import {
   ValidateNested
 } from 'class-validator';
 
-export class UpdateOfferDto {
+export class UpdateOfferDTO {
   @IsOptional()
-  @IsString({message: OfferValidationMessage.title.isString})
-  @Length(OfferValidationConstant.title.minLength, OfferValidationConstant.title.maxLength, {message: OfferValidationMessage.title.length})
+  @IsString()
+  @Length(OFFERVALIDATIONCONSTANT.TITLE.MINLENGTH, OFFERVALIDATIONCONSTANT.TITLE.MAXLENGTH)
   public title?: string;
 
   @IsOptional()
-  @IsString({message: OfferValidationMessage.description.isString})
-  @Length(OfferValidationConstant.description.minLength, OfferValidationConstant.description.maxLength, {message: OfferValidationMessage.description.length})
+  @IsString()
+  @Length(OFFERVALIDATIONCONSTANT.description.MINLENGTH, OFFERVALIDATIONCONSTANT.description.MAXLENGTH)
   public description?: string;
 
   @IsOptional()
-  @IsDateString({}, {message: OfferValidationMessage.publicDate.isDateString})
-  public publicDate?: Date;
+  @IsDateString()
+  public publishDate?: Date;
 
   @IsOptional()
   @ValidateNested()
@@ -46,45 +45,45 @@ export class UpdateOfferDto {
   public city?: City;
 
   @IsOptional()
-  @IsUrl({}, {message: OfferValidationMessage.previewImage.isUrl})
+  @IsUrl()
   public previewImage?: string;
 
   @IsOptional()
-  @IsArray({message: OfferValidationMessage.images.isArray})
-  @ArrayMinSize(OfferValidationConstant.images.minCount, {message: OfferValidationMessage.images.arrayMinSize})
-  @ArrayMaxSize(OfferValidationConstant.images.maxCount, {message: OfferValidationMessage.images.arrayMaxSize})
-  @IsUrl({}, {each: true, message: OfferValidationMessage.images.isUrl})
+  @IsArray()
+  @ArrayMinSize(OFFERVALIDATIONCONSTANT.IMAGES.MINCOUNT)
+  @ArrayMaxSize(OFFERVALIDATIONCONSTANT.IMAGES.MAXCOUNT)
+  @IsUrl({}, {each: true})
   public images?: string[];
 
   @IsOptional()
-  @IsBoolean({message: OfferValidationMessage.isPremium.isBoolean})
+  @IsBoolean()
   public isPremium?: boolean;
 
   @IsOptional()
-  @IsEnum(OfferType, {message: OfferValidationMessage.type.isEnum})
+  @IsEnum(OfferType)
   public type?: OfferType;
 
   @IsOptional()
-  @IsNumber({}, {message: OfferValidationMessage.room.isNumber})
-  @Min(OfferValidationConstant.room.min, {message: OfferValidationMessage.room.min})
-  @Max(OfferValidationConstant.room.max, {message: OfferValidationMessage.room.max})
+  @IsNumber()
+  @Min(OFFERVALIDATIONCONSTANT.ROOM.MIN)
+  @Max(OFFERVALIDATIONCONSTANT.ROOM.MAX)
   public room?: number;
 
   @IsOptional()
-  @IsNumber({}, {message: OfferValidationMessage.bedroom.isNumber})
-  @Min(OfferValidationConstant.bedroom.min, {message: OfferValidationMessage.bedroom.min})
-  @Max(OfferValidationConstant.bedroom.max, {message: OfferValidationMessage.bedroom.max})
+  @IsNumber()
+  @Min(OFFERVALIDATIONCONSTANT.BEDROOM.MIN)
+  @Max(OFFERVALIDATIONCONSTANT.BEDROOM.MAX)
   public bedroom?: number;
 
   @IsOptional()
-  @IsNumber({}, {message: OfferValidationMessage.price.isNumber})
-  @Min(OfferValidationConstant.price.min, {message: OfferValidationMessage.price.min})
-  @Max(OfferValidationConstant.price.max, {message: OfferValidationMessage.price.max})
+  @IsNumber()
+  @Min(OFFERVALIDATIONCONSTANT.PRICE.MIN)
+  @Max(OFFERVALIDATIONCONSTANT.PRICE.MAX)
   public price?: number;
 
   @IsOptional()
-  @IsArray({message: OfferValidationMessage.goods.isArray})
-  @IsString({each: true, message: OfferValidationMessage.goods.isString})
+  @IsArray()
+  @IsString({each: true})
   public goods?: string[];
 
   @IsOptional()

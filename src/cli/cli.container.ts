@@ -4,6 +4,8 @@ import {GenerateCommand} from '#src/cli/commands/generate.command.js';
 import {HelpCommand} from '#src/cli/commands/help.command.js';
 import {ImportCommand} from '#src/cli/commands/import.command.js';
 import {VersionCommand} from '#src/cli/commands/version.command.js';
+import {AuthService} from '#src/modules/auth/auth-service.interface.js';
+import {DefaultAuthService} from '#src/modules/auth/default-auth.service.js';
 import {CityEntity, CityModel} from '#src/modules/city/city.entity.js';
 import {CityRepository} from '#src/modules/city/repository/city-repository.interface.js';
 import {MongoCityRepository} from '#src/modules/city/repository/mongo-city.repository.js';
@@ -70,6 +72,7 @@ export function createCliApplicationContainer(): Container {
   cliApplicationContainer.bind<types.ModelType<UserEntity>>(Component.UserModel).toConstantValue(UserModel);
   cliApplicationContainer.bind<UserService>(Component.UserService).to(DefaultUserService).inSingletonScope();
   cliApplicationContainer.bind<UserRepository>(Component.UserRepository).to(MongoUserRepository).inSingletonScope();
+  cliApplicationContainer.bind<AuthService>(Component.AuthService).to(DefaultAuthService).inSingletonScope();
 
   return cliApplicationContainer;
 }

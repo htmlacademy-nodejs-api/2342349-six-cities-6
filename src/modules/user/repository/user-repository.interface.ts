@@ -1,14 +1,13 @@
-import {User} from '#src/modules/user/type/user.type.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {DocumentType} from '@typegoose/typegoose';
-import mongoose from 'mongoose';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {DocumentType, Ref} from '@typegoose/typegoose';
 
 export interface UserRepository {
-  create(userData: User): Promise<DocumentType<UserEntity>>;
+  create(userData: UserEntity): Promise<DocumentType<UserEntity>>;
 
-  findById(userId: string): Promise<DocumentType<UserEntity> | null>;
+  findById(userIdRef: Ref<UserEntity>): Promise<DocumentType<UserEntity> | null>;
 
   findByEmail(userEmail: string): Promise<DocumentType<UserEntity> | null>;
 
-  exists(userId: mongoose.Types.ObjectId): Promise<boolean>;
+  exists(userId: MongooseObjectId): Promise<boolean>;
 }

@@ -1,7 +1,7 @@
 import {Location} from '#src/types/location.type.js';
 import {Expose, Transform} from 'class-transformer';
 
-export class CityRdo {
+export class CityRDO {
   @Expose()
   public id!: string;
 

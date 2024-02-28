@@ -42,7 +42,4 @@ export const Component = {
   ReviewRepository: Symbol.for('ReviewRepository'),
   ReviewController: Symbol.for('ReviewController'),
 
-  FavoriteService: Symbol.for('FavoriteService'),
-  FavoriteController: Symbol.for('FavoriteController'),
-
 } as const;

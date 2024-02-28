@@ -2,9 +2,9 @@ import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {OfferRepository} from '#src/modules/offer/repository/offer-repository.interface.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
 import {Component} from '#src/types/component.enum.js';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
 import {DocumentType, Ref, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
-import mongoose from 'mongoose';
 
 
 @injectable()
@@ -14,62 +14,62 @@ export class MongoOfferRepository implements OfferRepository {
   ) {
   }
 
-  public async create(offerData: Offer): Promise<DocumentType<OfferEntity>> {
+  public async create(offerData: OfferEntity): Promise<DocumentType<OfferEntity>> {
     const createdOffer = await this.offerModel.create(offerData);
     return createdOffer.populate(['cityId', 'hostId']);
-  }
-
-  public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel
-      .findById(offerId)
-      .populate(['cityId', 'hostId']);
   }
 
   public async findByTitle(offerTitle: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel.findOne({title: offerTitle});
   }
 
-  public async findAll(effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
+  public async findAll(limit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({}, {}, {limit: effectiveLimit})
+      .find({}, {}, {limit: limit})
       .sort({publishDate: -1})
       .populate(['cityId', 'hostId']);
   }
 
-  public async findByCity(cityId: string, effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
+  public async findByCity(cityId: string, limit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({cityId}, {}, {limit: effectiveLimit})
+      .find({cityId}, {}, {limit: limit})
       .sort({publishDate: -1})
       .populate(['cityId', 'hostId']);
   }
 
-  public async findPremiumByCity(cityId: string, effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
+  public async findPremiumByCity(cityId: string, limit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({cityId, isPremium: true}, {}, {limit: effectiveLimit})
+      .find({cityId, isPremium: true}, {}, {limit: limit})
       .sort({publishDate: -1})
       .populate(['cityId', 'hostId']);
   }
 
-  public async findByIds(offerIds: Ref<OfferEntity>[], effectiveLimit: number): Promise<DocumentType<OfferEntity>[]> {
+  public async findById(offerIdRef: Ref<OfferEntity>): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .find({_id: {$in: offerIds}}, {}, {effectiveLimit})
+      .findById(offerIdRef)
+      .populate(['cityId', 'hostId']);
+  }
+
+  public async findByIds(offerIds: Ref<OfferEntity>[], limit: number): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel
+      .find({_id: {$in: offerIds}}, {}, {limit})
       .sort({publishDate: -1})
       .populate(['cityId', 'hostId']);
   }
 
-  public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+  public async deleteById(offerIdRef: Ref<OfferEntity>): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .findByIdAndDelete(offerId)
+      .findByIdAndDelete(offerIdRef)
       .populate(['cityId', 'hostId']);
   }
 
-  public async updateById(offerId: string, offerData: Partial<Offer>): Promise<DocumentType<OfferEntity> | null> {
+  public async updateById(offerIdRef: Ref<OfferEntity>, offerData: Partial<Offer>): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .findByIdAndUpdate(offerId, offerData, {new: true})
+      .findByIdAndUpdate(offerIdRef, offerData, {new: true})
       .populate(['cityId', 'hostId']);
   }
 
-  public async exists(offerId: mongoose.Types.ObjectId): Promise<boolean> {
+  public async exists(offerId: MongooseObjectId): Promise<boolean> {
     const isOfferExists = await this.offerModel.exists({_id: offerId});
     return !!isOfferExists;
   }

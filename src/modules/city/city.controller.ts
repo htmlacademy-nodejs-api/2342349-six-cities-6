@@ -1,4 +1,4 @@
-import {CityRdo} from '#src/modules/city/dto/city.rdo.js';
+import {CityRDO} from '#src/modules/city/dto/city.rdo.js';
 import {CityService} from '#src/modules/city/service/city-service.interface.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
 import {Component} from '#src/types/component.enum.js';
@@ -26,8 +26,10 @@ export class CityController extends BaseController {
 
   }
 
-  public async index(_req: Request, res: Response): Promise<void> {
-    const cities = await this.cityService.listAll();
-    this.ok(res, fillDTO(CityRdo, cities));
+  public async index({query}: Request, res: Response): Promise<void> {
+    const limit = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined;
+
+    const cities = await this.cityService.find(limit);
+    this.ok(res, fillDTO(CityRDO, cities));
   }
 }

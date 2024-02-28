@@ -1,7 +1,7 @@
 import {UserType} from '#src/modules/user/type/user.type.js';
 import {Expose} from 'class-transformer';
 
-export class UserRdo {
+export class UserRDO {
   @Expose()
   public id!: string;
 

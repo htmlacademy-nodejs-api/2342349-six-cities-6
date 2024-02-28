@@ -8,8 +8,6 @@ servers:
 tags:
   - name: offers
     description: Предложение об аренде недвижимости, включает в себя всю необходимую информацию о жилье.
-  - name: favorites
-    description: Управление списком избранных предложений пользователя. Позволяет авторизованным пользователям сохранять понравившиеся предложения для быстрого доступа в будущем.
   - name: comments
     description: Работа с комментариями, оставленными пользователями к конкретным предложениям об аренде недвижимости. Комментарии позволяют пользователям обмениваться мнениями и впечатлениями о предложениях.
   - name: users
@@ -37,7 +35,7 @@ paths:
           schema:
             type: integer
             default: 60
-            maximum: 60
+            maximum: 300
           description: Количество возвращаемых предложений
       responses:
         '200':
@@ -81,6 +79,37 @@ paths:
           description: Внутренняя ошибка сервера.
       security:
         - bearerAuth: [ ]
+  /offers/favorites:
+    get:
+      tags:
+        - offers
+      summary: Получение избранных предложений пользователя.
+      description: Возвращает список предложений, добавленных в избранное текущим авторизованным пользователем. Требуется аутентификация.
+      operationId: getFavorites
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 60
+            maximum: 60
+          description: Количество возвращаемых предложений
+      responses:
+        '200':
+          description: Список избранных предложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShortOffer'
+        '401':
+          description: Требуется аутентификация.
+        '500':
+          description: Внутренняя ошибка сервера.
+      security:
+        - bearerAuth: [ ]
   /offers/premium/:
     get:
       tags:
@@ -118,6 +147,7 @@ paths:
           description: Город не найден.
         '500':
           description: Внутренняя ошибка сервера.
+
   /offers/{offerId}:
     get:
       tags:
@@ -307,6 +337,88 @@ paths:
           description: Неверный запрос или данные.
         '500':
           description: Внутренняя ошибка сервера.
+  /users/avatar:
+    post:
+      tags:
+        - users
+      summary: Загрузка файла аватара пользователя.
+      description: Позволяет авторизованному пользователю загрузить файл аватара. Файл загружается для текущего авторизированного пользователя.
+      operationId: uploadUserAvatar
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: Файл аватара для загрузки.
+        required: true
+      responses:
+        '201':
+          description: Аватар успешно загружен.
+        '400':
+          description: Неверный запрос или данные.
+        '401':
+          description: Требуется аутентификация.
+        '500':
+          description: Внутренняя ошибка сервера.
+      security:
+        - bearerAuth: [ ]
+  /users/favorites/{offerId}:
+    post:
+      tags:
+        - users
+      summary: Добавление предложения в избранное.
+      description: Позволяет авторизованному пользователю добавить предложение в свой список избранных. Требуется указать ID предложения в пути запроса.
+      operationId: addOfferToFavorites
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+            description: ID предложения для добавление из избранного.
+      responses:
+        '201':
+          description: Предложение добавлено в избранное
+        '400':
+          description: Неверный запрос или данные.
+        '401':
+          description: Требуется аутентификация.
+        '404':
+          description: Предложение не найдено.
+        '500':
+          description: Внутренняя ошибка сервера.
+      security:
+        - bearerAuth: [ ]
+    delete:
+      tags:
+        - users
+      summary: Удаление предложения из избранных.
+      description: Позволяет авторизованному пользователю удалить предложение из своего списка избранных. Требуется указать ID предложения в пути запроса.
+      operationId: removeOfferFromFavorites
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+            description: ID предложения для удаления из избранного.
+      responses:
+        '204':
+          description: Предложение удалено из избранных
+        '400':
+          description: Неверный запрос или данные.
+        '401':
+          description: Требуется аутентификация.
+        '404':
+          description: Предложение не найдено.
+        '500':
+          description: Внутренняя ошибка сервера.
+      security:
+        - bearerAuth: [ ]
   /users/login/:
     get:
       tags:
@@ -380,91 +492,6 @@ paths:
           description: Успешный выход из системы
         '401':
           description: Требуется аутентификация.
-  /favorites:
-    get:
-      tags:
-        - favorites
-      summary: Получение избранных предложений пользователя.
-      description: Возвращает список предложений, добавленных в избранное текущим авторизованным пользователем. Требуется аутентификация.
-      operationId: getFavorites
-      parameters:
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            default: 60
-            maximum: 60
-          description: Количество возвращаемых предложений
-      responses:
-        '200':
-          description: Список избранных предложений
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ShortOffer'
-        '401':
-          description: Требуется аутентификация.
-        '500':
-          description: Внутренняя ошибка сервера.
-      security:
-        - bearerAuth: [ ]
-  /favorites/{offerId}:
-    post:
-      tags:
-        - favorites
-      summary: Добавление предложения в избранное.
-      description: Позволяет авторизованному пользователю добавить предложение в свой список избранных. Требуется указать ID предложения в пути запроса.
-      operationId: addOfferToFavorites
-      parameters:
-        - name: offerId
-          in: path
-          required: true
-          schema:
-            type: string
-            description: ID предложения для добавление из избранного.
-      responses:
-        '201':
-          description: Предложение добавлено в избранное
-        '400':
-          description: Неверный запрос или данные.
-        '401':
-          description: Требуется аутентификация.
-        '404':
-          description: Предложение не найдено.
-        '500':
-          description: Внутренняя ошибка сервера.
-      security:
-        - bearerAuth: [ ]
-    delete:
-      tags:
-        - favorites
-      summary: Удаление предложения из избранных.
-      description: Позволяет авторизованному пользователю удалить предложение из своего списка избранных. Требуется указать ID предложения в пути запроса.
-      operationId: removeOfferFromFavorites
-      parameters:
-        - name: offerId
-          in: path
-          required: true
-          schema:
-            type: string
-            description: ID предложения для удаления из избранного.
-      responses:
-        '204':
-          description: Предложение удалено из избранных
-        '400':
-          description: Неверный запрос или данные.
-        '401':
-          description: Требуется аутентификация.
-        '404':
-          description: Предложение не найдено.
-        '500':
-          description: Внутренняя ошибка сервера.
-      security:
-        - bearerAuth: [ ]
-
   /cities/:
     get:
       tags:
@@ -472,6 +499,15 @@ paths:
       summary: Получение списка городов.
       description: Возвращает список городов, в которых доступны предложения по аренде недвижимости.
       operationId: getCities
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            maximum: 50
+          description: Количество возвращаемых предложений
       responses:
         '200':
           description: Список доступных городов
@@ -492,7 +528,7 @@ components:
           type: string
         description:
           type: string
-        publicDate:
+        publishDate:
           type: string
           format: date-time
         city:
@@ -532,7 +568,7 @@ components:
           type: string
         description:
           type: string
-        publicDate:
+        publishDate:
           type: string
           format: date-time
         city:
@@ -566,7 +602,7 @@ components:
       properties:
         title:
           type: string
-        publicDate:
+        publishDate:
           type: string
           format: date-time
         city:

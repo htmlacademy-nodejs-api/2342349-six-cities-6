@@ -1,30 +1,30 @@
-export const OfferValidationConstant = {
-  title: {
-    minLength: 10,
-    maxLength: 100,
+export const OFFERVALIDATIONCONSTANT = {
+  TITLE: {
+    MINLENGTH: 10,
+    MAXLENGTH: 100,
   },
   description: {
-    minLength: 20,
-    maxLength: 1024,
+    MINLENGTH: 20,
+    MAXLENGTH: 1024,
   },
-  images: {
-    minCount: 6,
-    maxCount: 6,
+  IMAGES: {
+    MINCOUNT: 6,
+    MAXCOUNT: 6,
   },
-  room: {
-    min: 1,
-    max: 8,
+  ROOM: {
+    MIN: 1,
+    MAX: 8,
   },
-  bedroom: {
-    min: 1,
-    max: 10,
+  BEDROOM: {
+    MIN: 1,
+    MAX: 10,
   },
-  price: {
-    min: 100,
-    max: 100000,
+  PRICE: {
+    MIN: 100,
+    MAX: 100000,
   },
-  rating: {
-    min: 100,
-    max: 100000,
+  RATING: {
+    MIN: 100,
+    MAX: 100000,
   },
 };

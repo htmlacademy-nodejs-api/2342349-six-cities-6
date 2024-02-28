@@ -1,8 +1,8 @@
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Middleware} from '#src/rest/middleware/middleware.interface.js';
+import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
 import {NextFunction, Request, Response} from 'express';
 import {StatusCodes} from 'http-status-codes';
-import mongoose from 'mongoose';
 
 export class ValidateObjectIdMiddleware implements Middleware {
   constructor(private param: string) {
@@ -11,7 +11,7 @@ export class ValidateObjectIdMiddleware implements Middleware {
   public execute({params}: Request, _res: Response, next: NextFunction): void {
     const objectId = params[this.param];
 
-    if (mongoose.Types.ObjectId.isValid(objectId)) {
+    if (MongooseObjectId.isValid(objectId)) {
       return next();
     }
 

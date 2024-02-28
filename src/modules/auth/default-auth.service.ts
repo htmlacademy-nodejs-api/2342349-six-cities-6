@@ -1,7 +1,6 @@
 import {AuthService} from '#src/modules/auth/auth-service.interface.js';
 import {TokenPayload} from '#src/modules/auth/type/token-payload.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {AuthConfig} from '#src/rest/config.constant.js';
 import {UserNotFoundException} from '#src/rest/errors/user-not-found.exception.js';
 import {UserPasswordHashingException} from '#src/rest/errors/user-password-hashing-exception.js';
 import {UserPasswordIncorrectException} from '#src/rest/errors/user-password-incorrect.exception.js';
@@ -24,16 +23,14 @@ export class DefaultAuthService implements AuthService {
 
   public async authenticate(user: UserEntity): Promise<string> {
     const tokenPayload: TokenPayload = {
-      email: user.email,
-      name: user.name,
       id: user.id,
     };
 
     this.logger.info(`Create token for ${user.email}`);
     return new SignJWT(tokenPayload)
-      .setProtectedHeader({alg: AuthConfig.JWT_ALGORITHM})
+      .setProtectedHeader({alg: this.config.get('JWT_ALGORITHM')})
       .setIssuedAt()
-      .setExpirationTime(AuthConfig.JWT_EXPIRED)
+      .setExpirationTime(this.config.get('JWT_EXPIRED'))
       .sign(Buffer.from(this.config.get('JWT_SECRET')));
   }
 
