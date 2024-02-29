@@ -54,12 +54,6 @@ export class UserController extends BaseController {
       path: '/login',
       handler: this.login
     });
-    //todo
-    // this.addRoute({
-    //   method: HttpMethod.Post,
-    //   path: '/logout',
-    //   handler: this.logout
-    // });
     this.addRoute({
       method: HttpMethod.Post,
       path: '/avatar',
