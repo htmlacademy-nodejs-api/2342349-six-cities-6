@@ -1,10 +1,10 @@
-export const USERVALIDATIONCONSTANT = {
+export const USER_VALIDATION_CONSTANT = {
   NAME: {
-    MINLENGTH: 1,
-    MAXLENGTH: 15,
+    MIN_LENGTH: 1,
+    MAX_LENGTH: 15,
   },
   PASSWORD: {
-    MINLENGTH: 6,
-    MAXLENGTH: 12,
+    MIN_LENGTH: 6,
+    MAX_LENGTH: 12,
   },
 };

@@ -10,7 +10,7 @@ import {Offer} from '#src/modules/offer/type/offer.type.js';
 import {OFFER_VALIDATION_CONSTANT} from '#src/modules/offer/validation/offer-validation.constant.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {ENTITY_PROFILE_CONFIG, LISTLIMITSCONFIG} from '#src/rest/config.constant.js';
+import {ENTITY_PROFILE_CONFIG, LIST_LIMITS_CONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/type/component.enum.js';
 import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
@@ -31,8 +31,8 @@ export class DefaultOfferService implements OfferService {
   ) {
   }
 
-  public async findShorts(cityId?: string, requestedLimit: number = LISTLIMITSCONFIG.OFFERS_LIST_LIMIT_DEFAULT): Promise<ShortOfferRDO[]> {
-    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.OFFERS_LIST_LIMIT, 'OfferService', requestedLimit);
+  public async findShorts(cityId?: string, requestedLimit: number = LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT_DEFAULT): Promise<ShortOfferRDO[]> {
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT, 'OfferService', requestedLimit);
 
     if (cityId && !await this.cityService.exists(cityId)) {
       throw new HttpError(
@@ -86,7 +86,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async findPremiumByCity(cityId: string, requestedLimit?: number): Promise<OfferEntity[]> {
-    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.PREMIUM_LIST_LIMIT, 'OfferService', requestedLimit);
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.PREMIUM_LIST_LIMIT, 'OfferService', requestedLimit);
 
     if (!await this.cityService.exists(cityId)) {
       throw new HttpError(
@@ -202,7 +202,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async findFavorites(userIdRef: Ref<UserEntity>, requestedLimit?: number): Promise<ShortOfferRDO[]> {
-    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.FAVORITE_LIST_LIMIT, 'OfferService', requestedLimit);
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.FAVORITE_LIST_LIMIT, 'OfferService', requestedLimit);
 
     const favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
     if (!favoriteOfferIds.length) {

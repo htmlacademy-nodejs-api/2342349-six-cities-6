@@ -2,7 +2,7 @@ import {CityEntity} from '#src/modules/city/city.entity.js';
 import {CityRepository} from '#src/modules/city/repository/city-repository.interface.js';
 import {CityService} from '#src/modules/city/service/city-service.interface.js';
 import {City} from '#src/modules/city/type/city.type.js';
-import {LISTLIMITSCONFIG} from '#src/rest/config.constant.js';
+import {LIST_LIMITS_CONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/type/component.enum.js';
 import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
@@ -29,7 +29,7 @@ export class DefaultCityService implements CityService {
   }
 
   public async find(requestedLimit?: number): Promise<CityEntity[]> {
-    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.CITY_LIST_LIMIT, 'CityService', requestedLimit);
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.CITY_LIST_LIMIT, 'CityService', requestedLimit);
     const cities = await this.cityRepository.find(limit);
 
     this.logger.info(`Retrieving all cities. Found ${cities.length} cities.`);
