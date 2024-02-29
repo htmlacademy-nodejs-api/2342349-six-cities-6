@@ -7,5 +7,4 @@ export const USERVALIDATIONCONSTANT = {
     MINLENGTH: 6,
     MAXLENGTH: 12,
   },
-  AVATARURLPATTERN: /\.(jpg|jpeg|png)$/i
 };

@@ -23,6 +23,7 @@ export const Component = {
   HttpExceptionFilter: Symbol.for('HttpExceptionFilter'),
   ValidationExceptionFilter: Symbol.for('ValidationExceptionFilter'),
   AuthService: Symbol.for('AuthService'),
+  PathTransformer: Symbol.for('PathTransformer'),
 
   UserModel: Symbol.for('UserModel'),
   UserService: Symbol.for('UserService'),

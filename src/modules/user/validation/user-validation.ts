@@ -1,6 +1,6 @@
 import {UserType} from '#src/modules/user/type/user.type.js';
 import {USERVALIDATIONCONSTANT} from '#src/modules/user/validation/user-validation.constant.js';
-import {IsEmail, IsEnum, IsOptional, IsString, IsUrl, Length, Matches} from 'class-validator';
+import {IsEmail, IsEnum, IsString, Length} from 'class-validator';
 
 export class UserValidation {
   @IsString()
@@ -9,11 +9,6 @@ export class UserValidation {
 
   @IsEmail()
   public email!: string;
-
-  @IsUrl()
-  @IsOptional()
-  @Matches(USERVALIDATIONCONSTANT.AVATARURLPATTERN)
-  public avatarUrl?: string;
 
   @IsString()
   @Length(USERVALIDATIONCONSTANT.PASSWORD.MINLENGTH, USERVALIDATIONCONSTANT.PASSWORD.MAXLENGTH)

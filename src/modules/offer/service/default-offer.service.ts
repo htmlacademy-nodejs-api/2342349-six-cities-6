@@ -7,9 +7,10 @@ import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {OfferRepository} from '#src/modules/offer/repository/offer-repository.interface.js';
 import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
+import {OFFER_VALIDATION_CONSTANT} from '#src/modules/offer/validation/offer-validation.constant.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {LISTLIMITSCONFIG} from '#src/rest/config.constant.js';
+import {ENTITY_PROFILE_CONFIG, LISTLIMITSCONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/type/component.enum.js';
 import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
@@ -77,6 +78,8 @@ export class DefaultOfferService implements OfferService {
     const offerData: OfferDTO = {
       ...offerParams,
       publishDate: new Date(),
+      previewImage: ENTITY_PROFILE_CONFIG.DEFAULT_OFFER_PREVIEW_URL,
+      images: new Array(OFFER_VALIDATION_CONSTANT.IMAGES.MIN_COUNT).fill(ENTITY_PROFILE_CONFIG.DEFAULT_OFFER_GALLERY_URL)
     };
 
     return this.createOfferInternal(hostIdRef, cityIdRef, offerData);

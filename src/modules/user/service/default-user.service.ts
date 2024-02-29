@@ -4,8 +4,9 @@ import {CreateUserDTO} from '#src/modules/user/dto/create-user.dto.js';
 import {UserDTO} from '#src/modules/user/dto/user.dto.js';
 import {UserRepository} from '#src/modules/user/repository/user-repository.interface.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
+import {User} from '#src/modules/user/type/user.type.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {USERPROFILECONFIG} from '#src/rest/config.constant.js';
+import {ENTITY_PROFILE_CONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/type/component.enum.js';
 import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
@@ -34,7 +35,7 @@ export class DefaultUserService implements UserService {
     }
     const userData: UserDTO = {
       ...userParams,
-      avatarUrl: userParams.avatarUrl ?? USERPROFILECONFIG.AVATAR_DEFAULT_URL
+      avatarUrl: ENTITY_PROFILE_CONFIG.DEFAULT_USER_AVATAR_URL
     };
 
     return this.createUserInternal(userData);
@@ -187,5 +188,19 @@ export class DefaultUserService implements UserService {
         'UserService'
       );
     }
+  }
+
+  public async updateById(userIdRef: Ref<UserEntity>, userData: Partial<User>): Promise<User> {
+    const updatedUser = await this.userRepository.updateById(userIdRef, userData);
+    if (!updatedUser) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        `User with ID '${userIdRef.toString()}' can't be update`,
+        'UserService'
+      );
+    }
+
+    this.logger.info(`User with ID ${userIdRef.toString()} updated`);
+    return updatedUser;
   }
 }

@@ -13,6 +13,8 @@ export interface UserService extends DocumentExists {
 
   findById(userIdRef: Ref<UserEntity>): Promise<UserEntity | null>;
 
+  updateById(userIdRef: Ref<UserEntity>, userData: Partial<User>): Promise<User>;
+
   getIdRefByEmail(userEmail: string): Promise<Ref<UserEntity> | null>;
 
   getFavoriteOffers(userIdRef: Ref<UserEntity>): Promise<Ref<OfferEntity>[]>;

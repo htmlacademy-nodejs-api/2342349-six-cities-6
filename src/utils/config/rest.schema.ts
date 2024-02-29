@@ -4,6 +4,7 @@ import validator from 'convict-format-with-validator';
 convict.addFormats(validator);
 
 export type RestSchema = {
+  HOST: string;
   PORT: number;
   SALT: string;
   DB_HOST: string;
@@ -17,9 +18,16 @@ export type RestSchema = {
   JWT_SECRET: string;
   JWT_ALGORITHM: string;
   JWT_EXPIRED: string;
+  STATIC_DIRECTORY_PATH: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
+  HOST: {
+    doc: 'Host where started service',
+    format: String,
+    env: 'HOST',
+    default: null
+  },
   PORT: {
     doc: 'Port for incoming connections',
     format: 'port',
@@ -96,6 +104,12 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'JWT Expiration time',
     format: String,
     env: 'JWT_EXPIRED',
+    default: null
+  },
+  STATIC_DIRECTORY_PATH: {
+    doc: 'Path to directory with static resources',
+    format: String,
+    env: 'STATIC_DIRECTORY_PATH',
     default: null
   },
 });

@@ -1,3 +1,4 @@
+import {SERVER_CONFIG} from '#src/rest/config.constant.js';
 import {Controller} from '#src/rest/controller/controller.interface.js';
 import {AuthExceptionFilter} from '#src/rest/exception-filter/auth.exception-filter.js';
 import {ExceptionFilter} from '#src/rest/exception-filter/exception-filter.interface.js';
@@ -8,6 +9,7 @@ import {Config} from '#src/utils/config/config.interface.js';
 import {RestSchema} from '#src/utils/config/rest.schema.js';
 import {DatabaseClient} from '#src/utils/database-client/database-client.interface.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
+import {getFullServerPath} from '#src/utils/server-path.js';
 import express, {Express} from 'express';
 import {inject, injectable} from 'inversify';
 
@@ -54,7 +56,7 @@ export class RestApplication {
     await this.initServer();
     this.logger.info('Init server completed');
 
-    this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
+    this.logger.info(`Server started on ${getFullServerPath(this.config.get('HOST'), this.config.get('PORT'))}`);
   }
 
   private async initDb(): Promise<void> {
@@ -83,8 +85,12 @@ export class RestApplication {
     const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
     this.server.use(express.json());
     this.server.use(
-      '/upload',
+      SERVER_CONFIG.STATIC_UPLOAD_ROUTE,
       express.static(this.config.get('UPLOAD_DIRECTORY'))
+    );
+    this.server.use(
+      SERVER_CONFIG.STATIC_FILES_ROUTE,
+      express.static(this.config.get('STATIC_DIRECTORY_PATH'))
     );
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
   }

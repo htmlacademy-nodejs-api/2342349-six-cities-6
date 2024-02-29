@@ -4,6 +4,7 @@ import {ParamOfferId} from '#src/modules/offer/type/param-offerid.type.js';
 import {CreateUserDTO} from '#src/modules/user/dto/create-user.dto.js';
 import {LoggedUserRDO} from '#src/modules/user/dto/logged-user.rdo.js';
 import {LoginUserDTO} from '#src/modules/user/dto/login-user.dto.js';
+import {UploadUserAvatarRDO} from '#src/modules/user/dto/upload-user-avatar.rdo.js';
 import {UserRDO} from '#src/modules/user/dto/user.rdo.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
@@ -96,11 +97,12 @@ export class UserController extends BaseController {
   }
 
   public async uploadAvatar({tokenPayload, file}: Request, res: Response): Promise<void> {
-    this.logger.info(`Upload file '${file?.path}' for user ID '${tokenPayload.id}'`);
-    this.created(res, {
-      filepath: file?.path,
-      userId: tokenPayload.id
-    });
+    const userIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
+    const updateDto = {avatarUrl: file?.filename};
+    this.logger.info(`Upload 'avatarUrl' file '${file?.filename}' for user ID '${userIdRef.toString()}'`);
+
+    const user = await this.userService.updateById(userIdRef, updateDto);
+    this.created(res, fillDTO(UploadUserAvatarRDO, user));
   }
 
   public async addFavorite(

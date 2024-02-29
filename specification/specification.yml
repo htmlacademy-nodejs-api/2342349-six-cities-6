@@ -240,6 +240,44 @@ paths:
           description: Внутренняя ошибка сервера.
       security:
         - bearerAuth: [ ]
+  /offers/{offerId}/image:
+    post:
+      tags:
+        - offers
+      summary: Загрузка файла фотографии предложения по аренде.
+      description: Позволяет авторизованному пользователю загрузить файл фотографии предложения по аренде. Файл фотографии загружается для указанного предложения.
+      operationId: uploadOfferImage
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Файл фотографии предложения для загрузки.
+        required: true
+      responses:
+        '201':
+          description: Фотография успешно загружена.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  previewImage:
+                    type: string
+                    example: 'http://localhost:5001/upload/979ef095-788e-4cad-989c-0926a8e1bce0.png'
+                    description: URL загруженной фотографии.
+        '400':
+          description: Неверный запрос или данные.
+        '401':
+          description: Требуется аутентификация.
+        '500':
+          description: Внутренняя ошибка сервера.
+      security:
+        - bearerAuth: [ ]
   /comments/{offerId}:
     get:
       tags:
@@ -358,6 +396,15 @@ paths:
       responses:
         '201':
           description: Аватар успешно загружен.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  avatarUrl:
+                    type: string
+                    example: 'http://localhost:5001/upload/979ef095-788e-4cad-989c-0926a8e1bce0.png'
+                    description: URL загруженного аватара.
         '400':
           description: Неверный запрос или данные.
         '401':

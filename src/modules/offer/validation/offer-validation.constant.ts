@@ -1,15 +1,15 @@
-export const OFFERVALIDATIONCONSTANT = {
+export const OFFER_VALIDATION_CONSTANT = {
   TITLE: {
-    MINLENGTH: 10,
-    MAXLENGTH: 100,
+    MIN_LENGTH: 10,
+    MAX_LENGTH: 100,
   },
   description: {
-    MINLENGTH: 20,
-    MAXLENGTH: 1024,
+    MIN_LENGTH: 20,
+    MAX_LENGTH: 1024,
   },
   IMAGES: {
-    MINCOUNT: 6,
-    MAXCOUNT: 6,
+    MIN_COUNT: 6,
+    MAX_COUNT: 6,
   },
   ROOM: {
     MIN: 1,
