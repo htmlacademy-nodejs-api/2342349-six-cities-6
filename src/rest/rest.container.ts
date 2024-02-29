@@ -1,7 +1,10 @@
-import {AppExceptionFilter} from '#src/rest/exception-filter/app-exception-filter.js';
+import {AppExceptionFilter} from '#src/rest/exception-filter/app.exception-filter.js';
 import {ExceptionFilter} from '#src/rest/exception-filter/exception-filter.interface.js';
+import {HttpErrorExceptionFilter} from '#src/rest/exception-filter/http-error.exception-filter.js';
+import {ValidationExceptionFilter} from '#src/rest/exception-filter/validation.exception-filter.js';
 import {RestApplication} from '#src/rest/rest.application.js';
-import {Component} from '#src/types/component.enum.js';
+import {PathTransformer} from '#src/rest/transform/path-transformer.js';
+import {Component} from '#src/type/component.enum.js';
 import {Config} from '#src/utils/config/config.interface.js';
 import {RestConfig} from '#src/utils/config/rest.config.js';
 import {RestSchema} from '#src/utils/config/rest.schema.js';
@@ -23,6 +26,9 @@ export function createRestApplicationContainer(): Container {
 
   restApplicationContainer.bind<DatabaseClient>(Component.DatabaseClient).to(MongoDatabaseClient).inSingletonScope();
   restApplicationContainer.bind<ExceptionFilter>(Component.ExceptionFilter).to(AppExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<ExceptionFilter>(Component.HttpExceptionFilter).to(HttpErrorExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<ExceptionFilter>(Component.ValidationExceptionFilter).to(ValidationExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<PathTransformer>(Component.PathTransformer).to(PathTransformer).inSingletonScope();
 
   return restApplicationContainer;
 }

@@ -14,7 +14,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "comment": "aaaaa1",
+  "comment": "aaaaa12",
   "publishDate": "2024-02-20T12:00:00.000Z",
   "rating": 2,
   "author": {

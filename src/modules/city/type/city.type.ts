@@ -1,4 +1,4 @@
-import {Location} from '#src/types/location.type.js';
+import {Location} from '#src/type/location.type.js';
 
 export interface City {
   name: string,

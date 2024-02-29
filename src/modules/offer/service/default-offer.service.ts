@@ -7,12 +7,13 @@ import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {OfferRepository} from '#src/modules/offer/repository/offer-repository.interface.js';
 import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
+import {OFFER_VALIDATION_CONSTANT} from '#src/modules/offer/validation/offer-validation.constant.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {LISTLIMITSCONFIG} from '#src/rest/config.constant.js';
+import {ENTITY_PROFILE_CONFIG, LIST_LIMITS_CONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
-import {Component} from '#src/types/component.enum.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {fillDTO} from '#src/utils/dto.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {validateAndResolveLimit} from '#src/utils/validator.js';
@@ -30,8 +31,8 @@ export class DefaultOfferService implements OfferService {
   ) {
   }
 
-  public async findShorts(cityId?: string, requestedLimit: number = LISTLIMITSCONFIG.OFFERS_LIST_LIMIT_DEFAULT): Promise<ShortOfferRDO[]> {
-    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.OFFERS_LIST_LIMIT, 'OfferService', requestedLimit);
+  public async findShorts(cityId?: string, requestedLimit: number = LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT_DEFAULT): Promise<ShortOfferRDO[]> {
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT, 'OfferService', requestedLimit);
 
     if (cityId && !await this.cityService.exists(cityId)) {
       throw new HttpError(
@@ -41,11 +42,7 @@ export class DefaultOfferService implements OfferService {
       );
     }
 
-    const foundOffers = cityId
-      ? await this.offerRepository.findByCity(cityId, limit)
-      : await this.offerRepository.findAll(limit);
-
-    //todo JWT
+    const foundOffers = await this.offerRepository.findAll(limit, cityId);
     const shortOfferRDOs = fillDTO(ShortOfferRDO, foundOffers);
     const shortOffersWithFavoriteFlag = this.addFavoriteFlag(shortOfferRDOs);
 
@@ -77,13 +74,15 @@ export class DefaultOfferService implements OfferService {
     const offerData: OfferDTO = {
       ...offerParams,
       publishDate: new Date(),
+      previewImage: ENTITY_PROFILE_CONFIG.DEFAULT_OFFER_PREVIEW_URL,
+      images: new Array(OFFER_VALIDATION_CONSTANT.IMAGES.MIN_COUNT).fill(ENTITY_PROFILE_CONFIG.DEFAULT_OFFER_GALLERY_URL)
     };
 
     return this.createOfferInternal(hostIdRef, cityIdRef, offerData);
   }
 
   public async findPremiumByCity(cityId: string, requestedLimit?: number): Promise<OfferEntity[]> {
-    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.PREMIUM_LIST_LIMIT, 'OfferService', requestedLimit);
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.PREMIUM_LIST_LIMIT, 'OfferService', requestedLimit);
 
     if (!await this.cityService.exists(cityId)) {
       throw new HttpError(
@@ -199,7 +198,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async findFavorites(userIdRef: Ref<UserEntity>, requestedLimit?: number): Promise<ShortOfferRDO[]> {
-    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.FAVORITE_LIST_LIMIT, 'OfferService', requestedLimit);
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.FAVORITE_LIST_LIMIT, 'OfferService', requestedLimit);
 
     const favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
     if (!favoriteOfferIds.length) {

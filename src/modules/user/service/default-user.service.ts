@@ -4,11 +4,12 @@ import {CreateUserDTO} from '#src/modules/user/dto/create-user.dto.js';
 import {UserDTO} from '#src/modules/user/dto/user.dto.js';
 import {UserRepository} from '#src/modules/user/repository/user-repository.interface.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
+import {User} from '#src/modules/user/type/user.type.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {USERPROFILECONFIG} from '#src/rest/config.constant.js';
+import {ENTITY_PROFILE_CONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
-import {Component} from '#src/types/component.enum.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {DocumentType, Ref} from '@typegoose/typegoose';
 import {StatusCodes} from 'http-status-codes';
@@ -34,7 +35,7 @@ export class DefaultUserService implements UserService {
     }
     const userData: UserDTO = {
       ...userParams,
-      avatarUrl: userParams.avatarUrl ?? USERPROFILECONFIG.AVATAR_DEFAULT_URL
+      avatarUrl: ENTITY_PROFILE_CONFIG.DEFAULT_USER_AVATAR_URL
     };
 
     return this.createUserInternal(userData);
@@ -103,11 +104,36 @@ export class DefaultUserService implements UserService {
     return this.userRepository.findById(userIdRef);
   }
 
-  private async saveUser(user: UserEntity): Promise<boolean> {
-    try {
-      const userDocument = user as DocumentType<UserEntity>;
-      await userDocument.save();
+  public async getFavoriteOffers(userIdRef: Ref<UserEntity>): Promise<Ref<OfferEntity>[]> {
+    const currentUser = await this.findDocumentTypeById(userIdRef);
+    return currentUser.favoriteOffers;
+  }
 
+  public async addOfferToFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
+    const currentUser = await this.findDocumentTypeById(userIdRef);
+    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
+    if (favoriteOfferIndex === -1) {
+      currentUser.favoriteOffers.push(offerIdRef);
+    }
+
+    this.logger.info(`Offer ID '${offerIdRef.toString()}' added to favorite for user '${currentUser.email}'.`);
+    return this.saveUser(currentUser);
+  }
+
+  public async removeOfferFromFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
+    const currentUser = await this.findDocumentTypeById(userIdRef);
+    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
+    if (favoriteOfferIndex !== -1) {
+      currentUser.favoriteOffers.splice(favoriteOfferIndex, 1);
+    }
+
+    this.logger.info(`Offer ID '${offerIdRef.toString()}' deleted from favorite for user '${currentUser.email}'.`);
+    return this.saveUser(currentUser);
+  }
+
+  private async saveUser(user: DocumentType<UserEntity>): Promise<boolean> {
+    try {
+      await user.save();
       this.logger.info(`User '${user.email}' updated`);
       return true;
 
@@ -120,9 +146,9 @@ export class DefaultUserService implements UserService {
     }
   }
 
-  public async getFavoriteOffers(userIdRef: Ref<UserEntity>): Promise<Ref<OfferEntity>[]> {
-    const currentUser = await this.findById(userIdRef);
-    if (!currentUser) {
+  private async findDocumentTypeById(userIdRef: Ref<UserEntity>): Promise<DocumentType<UserEntity>> {
+    const foundUser = await this.userRepository.findById(userIdRef);
+    if (!foundUser) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `User with ID '${userIdRef.toString()}' not found.`,
@@ -130,45 +156,7 @@ export class DefaultUserService implements UserService {
       );
     }
 
-    return currentUser.favoriteOffers;
-  }
-
-  public async addOfferToFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
-    const currentUser = await this.findById(userIdRef);
-    if (!currentUser) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `User with ID '${userIdRef.toString()}' not found.`,
-        'UserService'
-      );
-    }
-
-    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
-    if (favoriteOfferIndex === -1) {
-      currentUser.favoriteOffers.push(offerIdRef);
-    }
-
-    this.logger.info(`Offer ID '${offerIdRef.toString()}' added to favorite for user '${currentUser.email}'.`);
-    return this.saveUser(currentUser);
-  }
-
-  public async removeOfferFromFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
-    const currentUser = await this.findById(userIdRef);
-    if (!currentUser) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `User with ID '${userIdRef.toString()}' not found.`,
-        'UserService'
-      );
-    }
-
-    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
-    if (favoriteOfferIndex !== -1) {
-      currentUser.favoriteOffers.splice(favoriteOfferIndex, 1);
-    }
-
-    this.logger.info(`Offer ID '${offerIdRef.toString()}' deleted from favorite for user '${currentUser.email}'.`);
-    return this.saveUser(currentUser);
+    return foundUser;
   }
 
   private async createUserInternal(userData: UserDTO): Promise<UserEntity> {
@@ -187,5 +175,19 @@ export class DefaultUserService implements UserService {
         'UserService'
       );
     }
+  }
+
+  public async updateById(userIdRef: Ref<UserEntity>, userData: Partial<User>): Promise<User> {
+    const updatedUser = await this.userRepository.updateById(userIdRef, userData);
+    if (!updatedUser) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        `User with ID '${userIdRef.toString()}' can't be update`,
+        'UserService'
+      );
+    }
+
+    this.logger.info(`User with ID ${userIdRef.toString()} updated`);
+    return updatedUser;
   }
 }

@@ -4,7 +4,7 @@ import {UserEntity} from '#src/modules/user/user.entity.js';
 import {UserNotFoundException} from '#src/rest/errors/user-not-found.exception.js';
 import {UserPasswordHashingException} from '#src/rest/errors/user-password-hashing-exception.js';
 import {UserPasswordIncorrectException} from '#src/rest/errors/user-password-incorrect.exception.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {Config} from '#src/utils/config/config.interface.js';
 import {RestSchema} from '#src/utils/config/rest.schema.js';
 import {CryptoProtocol} from '#src/utils/crypto/crypto.interface.js';

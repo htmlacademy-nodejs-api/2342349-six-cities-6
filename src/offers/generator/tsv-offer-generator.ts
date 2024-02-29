@@ -1,6 +1,6 @@
 import {GENERATOR_CONFIG} from '#src/offers/generator/generator-config.js';
 import {OfferGenerator} from '#src/offers/generator/offer-generator.interface.js';
-import {MockServerData} from '#src/types/mock-server-data.type.js';
+import {MockServerData} from '#src/type/mock-server-data.type.js';
 import {getRandomItem, getRandomItems, getRandomNumber} from '#src/utils/random.js';
 import dayjs from 'dayjs';
 import {injectable} from 'inversify';

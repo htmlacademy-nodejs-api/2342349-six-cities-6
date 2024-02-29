@@ -15,10 +15,11 @@ GET {{host}}/offers/{{offerId}}
 
 ## create
 POST {{host}}/offers
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "Квартира-3",
+  "title": "Квартира-4",
   "type": "apartment",
   "bedroom": 1,
   "city": {
@@ -37,21 +38,12 @@ Content-Type: application/json
     "password": "123456",
     "type": "pro"
   },
-  "images": [
-    "https://a.com",
-    "https://a.com",
-    "https://a.com",
-    "https://a.com",
-    "https://a.com",
-    "https://a.com"
-  ],
   "isPremium": true,
   "isFavorite": false,
   "location": {
     "latitude": 1,
     "longitude": 1
   },
-  "previewImage": "previewImage7.jpg",
   "price": 163,
   "publishDate": "2024-02-20T12:00:00.000Z",
   "rating": 3,
@@ -88,5 +80,19 @@ GET {{host}}/offers/premium/?cityId=65ca70eca83c67a5ac7d6821
 GET {{host}}/offers/favorites?limit=3
 Authorization: Bearer {{token}}
 Content-Type: application/json
+
+###
+
+## upload offer image
+POST {{host}}/offers/{{offerId}}/image
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="screen.png"
+Content-Type: image/png
+
+< /Users/opifex/Downloads/SCR-20240123-qkui-1.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###

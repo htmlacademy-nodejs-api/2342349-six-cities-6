@@ -1,6 +1,6 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {ReviewEntity} from '#src/modules/review/review.entity.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {DocumentType, Ref} from '@typegoose/typegoose';
 
 export interface ReviewRepository {

@@ -4,6 +4,7 @@ import {ParamOfferId} from '#src/modules/offer/type/param-offerid.type.js';
 import {CreateUserDTO} from '#src/modules/user/dto/create-user.dto.js';
 import {LoggedUserRDO} from '#src/modules/user/dto/logged-user.rdo.js';
 import {LoginUserDTO} from '#src/modules/user/dto/login-user.dto.js';
+import {UploadUserAvatarRDO} from '#src/modules/user/dto/upload-user-avatar.rdo.js';
 import {UserRDO} from '#src/modules/user/dto/user.rdo.js';
 import {UserService} from '#src/modules/user/service/user-service.interface.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
@@ -13,10 +14,10 @@ import {PrivateRouteMiddleware} from '#src/rest/middleware/private-route.middlew
 import {UploadFileMiddleware} from '#src/rest/middleware/upload-file.middleware.js';
 import {ValidateDtoMiddleware} from '#src/rest/middleware/validate-dto.middleware.js';
 import {ValidateObjectIdMiddleware} from '#src/rest/middleware/validate-objectid.middleware.js';
-import {Component} from '#src/types/component.enum.js';
-import {HttpMethod} from '#src/types/http-method.enum.js';
-import {RequestBody} from '#src/types/request-body.type.js';
-import {RequestParams} from '#src/types/request.params.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {HttpMethod} from '#src/type/http-method.enum.js';
+import {RequestBody} from '#src/type/request-body.type.js';
+import {RequestParams} from '#src/type/request.params.type.js';
 import {Config} from '#src/utils/config/config.interface.js';
 import {RestSchema} from '#src/utils/config/rest.schema.js';
 import {fillDTO} from '#src/utils/dto.js';
@@ -53,19 +54,13 @@ export class UserController extends BaseController {
       path: '/login',
       handler: this.login
     });
-    //todo
-    // this.addRoute({
-    //   method: HttpMethod.Post,
-    //   path: '/logout',
-    //   handler: this.logout
-    // });
     this.addRoute({
       method: HttpMethod.Post,
       path: '/avatar',
       handler: this.uploadAvatar,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'avatar')
+        new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY_PATH'), 'avatar')
       ]
     });
     this.addRoute({
@@ -96,11 +91,12 @@ export class UserController extends BaseController {
   }
 
   public async uploadAvatar({tokenPayload, file}: Request, res: Response): Promise<void> {
-    this.logger.info(`Upload file '${file?.path}' for user ID '${tokenPayload.id}'`);
-    this.created(res, {
-      filepath: file?.path,
-      userId: tokenPayload.id
-    });
+    const userIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
+    const updateDto = {avatarUrl: file?.filename};
+    this.logger.info(`Upload 'avatarUrl' file '${file?.filename}' for user ID '${userIdRef.toString()}'`);
+
+    const user = await this.userService.updateById(userIdRef, updateDto);
+    this.created(res, fillDTO(UploadUserAvatarRDO, user));
   }
 
   public async addFavorite(

@@ -2,7 +2,7 @@ import {AuthService} from '#src/modules/auth/auth-service.interface.js';
 import {DefaultAuthService} from '#src/modules/auth/default-auth.service.js';
 import {AuthExceptionFilter} from '#src/rest/exception-filter/auth.exception-filter.js';
 import {ExceptionFilter} from '#src/rest/exception-filter/exception-filter.interface.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {Container} from 'inversify';
 
 export function createAuthContainer(): Container {

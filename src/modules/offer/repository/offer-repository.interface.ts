@@ -1,6 +1,6 @@
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {DocumentType, Ref} from '@typegoose/typegoose';
 
 export interface OfferRepository {
@@ -8,9 +8,7 @@ export interface OfferRepository {
 
   findByTitle(offerTitle: string): Promise<DocumentType<OfferEntity> | null>;
 
-  findAll(limit: number): Promise<DocumentType<OfferEntity>[]>;
-
-  findByCity(cityId: string, requestedLimit?: number): Promise<DocumentType<OfferEntity>[]>;
+  findAll(limit: number, cityId?: string): Promise<DocumentType<OfferEntity>[]>;
 
   findPremiumByCity(cityId: string, requestedLimit?: number): Promise<DocumentType<OfferEntity>[]>;
 

@@ -5,7 +5,7 @@ import {MongoCityRepository} from '#src/modules/city/repository/mongo-city.repos
 import {CityService} from '#src/modules/city/service/city-service.interface.js';
 import {DefaultCityService} from '#src/modules/city/service/default-city.service.js';
 import {Controller} from '#src/rest/controller/controller.interface.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {types} from '@typegoose/typegoose';
 import {Container} from 'inversify';
 

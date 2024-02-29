@@ -1,6 +1,6 @@
-export const CITYVALIDATIONCONSTANT = {
+export const CITY_VALIDATION_CONSTANT = {
   NAME: {
-    MINLENGTH: 1,
-    MAXLENGTH: 100,
+    MIN_LENGTH: 1,
+    MAX_LENGTH: 100,
   },
 };

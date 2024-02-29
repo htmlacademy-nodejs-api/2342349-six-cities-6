@@ -1,7 +1,7 @@
 import {CityRDO} from '#src/modules/city/dto/city.rdo.js';
 import {City} from '#src/modules/city/type/city.type.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
-import {Location} from '#src/types/location.type.js';
+import {Location} from '#src/type/location.type.js';
 import {Expose, Transform, Type} from 'class-transformer';
 
 export class ShortOfferRDO {

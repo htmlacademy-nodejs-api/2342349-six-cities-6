@@ -6,10 +6,10 @@ import {ReviewRepository} from '#src/modules/review/repository/review-repository
 import {ReviewEntity} from '#src/modules/review/review.entity.js';
 import {ReviewService} from '#src/modules/review/service/review-service.interface.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {LISTLIMITSCONFIG} from '#src/rest/config.constant.js';
+import {LIST_LIMITS_CONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
-import {Component} from '#src/types/component.enum.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {validateAndResolveLimit} from '#src/utils/validator.js';
 import {Ref} from '@typegoose/typegoose';
@@ -71,7 +71,7 @@ export class DefaultReviewService implements ReviewService {
   }
 
   public async findByOffer(offerIdRef: Ref<OfferEntity>, requestedLimit?: number): Promise<ReviewEntity[]> {
-    const limit = validateAndResolveLimit(LISTLIMITSCONFIG.REVIEW_LIST_LIMIT, 'ReviewService', requestedLimit);
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.REVIEW_LIST_LIMIT, 'ReviewService', requestedLimit);
     const offerReviews = await this.reviewRepository.findByOffer(offerIdRef, limit);
 
     this.logger.info(`Completed search for reviews for offer '${offerIdRef.toString()}'. Found ${offerReviews.length} reviews.`);

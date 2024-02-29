@@ -1,5 +1,5 @@
 import {CityEntity} from '#src/modules/city/city.entity.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {DocumentType} from '@typegoose/typegoose';
 
 export interface CityRepository {

@@ -1,6 +1,6 @@
 import {BaseUserException} from '#src/rest/errors/base-user.exception.js';
 import {ExceptionFilter} from '#src/rest/exception-filter/exception-filter.interface.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {NextFunction, Request, Response} from 'express';
 import {inject, injectable} from 'inversify';
@@ -18,7 +18,7 @@ export class AuthExceptionFilter implements ExceptionFilter {
       return next(error);
     }
 
-    this.logger.error(`[AuthModule] ${error.message}`, error);
+    this.logger.error(`[AuthException] ${error.message}`, error);
     res.status(error.httpStatusCode)
       .json({
         type: 'AUTHORIZATION',

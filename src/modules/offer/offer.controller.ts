@@ -1,6 +1,7 @@
 import {CreateOfferDTO} from '#src/modules/offer/dto/create-offer.dto.js';
 import {OfferRDO} from '#src/modules/offer/dto/offer.rdo.js';
 import {UpdateOfferDTO} from '#src/modules/offer/dto/update-offer.dto.js';
+import {UploadOfferImageRDO} from '#src/modules/offer/dto/upload-offer-image.rdo.js';
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
 import {ParamOfferId} from '#src/modules/offer/type/param-offerid.type.js';
@@ -9,12 +10,15 @@ import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {DocumentExistsMiddleware} from '#src/rest/middleware/document-exists.middleware.js';
 import {PrivateRouteMiddleware} from '#src/rest/middleware/private-route.middleware.js';
+import {UploadFileMiddleware} from '#src/rest/middleware/upload-file.middleware.js';
 import {ValidateDtoMiddleware} from '#src/rest/middleware/validate-dto.middleware.js';
 import {ValidateObjectIdMiddleware} from '#src/rest/middleware/validate-objectid.middleware.js';
-import {Component} from '#src/types/component.enum.js';
-import {HttpMethod} from '#src/types/http-method.enum.js';
-import {RequestBody} from '#src/types/request-body.type.js';
-import {RequestParams} from '#src/types/request.params.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {HttpMethod} from '#src/type/http-method.enum.js';
+import {RequestBody} from '#src/type/request-body.type.js';
+import {RequestParams} from '#src/type/request.params.type.js';
+import {Config} from '#src/utils/config/config.interface.js';
+import {RestSchema} from '#src/utils/config/rest.schema.js';
 import {fillDTO} from '#src/utils/dto.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {Ref} from '@typegoose/typegoose';
@@ -27,6 +31,7 @@ export class OfferController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.OfferService) private readonly offerService: OfferService,
+    @inject(Component.Config) private readonly config: Config<RestSchema>,
   ) {
     super(logger);
 
@@ -86,6 +91,16 @@ export class OfferController extends BaseController {
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+      ]
+    });
+    this.addRoute({
+      method: HttpMethod.Post,
+      path: '/:offerId/image',
+      handler: this.uploadImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY_PATH'), 'image'),
       ]
     });
   }
@@ -183,5 +198,17 @@ export class OfferController extends BaseController {
 
     const shortOfferRDOs = await this.offerService.findFavorites(userIdRef, limit);
     this.ok(res, shortOfferRDOs);
+  }
+
+  public async uploadImage(
+    {params, file}: Request<ParamOfferId>,
+    res: Response
+  ) {
+    const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
+    const updateDto = {previewImage: file?.filename};
+    this.logger.info(`Upload 'previewImage' file '${file?.filename}' for offer ID '${offerIdRef.toString()}'`);
+
+    const offer = await this.offerService.updateById(offerIdRef, updateDto);
+    this.created(res, fillDTO(UploadOfferImageRDO, offer));
   }
 }

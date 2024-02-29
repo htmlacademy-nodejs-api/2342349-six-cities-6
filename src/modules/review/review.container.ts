@@ -5,7 +5,7 @@ import {ReviewEntity, ReviewModel} from '#src/modules/review/review.entity.js';
 import {DefaultReviewService} from '#src/modules/review/service/default-review.service.js';
 import {ReviewService} from '#src/modules/review/service/review-service.interface.js';
 import {Controller} from '#src/rest/controller/controller.interface.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {types} from '@typegoose/typegoose';
 import {Container} from 'inversify';
 

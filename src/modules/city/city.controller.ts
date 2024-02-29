@@ -1,8 +1,8 @@
 import {CityRDO} from '#src/modules/city/dto/city.rdo.js';
 import {CityService} from '#src/modules/city/service/city-service.interface.js';
 import {BaseController} from '#src/rest/controller/base-controller.abstract.js';
-import {Component} from '#src/types/component.enum.js';
-import {HttpMethod} from '#src/types/http-method.enum.js';
+import {Component} from '#src/type/component.enum.js';
+import {HttpMethod} from '#src/type/http-method.enum.js';
 import {fillDTO} from '#src/utils/dto.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {Request, Response} from 'express';

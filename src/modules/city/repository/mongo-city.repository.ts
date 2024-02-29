@@ -1,7 +1,7 @@
 import {CityEntity} from '#src/modules/city/city.entity.js';
 import {CityRepository} from '#src/modules/city/repository/city-repository.interface.js';
-import {Component} from '#src/types/component.enum.js';
-import {MongooseObjectId} from '#src/types/mongoose-objectid.type.js';
+import {Component} from '#src/type/component.enum.js';
+import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
 

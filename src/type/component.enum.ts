@@ -20,7 +20,10 @@ export const Component = {
   DatabaseClient: Symbol.for('DatabaseClient'),
   ExceptionFilter: Symbol.for('ExceptionFilter'),
   AuthExceptionFilter: Symbol.for('AuthExceptionFilter'),
+  HttpExceptionFilter: Symbol.for('HttpExceptionFilter'),
+  ValidationExceptionFilter: Symbol.for('ValidationExceptionFilter'),
   AuthService: Symbol.for('AuthService'),
+  PathTransformer: Symbol.for('PathTransformer'),
 
   UserModel: Symbol.for('UserModel'),
   UserService: Symbol.for('UserService'),

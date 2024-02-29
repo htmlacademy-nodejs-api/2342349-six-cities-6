@@ -1,4 +1,4 @@
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {Config} from '#src/utils/config/config.interface.js';
 import {configRestSchema, RestSchema} from '#src/utils/config/rest.schema.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';

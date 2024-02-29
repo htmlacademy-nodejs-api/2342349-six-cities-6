@@ -4,6 +4,7 @@ import validator from 'convict-format-with-validator';
 convict.addFormats(validator);
 
 export type RestSchema = {
+  HOST: string;
   PORT: number;
   SALT: string;
   DB_HOST: string;
@@ -13,13 +14,20 @@ export type RestSchema = {
   DB_NAME: string;
   DB_RETRY_COUNT: number;
   DB_RETRY_TIMEOUT: number;
-  UPLOAD_DIRECTORY: string;
   JWT_SECRET: string;
   JWT_ALGORITHM: string;
   JWT_EXPIRED: string;
+  UPLOAD_DIRECTORY_PATH: string;
+  STATIC_DIRECTORY_PATH: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
+  HOST: {
+    doc: 'Host where started service',
+    format: String,
+    env: 'HOST',
+    default: null
+  },
   PORT: {
     doc: 'Port for incoming connections',
     format: 'port',
@@ -68,18 +76,6 @@ export const configRestSchema = convict<RestSchema>({
     env: 'DB_RETRY_COUNT',
     default: null
   },
-  DB_RETRY_TIMEOUT: {
-    doc: 'The timeout in milliseconds between database connection retry attempts (MongoDB)',
-    format: Number,
-    env: 'DB_RETRY_TIMEOUT',
-    default: null
-  },
-  UPLOAD_DIRECTORY: {
-    doc: 'Directory for upload files',
-    format: String,
-    env: 'UPLOAD_DIRECTORY',
-    default: null
-  },
   JWT_SECRET: {
     doc: 'Secret for sign JWT',
     format: String,
@@ -96,6 +92,24 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'JWT Expiration time',
     format: String,
     env: 'JWT_EXPIRED',
+    default: null
+  },
+  DB_RETRY_TIMEOUT: {
+    doc: 'The timeout in milliseconds between database connection retry attempts (MongoDB)',
+    format: Number,
+    env: 'DB_RETRY_TIMEOUT',
+    default: null
+  },
+  UPLOAD_DIRECTORY_PATH: {
+    doc: 'Directory for upload files',
+    format: String,
+    env: 'UPLOAD_DIRECTORY_PATH',
+    default: null
+  },
+  STATIC_DIRECTORY_PATH: {
+    doc: 'Path to directory with static resources',
+    format: String,
+    env: 'STATIC_DIRECTORY_PATH',
     default: null
   },
 });

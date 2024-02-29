@@ -7,7 +7,7 @@ import {createReviewContainer} from '#src/modules/review/review.container.js';
 import {createUserContainer} from '#src/modules/user/user.container.js';
 import {RestApplication} from '#src/rest/rest.application.js';
 import {createRestApplicationContainer} from '#src/rest/rest.container.js';
-import {Component} from '#src/types/component.enum.js';
+import {Component} from '#src/type/component.enum.js';
 import {Container} from 'inversify';
 
 
