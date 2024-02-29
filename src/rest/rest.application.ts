@@ -86,7 +86,7 @@ export class RestApplication {
     this.server.use(express.json());
     this.server.use(
       SERVER_CONFIG.STATIC_UPLOAD_ROUTE,
-      express.static(this.config.get('UPLOAD_DIRECTORY'))
+      express.static(this.config.get('UPLOAD_DIRECTORY_PATH'))
     );
     this.server.use(
       SERVER_CONFIG.STATIC_FILES_ROUTE,

@@ -14,10 +14,10 @@ export type RestSchema = {
   DB_NAME: string;
   DB_RETRY_COUNT: number;
   DB_RETRY_TIMEOUT: number;
-  UPLOAD_DIRECTORY: string;
   JWT_SECRET: string;
   JWT_ALGORITHM: string;
   JWT_EXPIRED: string;
+  UPLOAD_DIRECTORY_PATH: string;
   STATIC_DIRECTORY_PATH: string;
 }
 
@@ -76,18 +76,6 @@ export const configRestSchema = convict<RestSchema>({
     env: 'DB_RETRY_COUNT',
     default: null
   },
-  DB_RETRY_TIMEOUT: {
-    doc: 'The timeout in milliseconds between database connection retry attempts (MongoDB)',
-    format: Number,
-    env: 'DB_RETRY_TIMEOUT',
-    default: null
-  },
-  UPLOAD_DIRECTORY: {
-    doc: 'Directory for upload files',
-    format: String,
-    env: 'UPLOAD_DIRECTORY',
-    default: null
-  },
   JWT_SECRET: {
     doc: 'Secret for sign JWT',
     format: String,
@@ -104,6 +92,18 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'JWT Expiration time',
     format: String,
     env: 'JWT_EXPIRED',
+    default: null
+  },
+  DB_RETRY_TIMEOUT: {
+    doc: 'The timeout in milliseconds between database connection retry attempts (MongoDB)',
+    format: Number,
+    env: 'DB_RETRY_TIMEOUT',
+    default: null
+  },
+  UPLOAD_DIRECTORY_PATH: {
+    doc: 'Directory for upload files',
+    format: String,
+    env: 'UPLOAD_DIRECTORY_PATH',
     default: null
   },
   STATIC_DIRECTORY_PATH: {

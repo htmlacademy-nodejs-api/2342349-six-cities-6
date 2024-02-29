@@ -94,13 +94,13 @@ export class OfferController extends BaseController {
       ]
     });
     this.addRoute({
-      path: '/:offerId/image',
       method: HttpMethod.Post,
+      path: '/:offerId/image',
       handler: this.uploadImage,
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'image'),
+        new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY_PATH'), 'image'),
       ]
     });
   }

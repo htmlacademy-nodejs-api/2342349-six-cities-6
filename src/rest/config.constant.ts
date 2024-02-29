@@ -17,7 +17,9 @@ export const SERVER_CONFIG = {
   STATIC_UPLOAD_ROUTE: '/upload',
   STATIC_FILES_ROUTE: '/static',
   DEFAULT_STATIC_IMAGES: [
-    'default-avatar.jpg',
+    'default-user-avatar.jpg',
+    'default-offer-preview.jpg',
+    'default-offer-gallery.jpg',
   ],
   STATIC_RESOURCE_FIELDS: [
     'avatarUrl',
