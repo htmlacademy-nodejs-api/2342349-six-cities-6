@@ -42,11 +42,7 @@ export class DefaultOfferService implements OfferService {
       );
     }
 
-    const foundOffers = cityId
-      ? await this.offerRepository.findByCity(cityId, limit)
-      : await this.offerRepository.findAll(limit);
-
-    //todo JWT
+    const foundOffers = await this.offerRepository.findAll(limit, cityId);
     const shortOfferRDOs = fillDTO(ShortOfferRDO, foundOffers);
     const shortOffersWithFavoriteFlag = this.addFavoriteFlag(shortOfferRDOs);
 

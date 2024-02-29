@@ -104,11 +104,36 @@ export class DefaultUserService implements UserService {
     return this.userRepository.findById(userIdRef);
   }
 
-  private async saveUser(user: UserEntity): Promise<boolean> {
-    try {
-      const userDocument = user as DocumentType<UserEntity>;
-      await userDocument.save();
+  public async getFavoriteOffers(userIdRef: Ref<UserEntity>): Promise<Ref<OfferEntity>[]> {
+    const currentUser = await this.findDocumentTypeById(userIdRef);
+    return currentUser.favoriteOffers;
+  }
 
+  public async addOfferToFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
+    const currentUser = await this.findDocumentTypeById(userIdRef);
+    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
+    if (favoriteOfferIndex === -1) {
+      currentUser.favoriteOffers.push(offerIdRef);
+    }
+
+    this.logger.info(`Offer ID '${offerIdRef.toString()}' added to favorite for user '${currentUser.email}'.`);
+    return this.saveUser(currentUser);
+  }
+
+  public async removeOfferFromFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
+    const currentUser = await this.findDocumentTypeById(userIdRef);
+    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
+    if (favoriteOfferIndex !== -1) {
+      currentUser.favoriteOffers.splice(favoriteOfferIndex, 1);
+    }
+
+    this.logger.info(`Offer ID '${offerIdRef.toString()}' deleted from favorite for user '${currentUser.email}'.`);
+    return this.saveUser(currentUser);
+  }
+
+  private async saveUser(user: DocumentType<UserEntity>): Promise<boolean> {
+    try {
+      await user.save();
       this.logger.info(`User '${user.email}' updated`);
       return true;
 
@@ -121,9 +146,9 @@ export class DefaultUserService implements UserService {
     }
   }
 
-  public async getFavoriteOffers(userIdRef: Ref<UserEntity>): Promise<Ref<OfferEntity>[]> {
-    const currentUser = await this.findById(userIdRef);
-    if (!currentUser) {
+  private async findDocumentTypeById(userIdRef: Ref<UserEntity>): Promise<DocumentType<UserEntity>> {
+    const foundUser = await this.userRepository.findById(userIdRef);
+    if (!foundUser) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `User with ID '${userIdRef.toString()}' not found.`,
@@ -131,45 +156,7 @@ export class DefaultUserService implements UserService {
       );
     }
 
-    return currentUser.favoriteOffers;
-  }
-
-  public async addOfferToFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
-    const currentUser = await this.findById(userIdRef);
-    if (!currentUser) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `User with ID '${userIdRef.toString()}' not found.`,
-        'UserService'
-      );
-    }
-
-    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
-    if (favoriteOfferIndex === -1) {
-      currentUser.favoriteOffers.push(offerIdRef);
-    }
-
-    this.logger.info(`Offer ID '${offerIdRef.toString()}' added to favorite for user '${currentUser.email}'.`);
-    return this.saveUser(currentUser);
-  }
-
-  public async removeOfferFromFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
-    const currentUser = await this.findById(userIdRef);
-    if (!currentUser) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `User with ID '${userIdRef.toString()}' not found.`,
-        'UserService'
-      );
-    }
-
-    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
-    if (favoriteOfferIndex !== -1) {
-      currentUser.favoriteOffers.splice(favoriteOfferIndex, 1);
-    }
-
-    this.logger.info(`Offer ID '${offerIdRef.toString()}' deleted from favorite for user '${currentUser.email}'.`);
-    return this.saveUser(currentUser);
+    return foundUser;
   }
 
   private async createUserInternal(userData: UserDTO): Promise<UserEntity> {

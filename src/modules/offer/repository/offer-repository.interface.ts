@@ -8,9 +8,7 @@ export interface OfferRepository {
 
   findByTitle(offerTitle: string): Promise<DocumentType<OfferEntity> | null>;
 
-  findAll(limit: number): Promise<DocumentType<OfferEntity>[]>;
-
-  findByCity(cityId: string, requestedLimit?: number): Promise<DocumentType<OfferEntity>[]>;
+  findAll(limit: number, cityId?: string): Promise<DocumentType<OfferEntity>[]>;
 
   findPremiumByCity(cityId: string, requestedLimit?: number): Promise<DocumentType<OfferEntity>[]>;
 

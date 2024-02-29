@@ -23,16 +23,11 @@ export class MongoOfferRepository implements OfferRepository {
     return this.offerModel.findOne({title: offerTitle});
   }
 
-  public async findAll(limit: number): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel
-      .find({}, {}, {limit: limit})
-      .sort({publishDate: -1})
-      .populate(['cityId', 'hostId']);
-  }
+  public async findAll(limit: number, cityId?: string): Promise<DocumentType<OfferEntity>[]> {
+    const query = cityId ? {cityId} : {};
 
-  public async findByCity(cityId: string, limit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({cityId}, {}, {limit: limit})
+      .find(query, {}, {limit: limit})
       .sort({publishDate: -1})
       .populate(['cityId', 'hostId']);
   }
