@@ -10,6 +10,7 @@ import {RestSchema} from '#src/utils/config/rest.schema.js';
 import {DatabaseClient} from '#src/utils/database-client/database-client.interface.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {getFullServerPath} from '#src/utils/server-path.js';
+import cors from 'cors';
 import express, {Express} from 'express';
 import {inject, injectable} from 'inversify';
 
@@ -93,6 +94,7 @@ export class RestApplication {
       express.static(this.config.get('STATIC_DIRECTORY_PATH'))
     );
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+    this.server.use(cors());
   }
 
   private async initExceptionFilters(): Promise<void> {
