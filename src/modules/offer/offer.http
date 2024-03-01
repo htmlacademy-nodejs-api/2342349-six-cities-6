@@ -1,10 +1,11 @@
 @host = http://localhost:5001
 @offerId = 65de146c89047dbf6d3a3f69
-@token = eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6ImFsZXgyM0BleGFtcGxlLmNvbSIsIm5hbWUiOiLQnNCw0YDQuNGPINCS0LDRgdC40LvRjNC10LLQsCIsImlkIjoiNjVkZTM4N2QxNTMyYjFlNjU0MThiNzk2IiwiaWF0IjoxNzA5MDYyMjk2LCJleHAiOjE3MDkyMzUwOTZ9.829pxSkXy5LPjPTPREJA2unC-avj0y6K0KswFCL55KvmnEbr75bJ95ynT06y3SGgvmhMuCk5novuw7mksgekSw
+@token = eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjY1ZTE0MDg3OGQ1ODU4M2YzYjQ3ZDk4MCIsImVtYWlsIjoiYWxleDIzQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5MjYzODg3LCJleHAiOjE3MDk0MzY2ODd9.UODVWCEnqjzh3JasAYkZtCYrX63U7YbTI7SDv_HAqkpuf_JIZLnYQOXRFIOQP4gQq9uJUJqg-ISaZDMCdzoLUA
 
 # Offer
 ## findOffers
 GET {{host}}/offers/?limit=2
+Authorization: Bearer {{token}}
 
 ###
 
@@ -47,7 +48,8 @@ Content-Type: application/json
   "price": 163,
   "publishDate": "2024-02-20T12:00:00.000Z",
   "rating": 3,
-  "room": 4
+  "room": 4,
+  "visitor": 2
 }
 
 ###

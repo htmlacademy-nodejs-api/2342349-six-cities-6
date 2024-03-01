@@ -105,9 +105,10 @@ export class OfferController extends BaseController {
     });
   }
 
-  public async index({query}: Request, res: Response): Promise<void> {
+  public async index({query, tokenPayload}: Request, res: Response): Promise<void> {
     const cityId = typeof query.cityId === 'string' ? query.cityId : undefined;
     const limit = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined;
+    const userIdRef = tokenPayload?.id as unknown as Ref<UserEntity>;
 
     if (limit && isNaN(limit)) {
       throw new HttpError(
@@ -117,7 +118,7 @@ export class OfferController extends BaseController {
       );
     }
 
-    const shortOfferRDOs = await this.offerService.findShorts(cityId, limit);
+    const shortOfferRDOs = await this.offerService.findShorts(userIdRef, cityId, limit);
     this.ok(res, shortOfferRDOs);
   }
 
@@ -131,11 +132,12 @@ export class OfferController extends BaseController {
     this.created(res, fillDTO(OfferRDO, createdOffer));
   }
 
-  public async show({params}: Request<ParamOfferId>, res: Response): Promise<void> {
+  public async show({params, tokenPayload}: Request<ParamOfferId>, res: Response): Promise<void> {
     const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
+    const userIdRef = tokenPayload?.id as unknown as Ref<UserEntity>;
 
-    const offer = await this.offerService.findById(offerIdRef);
-    this.ok(res, fillDTO(OfferRDO, offer));
+    const fullOffer = await this.offerService.findFullOfferById(offerIdRef, userIdRef);
+    this.ok(res, fullOffer);
   }
 
   public async update(
@@ -159,13 +161,13 @@ export class OfferController extends BaseController {
   }
 
   public async getPremium({query}: Request, res: Response): Promise<void> {
-    const cityId = typeof query.cityId === 'string' ? query.cityId : undefined;
+    const cityName = typeof query.cityName === 'string' ? query.cityName : undefined;
     const limit = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined;
 
-    if (!cityId) {
+    if (!cityName) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
-        'The \'cityId\' parameter must be a present.',
+        'The \'cityName\' parameter must be a present.',
         'OfferController'
       );
     }
@@ -178,7 +180,7 @@ export class OfferController extends BaseController {
       );
     }
 
-    const offers = await this.offerService.findPremiumByCity(cityId, limit);
+    const offers = await this.offerService.findPremiumByCity(cityName, limit);
     this.ok(res, fillDTO(OfferRDO, offers));
   }
 

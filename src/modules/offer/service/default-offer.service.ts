@@ -2,6 +2,7 @@ import {CityEntity} from '#src/modules/city/city.entity.js';
 import {CityService} from '#src/modules/city/service/city-service.interface.js';
 import {CreateOfferDTO} from '#src/modules/offer/dto/create-offer.dto.js';
 import {OfferDTO} from '#src/modules/offer/dto/offer.dto.js';
+import {OfferRDO} from '#src/modules/offer/dto/offer.rdo.js';
 import {ShortOfferRDO} from '#src/modules/offer/dto/short-offer.rdo.js';
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {OfferRepository} from '#src/modules/offer/repository/offer-repository.interface.js';
@@ -31,7 +32,11 @@ export class DefaultOfferService implements OfferService {
   ) {
   }
 
-  public async findShorts(cityId?: string, requestedLimit: number = LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT_DEFAULT): Promise<ShortOfferRDO[]> {
+  public async findShorts(
+    userIdRef?: Ref<UserEntity>,
+    cityId?: string,
+    requestedLimit: number = LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT_DEFAULT
+  ): Promise<ShortOfferRDO[]> {
     const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT, 'OfferService', requestedLimit);
 
     if (cityId && !await this.cityService.exists(cityId)) {
@@ -44,11 +49,37 @@ export class DefaultOfferService implements OfferService {
 
     const foundOffers = await this.offerRepository.findAll(limit, cityId);
     const shortOfferRDOs = fillDTO(ShortOfferRDO, foundOffers);
-    const shortOffersWithFavoriteFlag = this.addFavoriteFlag(shortOfferRDOs);
+
+    let updatedOffers: ShortOfferRDO[] = [];
+    if (userIdRef) {
+      const favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
+      updatedOffers = shortOfferRDOs.map((offer) => {
+        const isFavorite = favoriteOfferIds.includes(offer.id as unknown as Ref<OfferEntity>);
+        return {
+          ...offer,
+          isFavorite,
+        };
+      });
+    }
 
     const searchScope = cityId ? `in city '${cityId}'` : 'for all cities';
-    this.logger.info(`Completed search ${searchScope}. Found ${shortOffersWithFavoriteFlag.length} offers.`);
-    return shortOffersWithFavoriteFlag;
+    this.logger.info(`Completed search ${searchScope}. Found ${updatedOffers.length} offers.`);
+    return updatedOffers;
+  }
+
+  public async findFullOfferById(offerIdRef: Ref<OfferEntity>, userIdRef?: Ref<UserEntity>): Promise<OfferRDO | null> {
+    const foundOffer = await this.findById(offerIdRef);
+    const offerDTO = fillDTO(OfferRDO, foundOffer);
+    if (!foundOffer || !userIdRef) {
+      return offerDTO;
+    }
+
+    const favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
+    const isFavorite = favoriteOfferIds.includes(foundOffer.id as unknown as Ref<OfferEntity>);
+    return {
+      ...offerDTO,
+      isFavorite,
+    };
   }
 
   public async create(hostIdRef: Ref<UserEntity>, offerParams: CreateOfferDTO): Promise<Offer> {
@@ -81,20 +112,21 @@ export class DefaultOfferService implements OfferService {
     return this.createOfferInternal(hostIdRef, cityIdRef, offerData);
   }
 
-  public async findPremiumByCity(cityId: string, requestedLimit?: number): Promise<OfferEntity[]> {
+  public async findPremiumByCity(cityName: string, requestedLimit?: number): Promise<OfferEntity[]> {
     const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.PREMIUM_LIST_LIMIT, 'OfferService', requestedLimit);
+    const foundCity = await this.cityService.findByName(cityName);
 
-    if (!await this.cityService.exists(cityId)) {
+    if (!foundCity) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
-        `City with ID '${cityId}' not found.`,
+        `City with name '${cityName}' not found.`,
         'OfferService'
       );
     }
 
-    const premiumCityOffers = await this.offerRepository.findPremiumByCity(cityId, limit);
+    const premiumCityOffers = await this.offerRepository.findPremiumByCity(foundCity.id, limit);
 
-    this.logger.info(`Completed search for premium offers in city '${cityId}'. Found ${premiumCityOffers.length} offers.`);
+    this.logger.info(`Completed search for premium offers in city '${foundCity.name}'. Found ${premiumCityOffers.length} offers.`);
     return premiumCityOffers;
   }
 
@@ -239,11 +271,11 @@ export class DefaultOfferService implements OfferService {
     }
   }
 
-  public addFavoriteFlag<T extends object>(input: T): T;
+  private addFavoriteFlag<T extends object>(input: T): T;
 
-  public addFavoriteFlag<T extends object>(input: T[]): T[];
+  private addFavoriteFlag<T extends object>(input: T[]): T[];
 
-  public addFavoriteFlag<T extends object>(input: T | T[]): T | T [] {
+  private addFavoriteFlag<T extends object>(input: T | T[]): T | T [] {
     if (Array.isArray(input)) {
       return input.map((item) => ({...item, isFavorite: true})) as (T & { isFavorite: boolean })[];
     } else {

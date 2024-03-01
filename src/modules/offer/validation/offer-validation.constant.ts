@@ -27,4 +27,8 @@ export const OFFER_VALIDATION_CONSTANT = {
     MIN: 100,
     MAX: 100000,
   },
+  VISITOR: {
+    MIN: 1,
+    MAX: 10,
+  },
 };

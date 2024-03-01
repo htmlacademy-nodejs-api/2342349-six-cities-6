@@ -1,6 +1,6 @@
 import {City} from '#src/modules/city/type/city.type.js';
+import {Location} from '#src/modules/location/type/location.type.js';
 import {GeoLocation} from '#src/modules/schemas/geo.schema.js';
-import {Location} from '#src/type/location.type.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Severity} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging

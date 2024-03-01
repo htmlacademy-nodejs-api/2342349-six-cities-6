@@ -59,7 +59,15 @@ export class DefaultUserService implements UserService {
     return this.userRepository.exists(objectId);
   }
 
-  public async checkAuthenticate(email: string): Promise<boolean> {
+  public async checkAuthenticate(email?: string): Promise<boolean> {
+    if (!email) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserService'
+      );
+    }
+
     const foundUser = await this.userRepository.findByEmail(email);
     if (!foundUser) {
       throw new HttpError(

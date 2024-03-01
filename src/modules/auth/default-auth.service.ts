@@ -24,6 +24,7 @@ export class DefaultAuthService implements AuthService {
   public async authenticate(user: UserEntity): Promise<string> {
     const tokenPayload: TokenPayload = {
       id: user.id,
+      email: user.email,
     };
 
     this.logger.info(`Create token for ${user.email}`);

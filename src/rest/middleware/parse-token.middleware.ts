@@ -12,10 +12,9 @@ function isTokenPayload(payload: unknown): payload is TokenPayload {
 
   const safePayload = payload as Record<string, unknown>;
   const hasEmail = typeof safePayload.email === 'string';
-  const hasName = typeof safePayload.name === 'string';
   const hasId = typeof safePayload.id === 'string';
 
-  return hasEmail && hasName && hasId;
+  return hasEmail && hasId;
 }
 
 export class ParseTokenMiddleware implements Middleware {

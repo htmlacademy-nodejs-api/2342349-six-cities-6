@@ -1,9 +1,9 @@
 import {CityEntity} from '#src/modules/city/city.entity.js';
+import {Location} from '#src/modules/location/type/location.type.js';
 import {OfferDTO} from '#src/modules/offer/dto/offer.dto.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
 import {GeoLocation} from '#src/modules/schemas/geo.schema.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {Location} from '#src/type/location.type.js';
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref, Severity} from '@typegoose/typegoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -71,6 +71,9 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({required: true})
   public reviewCount: number = 0;
 
+  @prop({required: true})
+  public visitor: number;
+
   constructor(
     offerData: OfferDTO,
     cityId: Ref<CityEntity>,
@@ -87,6 +90,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     this.price = offerData.price;
     this.publishDate = offerData.publishDate;
     this.room = offerData.room;
+    this.visitor = offerData.visitor;
     this.title = offerData.title;
     this.type = offerData.type;
     this.cityId = cityId;

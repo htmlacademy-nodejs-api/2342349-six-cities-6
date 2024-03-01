@@ -1,4 +1,5 @@
 import {CreateOfferDTO} from '#src/modules/offer/dto/create-offer.dto.js';
+import {OfferRDO} from '#src/modules/offer/dto/offer.rdo.js';
 import {ShortOfferRDO} from '#src/modules/offer/dto/short-offer.rdo.js';
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
@@ -11,7 +12,7 @@ export interface OfferService extends DocumentExists {
 
   findOrCreate(offerData: Offer): Promise<Offer>;
 
-  findShorts(cityId?: string, requestedLimit?: number): Promise<ShortOfferRDO[]>;
+  findShorts(userIdRef?: Ref<UserEntity>, cityId?: string, requestedLimit?: number): Promise<ShortOfferRDO[]>;
 
   exists(offerId: string): Promise<boolean>;
 
@@ -23,7 +24,7 @@ export interface OfferService extends DocumentExists {
 
   getIdRefByTitle(offerTitle: string): Promise<Ref<OfferEntity> | null>;
 
-  findPremiumByCity(cityId: string, requestedLimit?: number): Promise<OfferEntity[]>;
+  findPremiumByCity(cityName: string, requestedLimit?: number): Promise<OfferEntity[]>;
 
   findByIdList(offerIds: Ref<OfferEntity>[], limit: number): Promise<OfferEntity[]>;
 
@@ -32,4 +33,6 @@ export interface OfferService extends DocumentExists {
   setRating(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean>;
 
   findFavorites(userIdRef: Ref<UserEntity>, requestedLimit?: number): Promise<ShortOfferRDO[]>;
+
+  findFullOfferById(offerIdRef: Ref<OfferEntity>, userIdRef?: Ref<UserEntity>): Promise<OfferRDO | null>
 }

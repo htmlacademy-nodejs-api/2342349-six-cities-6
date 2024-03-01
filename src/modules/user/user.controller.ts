@@ -46,13 +46,13 @@ export class UserController extends BaseController {
     this.addRoute({
       method: HttpMethod.Get,
       path: '/login',
-      handler: this.checkAuthenticate,
-      middlewares: [new ValidateDtoMiddleware(LoginUserDTO)]
+      handler: this.checkAuthenticate
     });
     this.addRoute({
       method: HttpMethod.Post,
       path: '/login',
-      handler: this.login
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDTO)]
     });
     this.addRoute({
       method: HttpMethod.Post,
@@ -131,7 +131,7 @@ export class UserController extends BaseController {
   }
 
   private async checkAuthenticate({tokenPayload}: Request, res: Response): Promise<void> {
-    const isSuccess = await this.userService.checkAuthenticate(tokenPayload.email);
+    const isSuccess = await this.userService.checkAuthenticate(tokenPayload?.email);
     this.ok(res, isSuccess);
   }
 }

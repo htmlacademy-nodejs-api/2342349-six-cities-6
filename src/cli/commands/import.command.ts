@@ -137,6 +137,6 @@ export class ImportCommand extends BaseCommand {
     const offerCity = await this.cityService.findOrCreate(offerCityData);
     const offerUser = await this.userService.findOrCreate(offerUserData);
     const offer = await this.offerService.findOrCreate(offerData);
-    this.logger.info(`Import  to DB: city '${offerCity?.name}', user '${offerUser?.email}', offer '${offer?.title}'`);
+    this.logger.info(`Import to DB: city '${offerCity?.name}', user '${offerUser?.email}', offer '${offer?.title}'`);
   }
 }

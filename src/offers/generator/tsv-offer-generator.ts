@@ -22,6 +22,7 @@ export class TsvOfferGenerator implements OfferGenerator {
     const type = getRandomItem(mockData.types);
     const room = getRandomNumber(GENERATOR_CONFIG.MIN_ROOM, GENERATOR_CONFIG.MAX_ROOM);
     const bedroom = getRandomNumber(GENERATOR_CONFIG.MIN_BEDROOM, GENERATOR_CONFIG.MAX_BEDROOM);
+    const visitor = getRandomNumber(GENERATOR_CONFIG.MIN_VISITOR, GENERATOR_CONFIG.MAX_VISITOR);
     const price = getRandomNumber(GENERATOR_CONFIG.MIN_PRICE, GENERATOR_CONFIG.MAX_PRICE);
     const goods = getRandomItems(mockData.goods).join(';');
     const hostName = getRandomItem(mockData.hostNames);
@@ -34,7 +35,7 @@ export class TsvOfferGenerator implements OfferGenerator {
     return [
       title, description, publishDate, city.name, city.location.latitude, city.location.longitude,
       previewImage, images, isPremium, rating, type, room, bedroom, price, goods,
-      hostName, hostEmail, hostAvatar, hostPassword, hostType, location.latitude, location.longitude
+      hostName, hostEmail, hostAvatar, hostPassword, hostType, location.latitude, location.longitude, visitor
     ].join('\t');
   }
 

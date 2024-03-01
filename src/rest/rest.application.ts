@@ -83,6 +83,7 @@ export class RestApplication {
   }
 
   private async initMiddleware(): Promise<void> {
+    this.server.use(cors());
     const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
     this.server.use(express.json());
     this.server.use(
@@ -94,7 +95,6 @@ export class RestApplication {
       express.static(this.config.get('STATIC_DIRECTORY_PATH'))
     );
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
-    this.server.use(cors());
   }
 
   private async initExceptionFilters(): Promise<void> {
