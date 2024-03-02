@@ -1,6 +1,6 @@
 @host = http://localhost:5001
-@offerId = 65de146c89047dbf6d3a3f69
-@token = eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6ImFsZXgyM0BleGFtcGxlLmNvbSIsIm5hbWUiOiLQnNCw0YDQuNGPINCS0LDRgdC40LvRjNC10LLQsCIsImlkIjoiNjVkZTM4N2QxNTMyYjFlNjU0MThiNzk2IiwiaWF0IjoxNzA5MDYyMjk2LCJleHAiOjE3MDkyMzUwOTZ9.829pxSkXy5LPjPTPREJA2unC-avj0y6K0KswFCL55KvmnEbr75bJ95ynT06y3SGgvmhMuCk5novuw7mksgekSw
+@offerId = 65e0f50da45b21568c8c5c35
+@token = eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjY1ZTE0MDg3OGQ1ODU4M2YzYjQ3ZDk4MCIsImVtYWlsIjoiYWxleDIzQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5MzE0NTgxLCJleHAiOjE3MDk0ODczODF9.4cQ6ibVVTNQ5sx7pjbmZKjI3H7OcfBPFJDbXw9bwLFZB8w727yOcM1A6Y79teHIlVPr2dbIPColKYRt6dQYEIQ
 # Review
 
 ## get
@@ -15,48 +15,7 @@ Content-Type: application/json
 
 {
   "comment": "aaaaa12",
-  "publishDate": "2024-02-20T12:00:00.000Z",
-  "rating": 2,
-  "author": {
-    "name": "Мария Васильева",
-    "email": "alex1@example.com",
-    "avatarUrl": "avatar5.jpg",
-    "password": "123456",
-    "type": "pro"
-  },
-  "offer": {
-    "title": "Квартира-1",
-    "type": "apartment",
-    "bedroom": 1,
-    "city": {
-      "name": "Cologne",
-      "location": {
-        "latitude": 1,
-        "longitude": 1
-      }
-    },
-    "description": "description-description",
-    "goods": [],
-    "host": {
-      "name": "Мария Васильева",
-      "email": "a2898ef78e901df0a7e3-alexey@example.com",
-      "avatarUrl": "avatar5.jpg",
-      "password": "123456",
-      "type": "pro"
-    },
-    "images": [],
-    "isPremium": true,
-    "isFavorite": false,
-    "location": {
-      "latitude": 1,
-      "longitude": 1
-    },
-    "previewImage": "previewImage7.jpg",
-    "price": 163,
-    "publishDate": "2024-02-20T12:00:00.000Z",
-    "rating": 3,
-    "room": 4
-  }
+  "rating": 2
 }
 
 ###

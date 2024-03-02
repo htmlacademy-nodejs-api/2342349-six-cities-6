@@ -1,6 +1,4 @@
 import {CreateOfferDTO} from '#src/modules/offer/dto/create-offer.dto.js';
-import {OfferRDO} from '#src/modules/offer/dto/offer.rdo.js';
-import {ShortOfferRDO} from '#src/modules/offer/dto/short-offer.rdo.js';
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {Offer} from '#src/modules/offer/type/offer.type.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
@@ -12,15 +10,19 @@ export interface OfferService extends DocumentExists {
 
   findOrCreate(offerData: Offer): Promise<Offer>;
 
-  findShorts(userIdRef?: Ref<UserEntity>, cityId?: string, requestedLimit?: number): Promise<ShortOfferRDO[]>;
+  findShort(userIdRef?: Ref<UserEntity>, cityId?: string, requestedLimit?: number): Promise<OfferEntity[]>;
+
+  findFullById(offerIdRef: Ref<OfferEntity>, userIdRef?: Ref<UserEntity>): Promise<OfferEntity | null>
 
   exists(offerId: string): Promise<boolean>;
 
   findById(offerIdRef: Ref<OfferEntity>): Promise<OfferEntity | null>;
 
-  updateById(offerIdRef: Ref<OfferEntity>, offerData: Partial<Offer>): Promise<Offer>;
+  updateDetailById(offerIdRef: Ref<OfferEntity>, hostIdRef: Ref<UserEntity>, offerData: Partial<Offer>): Promise<Offer>;
 
-  deleteById(offerIdRef: Ref<OfferEntity>): Promise<Offer>;
+  updateImageById(offerIdRef: Ref<OfferEntity>, hostIdRef: Ref<UserEntity>, offerData: Partial<Offer>): Promise<Offer>;
+
+  deleteById(offerIdRef: Ref<OfferEntity>, hostIdRef: Ref<UserEntity>): Promise<Offer>;
 
   getIdRefByTitle(offerTitle: string): Promise<Ref<OfferEntity> | null>;
 
@@ -32,7 +34,5 @@ export interface OfferService extends DocumentExists {
 
   setRating(offerIdRef: Ref<OfferEntity>, averageRating: number): Promise<boolean>;
 
-  findFavorites(userIdRef: Ref<UserEntity>, requestedLimit?: number): Promise<ShortOfferRDO[]>;
-
-  findFullOfferById(offerIdRef: Ref<OfferEntity>, userIdRef?: Ref<UserEntity>): Promise<OfferRDO | null>
+  findFavorites(userIdRef: Ref<UserEntity>, requestedLimit?: number): Promise<OfferEntity[]>;
 }

@@ -2,8 +2,7 @@ import {CityEntity} from '#src/modules/city/city.entity.js';
 import {CityService} from '#src/modules/city/service/city-service.interface.js';
 import {CreateOfferDTO} from '#src/modules/offer/dto/create-offer.dto.js';
 import {OfferDTO} from '#src/modules/offer/dto/offer.dto.js';
-import {OfferRDO} from '#src/modules/offer/dto/offer.rdo.js';
-import {ShortOfferRDO} from '#src/modules/offer/dto/short-offer.rdo.js';
+import {UpdateOfferDTO} from '#src/modules/offer/dto/update-offer.dto.js';
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
 import {OfferRepository} from '#src/modules/offer/repository/offer-repository.interface.js';
 import {OfferService} from '#src/modules/offer/service/offer-service.interface.js';
@@ -15,7 +14,6 @@ import {ENTITY_PROFILE_CONFIG, LIST_LIMITS_CONFIG} from '#src/rest/config.consta
 import {HttpError} from '#src/rest/errors/http-error.js';
 import {Component} from '#src/type/component.enum.js';
 import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
-import {fillDTO} from '#src/utils/dto.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
 import {validateAndResolveLimit} from '#src/utils/validator.js';
 import {Ref} from '@typegoose/typegoose';
@@ -32,11 +30,11 @@ export class DefaultOfferService implements OfferService {
   ) {
   }
 
-  public async findShorts(
+  public async findShort(
     userIdRef?: Ref<UserEntity>,
     cityId?: string,
     requestedLimit: number = LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT_DEFAULT
-  ): Promise<ShortOfferRDO[]> {
+  ): Promise<OfferEntity[]> {
     const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.OFFERS_LIST_LIMIT, 'OfferService', requestedLimit);
 
     if (cityId && !await this.cityService.exists(cityId)) {
@@ -47,39 +45,21 @@ export class DefaultOfferService implements OfferService {
       );
     }
 
-    const foundOffers = await this.offerRepository.findAll(limit, cityId);
-    const shortOfferRDOs = fillDTO(ShortOfferRDO, foundOffers);
-
-    let updatedOffers: ShortOfferRDO[] = [];
+    let favoriteOfferIds: Ref<OfferEntity>[] = [];
     if (userIdRef) {
-      const favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
-      updatedOffers = shortOfferRDOs.map((offer) => {
-        const isFavorite = favoriteOfferIds.includes(offer.id as unknown as Ref<OfferEntity>);
-        return {
-          ...offer,
-          isFavorite,
-        };
-      });
+      favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
     }
 
-    const searchScope = cityId ? `in city '${cityId}'` : 'for all cities';
-    this.logger.info(`Completed search ${searchScope}. Found ${updatedOffers.length} offers.`);
-    return updatedOffers;
+    return this.offerRepository.findAllWithFavorite(limit, favoriteOfferIds, cityId);
   }
 
-  public async findFullOfferById(offerIdRef: Ref<OfferEntity>, userIdRef?: Ref<UserEntity>): Promise<OfferRDO | null> {
-    const foundOffer = await this.findById(offerIdRef);
-    const offerDTO = fillDTO(OfferRDO, foundOffer);
-    if (!foundOffer || !userIdRef) {
-      return offerDTO;
+  public async findFullById(offerIdRef: Ref<OfferEntity>, userIdRef?: Ref<UserEntity>): Promise<OfferEntity | null> {
+    let favoriteOfferIds: Ref<OfferEntity>[] = [];
+    if (userIdRef) {
+      favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
     }
 
-    const favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
-    const isFavorite = favoriteOfferIds.includes(foundOffer.id as unknown as Ref<OfferEntity>);
-    return {
-      ...offerDTO,
-      isFavorite,
-    };
+    return this.offerRepository.findByIdWithFavorite(offerIdRef, favoriteOfferIds);
   }
 
   public async create(hostIdRef: Ref<UserEntity>, offerParams: CreateOfferDTO): Promise<Offer> {
@@ -148,29 +128,17 @@ export class DefaultOfferService implements OfferService {
     return this.offerRepository.findById(offerIdRef);
   }
 
-  public async updateById(offerIdRef: Ref<OfferEntity>, offerData: Partial<Offer>): Promise<Offer> {
-    const updatedOffer = await this.offerRepository.updateById(offerIdRef, offerData);
-    if (!updatedOffer) {
-      throw new HttpError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        `Offer with ID '${offerIdRef.toString()}' can't be update`,
-        'OfferService'
-      );
-    }
-
-    if (offerIdRef !== updatedOffer.hostId.id) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        `Offer with ID '${offerIdRef.toString()}' can't be update with user ID ${offerIdRef.toString()}.`,
-        'OfferService'
-      );
-    }
-
-    this.logger.info(`Offer with ID ${offerIdRef.toString()} updated`);
-    return updatedOffer.populate(['cityId', 'hostId']);
+  public async updateDetailById(offerIdRef: Ref<OfferEntity>, hostIdRef: Ref<UserEntity>, offerData: Partial<Offer>): Promise<Offer> {
+    const allowedFields: (keyof Offer)[] = ['title', 'description', 'isPremium', 'type', 'room', 'bedroom', 'price', 'goods', 'visitor'];
+    return this.updateById(offerIdRef, hostIdRef, offerData, allowedFields);
   }
 
-  public async deleteById(offerIdRef: Ref<OfferEntity>): Promise<Offer> {
+  public async updateImageById(offerIdRef: Ref<OfferEntity>, hostIdRef: Ref<UserEntity>, offerData: Partial<Offer>): Promise<Offer> {
+    const allowedFields: (keyof Offer)[] = ['images', 'previewImage'];
+    return await this.updateById(offerIdRef, hostIdRef, offerData, allowedFields);
+  }
+
+  public async deleteById(offerIdRef: Ref<OfferEntity>, hostIdRef: Ref<UserEntity>): Promise<Offer> {
     const deletedOffer = await this.offerRepository.deleteById(offerIdRef);
     if (!deletedOffer) {
       throw new HttpError(
@@ -180,16 +148,27 @@ export class DefaultOfferService implements OfferService {
       );
     }
 
-    if (offerIdRef !== deletedOffer.hostId.id) {
+    if (hostIdRef.toString() !== deletedOffer.hostId.id) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
-        `Offer with ID '${offerIdRef.toString()}' can't be delete with user ID ${offerIdRef.toString()}.`,
+        `Offer with ID '${offerIdRef.toString()}' can't be delete with user ID ${hostIdRef.toString()}.`,
         'OfferService'
       );
     }
 
-    this.logger.info(`Offer with ID ${offerIdRef.toString()} deleted`);
+    this.logger.info(`Offer with ID '${offerIdRef.toString()}' deleted`);
     return deletedOffer.populate(['cityId', 'hostId']);
+  }
+
+  public async findFavorites(userIdRef: Ref<UserEntity>, requestedLimit?: number): Promise<OfferEntity[]> {
+    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.FAVORITE_LIST_LIMIT, 'OfferService', requestedLimit);
+
+    let favoriteOfferIds: Ref<OfferEntity>[] = [];
+    if (userIdRef) {
+      favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
+    }
+
+    return this.offerRepository.findFavorite(limit, favoriteOfferIds);
   }
 
   public async findOrCreate(offerData: Offer): Promise<Offer> {
@@ -229,29 +208,47 @@ export class DefaultOfferService implements OfferService {
     return foundOffer?.id ?? null;
   }
 
-  public async findFavorites(userIdRef: Ref<UserEntity>, requestedLimit?: number): Promise<ShortOfferRDO[]> {
-    const limit = validateAndResolveLimit(LIST_LIMITS_CONFIG.FAVORITE_LIST_LIMIT, 'OfferService', requestedLimit);
-
-    const favoriteOfferIds = await this.userService.getFavoriteOffers(userIdRef);
-    if (!favoriteOfferIds.length) {
-      this.logger.info(`No favorite offers for user ID '${userIdRef.toString()}'.`);
-      return [];
-    }
-
-    const favoriteOffers = await this.findByIdList(favoriteOfferIds, limit);
-    if (!favoriteOffers.length) {
+  private async updateById(offerIdRef: Ref<OfferEntity>,
+    hostIdRef: Ref<UserEntity>,
+    offerData: Partial<Offer>,
+    allowedFieldsToUpdate: (keyof Offer)[]
+  ): Promise<Offer> {
+    const existedOffer = await this.findById(offerIdRef);
+    if (!existedOffer) {
       throw new HttpError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        `No favorite offers for user ID '${userIdRef.toString()}' by error.`,
+        StatusCodes.CONFLICT,
+        `Offer with ID '${offerIdRef}' not found.`,
+        'OfferService'
+      );
+    }
+    if (hostIdRef.toString() !== existedOffer.hostId.id.toString()) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        `Offer with ID '${offerIdRef.toString()}' can't be update with user ID '${hostIdRef.toString()}'.`,
         'OfferService'
       );
     }
 
-    const shortOfferRDOs = fillDTO(ShortOfferRDO, favoriteOffers);
-    const shortOffersWithFavoriteFlag = this.addFavoriteFlag(shortOfferRDOs);
+    const filteredData = allowedFieldsToUpdate.reduce((acc, key) => {
+      const value = offerData[key];
+      if (value !== undefined) {
+        // @ts-expect-error acc[key]
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as UpdateOfferDTO);
 
-    this.logger.info(`Found ${shortOffersWithFavoriteFlag.length} favorite offers for user ID '${userIdRef.toString()}'.`);
-    return shortOffersWithFavoriteFlag;
+    const updatedOffer = await this.offerRepository.updateById(offerIdRef, filteredData);
+    if (!updatedOffer) {
+      throw new HttpError(
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        `Offer with ID '${offerIdRef.toString()}' can't be update`,
+        'OfferService'
+      );
+    }
+
+    this.logger.info(`Offer with ID '${offerIdRef.toString()}' updated`);
+    return updatedOffer.populate(['cityId', 'hostId']);
   }
 
   private async createOfferInternal(hostIdRef: Ref<UserEntity>, cityIdRef: Ref<CityEntity>, offerData: OfferDTO): Promise<Offer> {
@@ -268,18 +265,6 @@ export class DefaultOfferService implements OfferService {
         `Error creating offer '${offerData.title}'. ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
         'OfferService'
       );
-    }
-  }
-
-  private addFavoriteFlag<T extends object>(input: T): T;
-
-  private addFavoriteFlag<T extends object>(input: T[]): T[];
-
-  private addFavoriteFlag<T extends object>(input: T | T[]): T | T [] {
-    if (Array.isArray(input)) {
-      return input.map((item) => ({...item, isFavorite: true})) as (T & { isFavorite: boolean })[];
-    } else {
-      return {...input, isFavorite: true} as T & { isFavorite: boolean };
     }
   }
 }

@@ -1,6 +1,6 @@
 @host = http://localhost:5001
-@offerId = 65de146c89047dbf6d3a3f69
-@token = eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjY1ZTE0MDg3OGQ1ODU4M2YzYjQ3ZDk4MCIsImVtYWlsIjoiYWxleDIzQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5MjYzODg3LCJleHAiOjE3MDk0MzY2ODd9.UODVWCEnqjzh3JasAYkZtCYrX63U7YbTI7SDv_HAqkpuf_JIZLnYQOXRFIOQP4gQq9uJUJqg-ISaZDMCdzoLUA
+@offerId = 65e0f50da45b21568c8c5c35
+@token = eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjY1ZTE0MDg3OGQ1ODU4M2YzYjQ3ZDk4MCIsImVtYWlsIjoiYWxleDIzQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5MzIwOTgxLCJleHAiOjE3MDk0OTM3ODF9.MinzPY09243qznrA0vUDVXzxYFpUxfGhYs_y43ZI8VsMTR3TmlturjjyXSUV696IdTpQlm_e7QTbU0boxboo0w
 
 # Offer
 ## findOffers
@@ -11,6 +11,7 @@ Authorization: Bearer {{token}}
 
 ## show
 GET {{host}}/offers/{{offerId}}
+Authorization: Bearer {{token}}
 
 ###
 
@@ -57,11 +58,45 @@ Content-Type: application/json
 
 ## update
 PATCH {{host}}/offers/{{offerId}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "bedroom": 7,
-  "price": 163
+  "id": "65e21a61a3915daf86e7b791",
+  "rating": 3,
+  "isFavorite": false,
+  "room": 5,
+  "previewImage": "",
+  "images": [],
+  "price": 5000,
+  "title": "12345678901",
+  "isPremium": true,
+  "city": {
+    "name": "Cologne",
+    "location": {
+      "latitude": 50.938361,
+      "longitude": 6.959974
+    }
+  },
+  "location": {
+    "latitude": 50.938361,
+    "longitude": 6.959974
+  },
+  "type": "room",
+  "bedroom": 3,
+  "description": "В этом задании мы потренируемся создавать приватные ресурсы и разберёмся как реализовать в приложении авторизацию. Решить вопрос авторизации можно разными способами. Вы можете выбрать сессии или JWT. Выбор остаётся на ваше усмотрение.",
+  "goods": [
+    "Breakfast",
+    "Laptop friendly workspace",
+    "Towels"
+  ],
+  "host": {
+    "name": "в",
+    "email": "a2@a.ru",
+    "type": "обычный",
+    "avatarUrl": ""
+  },
+  "visitor": 2
 }
 
 ###
@@ -73,7 +108,7 @@ Content-Type: application/json
 ###
 
 ## getPremium
-GET {{host}}/offers/premium/?cityId=65ca70eca83c67a5ac7d6821
+GET {{host}}/offers/premium/?cityName=Paris
 
 ###
 

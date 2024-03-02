@@ -1,5 +1,7 @@
 import {CreateOfferDTO} from '#src/modules/offer/dto/create-offer.dto.js';
 import {OfferRDO} from '#src/modules/offer/dto/offer.rdo.js';
+import {PremiumOfferRDO} from '#src/modules/offer/dto/premium-offer.rdo.js';
+import {ShortOfferRDO} from '#src/modules/offer/dto/short-offer.rdo.js';
 import {UpdateOfferDTO} from '#src/modules/offer/dto/update-offer.dto.js';
 import {UploadOfferImageRDO} from '#src/modules/offer/dto/upload-offer-image.rdo.js';
 import {OfferEntity} from '#src/modules/offer/offer.entity.js';
@@ -105,6 +107,16 @@ export class OfferController extends BaseController {
     });
   }
 
+  public async create(
+    {body, tokenPayload}: Request<RequestParams, RequestBody, CreateOfferDTO>,
+    res: Response
+  ): Promise<void> {
+    const userIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
+
+    const createdOffer = await this.offerService.create(userIdRef, body);
+    this.created(res, fillDTO(OfferRDO, createdOffer));
+  }
+
   public async index({query, tokenPayload}: Request, res: Response): Promise<void> {
     const cityId = typeof query.cityId === 'string' ? query.cityId : undefined;
     const limit = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined;
@@ -118,46 +130,70 @@ export class OfferController extends BaseController {
       );
     }
 
-    const shortOfferRDOs = await this.offerService.findShorts(userIdRef, cityId, limit);
-    this.ok(res, shortOfferRDOs);
+    const foundOffers = await this.offerService.findShort(userIdRef, cityId, limit);
+    this.ok(res, fillDTO(ShortOfferRDO, foundOffers));
   }
 
-  public async create(
-    {body, tokenPayload}: Request<RequestParams, RequestBody, CreateOfferDTO>,
+  public async getFavorites(
+    {tokenPayload, query}: Request,
     res: Response
   ): Promise<void> {
+    const limit = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined;
     const userIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
 
-    const createdOffer = await this.offerService.create(userIdRef, body);
-    this.created(res, fillDTO(OfferRDO, createdOffer));
+    if (limit && isNaN(limit)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'The \'limit\' parameter must be a valid number.',
+        'OfferController'
+      );
+    }
+
+    const foundOffers = await this.offerService.findFavorites(userIdRef, limit);
+    this.ok(res, fillDTO(ShortOfferRDO, foundOffers));
   }
 
   public async show({params, tokenPayload}: Request<ParamOfferId>, res: Response): Promise<void> {
     const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
     const userIdRef = tokenPayload?.id as unknown as Ref<UserEntity>;
 
-    const fullOffer = await this.offerService.findFullOfferById(offerIdRef, userIdRef);
-    this.ok(res, fullOffer);
+    const foundOffer = await this.offerService.findFullById(offerIdRef, userIdRef);
+    this.ok(res, fillDTO(OfferRDO, foundOffer));
   }
 
   public async update(
-    {body, params}: Request<ParamOfferId, RequestBody, UpdateOfferDTO>,
+    {body, params, tokenPayload}: Request<ParamOfferId, RequestBody, UpdateOfferDTO>,
     res: Response
   ): Promise<void> {
     const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
+    const userIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
 
-    const offer = await this.offerService.updateById(offerIdRef, body);
-    this.ok(res, fillDTO(OfferRDO, offer));
+    const offer = await this.offerService.updateDetailById(offerIdRef, userIdRef, body);
+    this.ok(res, fillDTO(PremiumOfferRDO, offer));
+  }
+
+  public async uploadImage(
+    {params, file, tokenPayload}: Request<ParamOfferId>,
+    res: Response
+  ) {
+    const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
+    const userIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
+    const updateDto = {previewImage: file?.filename};
+    this.logger.info(`Upload 'previewImage' file '${file?.filename}' for offer ID '${offerIdRef.toString()}'`);
+
+    const offer = await this.offerService.updateImageById(offerIdRef, userIdRef, updateDto);
+    this.created(res, fillDTO(UploadOfferImageRDO, offer));
   }
 
   public async delete(
-    {params}: Request<ParamOfferId>,
+    {params, tokenPayload}: Request<ParamOfferId>,
     res: Response
   ): Promise<void> {
     const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
+    const userIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
 
-    const offer = await this.offerService.deleteById(offerIdRef);
-    this.ok(res, fillDTO(OfferRDO, offer));
+    const offer = await this.offerService.deleteById(offerIdRef, userIdRef);
+    this.ok(res, fillDTO(PremiumOfferRDO, offer));
   }
 
   public async getPremium({query}: Request, res: Response): Promise<void> {
@@ -181,36 +217,6 @@ export class OfferController extends BaseController {
     }
 
     const offers = await this.offerService.findPremiumByCity(cityName, limit);
-    this.ok(res, fillDTO(OfferRDO, offers));
-  }
-
-  public async getFavorites(
-    {tokenPayload, query}: Request,
-    res: Response
-  ): Promise<void> {
-    const limit = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined;
-    if (limit && isNaN(limit)) {
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        'The \'limit\' parameter must be a valid number.',
-        'FavoriteController'
-      );
-    }
-    const userIdRef = tokenPayload.id as unknown as Ref<UserEntity>;
-
-    const shortOfferRDOs = await this.offerService.findFavorites(userIdRef, limit);
-    this.ok(res, shortOfferRDOs);
-  }
-
-  public async uploadImage(
-    {params, file}: Request<ParamOfferId>,
-    res: Response
-  ) {
-    const offerIdRef = params.offerId as unknown as Ref<OfferEntity>;
-    const updateDto = {previewImage: file?.filename};
-    this.logger.info(`Upload 'previewImage' file '${file?.filename}' for offer ID '${offerIdRef.toString()}'`);
-
-    const offer = await this.offerService.updateById(offerIdRef, updateDto);
-    this.created(res, fillDTO(UploadOfferImageRDO, offer));
+    this.ok(res, fillDTO(PremiumOfferRDO, offers));
   }
 }

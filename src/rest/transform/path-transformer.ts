@@ -37,7 +37,8 @@ export class PathTransformer {
   }
 
   public execute(data: Record<string, unknown>): Record<string, unknown> {
-    return this.transform(data);
+    const transformedData = JSON.parse(JSON.stringify(data));
+    return this.transform(transformedData);
   }
 
   private transformPath(value: string): string {

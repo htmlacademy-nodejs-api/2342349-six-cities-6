@@ -4,8 +4,6 @@ import {Location} from '#src/modules/location/type/location.type.js';
 import {LocationValidation} from '#src/modules/location/validation/location-validation.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
 import {OFFER_VALIDATION_CONSTANT} from '#src/modules/offer/validation/offer-validation.constant.js';
-import {User} from '#src/modules/user/type/user.type.js';
-import {UserValidation} from '#src/modules/user/validation/user-validation.js';
 import {Type} from 'class-transformer';
 import {
   IsArray,
@@ -66,11 +64,6 @@ export class UpdateOfferDTO {
   @IsArray()
   @IsString({each: true})
   public goods?: string[];
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => UserValidation)
-  public host?: User;
 
   @IsOptional()
   @ValidateNested()

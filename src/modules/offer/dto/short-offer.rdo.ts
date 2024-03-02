@@ -26,7 +26,7 @@ export class ShortOfferRDO {
   @Expose()
   public publishDate!: Date;
 
-  @Expose({name: 'cityId'})
+  @Expose({name: 'city'})
   @Type(() => CityRDO)
   public city!: City;
 

@@ -8,7 +8,11 @@ export interface OfferRepository {
 
   findByTitle(offerTitle: string): Promise<DocumentType<OfferEntity> | null>;
 
-  findAll(limit: number, cityId?: string): Promise<DocumentType<OfferEntity>[]>;
+  findAllWithFavorite(limit: number, favoriteOfferIds: Ref<OfferEntity>[], cityId?: string): Promise<DocumentType<OfferEntity>[]>;
+
+  findByIdWithFavorite(offerIdRef: Ref<OfferEntity>, favoriteOfferIds: Ref<OfferEntity>[]): Promise<DocumentType<OfferEntity> | null>;
+
+  findFavorite(limit: number, favoriteOfferIds: Ref<OfferEntity>[]): Promise<DocumentType<OfferEntity>[]>;
 
   findPremiumByCity(cityId: string, requestedLimit?: number): Promise<DocumentType<OfferEntity>[]>;
 

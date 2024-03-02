@@ -8,6 +8,7 @@ import {User} from '#src/modules/user/type/user.type.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
 import {ENTITY_PROFILE_CONFIG} from '#src/rest/config.constant.js';
 import {HttpError} from '#src/rest/errors/http-error.js';
+import {UserNotFoundException} from '#src/rest/errors/user-not-found.exception.js';
 import {Component} from '#src/type/component.enum.js';
 import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
 import {Logger} from '#src/utils/logger/logger.interface.js';
@@ -43,7 +44,12 @@ export class DefaultUserService implements UserService {
 
   public async login(inputLogin: string, inputPassword: string): Promise<string> {
     const existingUser = await this.findByEmail(inputLogin);
-    const userVerified = await this.authService.verify(inputLogin, inputPassword, existingUser);
+    if (!existingUser) {
+      this.logger.warn(`User with ${inputLogin} not found`);
+      throw new UserNotFoundException('AuthService');
+    }
+
+    const userVerified = await this.authService.verify(inputPassword, existingUser);
     const authenticatedUserToken = await this.authService.authenticate(userVerified);
 
     this.logger.info(`User '${userVerified.email}' successfully authenticated.`);

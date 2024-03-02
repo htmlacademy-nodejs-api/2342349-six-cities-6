@@ -131,7 +131,7 @@ export class UserController extends BaseController {
   }
 
   private async checkAuthenticate({tokenPayload}: Request, res: Response): Promise<void> {
-    const isSuccess = await this.userService.checkAuthenticate(tokenPayload?.email);
-    this.ok(res, isSuccess);
+    await this.userService.checkAuthenticate(tokenPayload?.email);
+    this.ok(res, {email: tokenPayload?.email});
   }
 }

@@ -6,14 +6,14 @@ import {UserRDO} from '#src/modules/user/dto/user.rdo.js';
 import {User} from '#src/modules/user/type/user.type.js';
 import {Expose, Transform, Type} from 'class-transformer';
 
-export class OfferRDO {
+export class PremiumOfferRDO {
   @Expose()
   public id!: string;
 
   @Expose()
   public bedroom!: number;
 
-  @Expose({name: 'city'})
+  @Expose({name: 'cityId'})
   @Type(() => CityRDO)
   public city!: City;
 
@@ -23,7 +23,7 @@ export class OfferRDO {
   @Expose()
   public goods!: string[];
 
-  @Expose({name: 'host'})
+  @Expose({name: 'hostId'})
   @Type(() => UserRDO)
   public host!: User;
 

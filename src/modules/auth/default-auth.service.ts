@@ -1,7 +1,6 @@
 import {AuthService} from '#src/modules/auth/auth-service.interface.js';
 import {TokenPayload} from '#src/modules/auth/type/token-payload.js';
 import {UserEntity} from '#src/modules/user/user.entity.js';
-import {UserNotFoundException} from '#src/rest/errors/user-not-found.exception.js';
 import {UserPasswordHashingException} from '#src/rest/errors/user-password-hashing-exception.js';
 import {UserPasswordIncorrectException} from '#src/rest/errors/user-password-incorrect.exception.js';
 import {Component} from '#src/type/component.enum.js';
@@ -35,12 +34,7 @@ export class DefaultAuthService implements AuthService {
       .sign(Buffer.from(this.config.get('JWT_SECRET')));
   }
 
-  public async verify(inputLogin: string, inputPassword: string, existingUser: UserEntity | null): Promise<UserEntity> {
-    if (!existingUser) {
-      this.logger.warn(`User with ${inputLogin} not found`);
-      throw new UserNotFoundException('AuthService');
-    }
-
+  public async verify(inputPassword: string, existingUser: UserEntity): Promise<UserEntity> {
     const isPasswordValid = await this.cryptoProtocol.verifyPassword(existingUser.password, inputPassword);
     if (!isPasswordValid) {
       this.logger.warn(`Invalid password for user ${existingUser.email}`);
