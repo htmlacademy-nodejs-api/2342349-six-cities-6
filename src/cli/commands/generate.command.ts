@@ -9,6 +9,7 @@ import {inject, injectable} from 'inversify';
 @injectable()
 export class GenerateCommand extends BaseCommand {
   protected readonly _name: string = '--generate';
+  private readonly requiredParameters = 3;
 
   constructor(
     @inject(Component.OfferGenerator) private readonly offerGenerator: OfferGenerator,
@@ -25,7 +26,7 @@ export class GenerateCommand extends BaseCommand {
   }
 
   private validateParameters(parameters: string[]): void {
-    if (parameters.length !== 3) {
+    if (parameters.length !== this.requiredParameters) {
       throw new Error(`Incorrect number of parameters: found ${parameters.length}, expecting 3. The required parameters are "count", "filepath", and "url".`);
     }
     const [count, filepath, url] = parameters;

@@ -1,9 +1,9 @@
-import { createSelector } from '@reduxjs/toolkit';
+import {createSelector} from '@reduxjs/toolkit';
+import {COMMENT_CONFIG, Comparator, StoreSlice, SubmitStatus} from '../../const';
 
-import type { State } from '../../types/state';
-import type { Offer, Comment } from '../../types/types';
-import { Comparator, MAX_COMMENTS, StoreSlice, SubmitStatus } from '../../const';
-import { getCity, getSorting } from '../site-process/selectors';
+import type {State} from '../../types/state';
+import type {Comment, Offer} from '../../types/types';
+import {getCity, getSorting} from '../site-process/selectors';
 
 export const getIsOffersLoading = ({ [StoreSlice.SiteData]: SITE_DATA }: State): boolean => SITE_DATA.isOffersLoading;
 export const getOffers = ({ [StoreSlice.SiteData]: SITE_DATA}: State): Offer[] => SITE_DATA.offers;
@@ -25,5 +25,5 @@ export const selectOffers = createSelector(
 
 export const selectComments = createSelector(
   [getComments],
-  (comments) => [...comments].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, MAX_COMMENTS)
+  (comments) => [...comments].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, COMMENT_CONFIG.MAX_COMMENTS)
 );

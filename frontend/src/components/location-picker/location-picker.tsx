@@ -1,10 +1,10 @@
-import { Icon, Marker } from 'leaflet';
-import { useRef, useEffect } from 'react';
+import {Icon, Marker} from 'leaflet';
+import {useEffect, useRef} from 'react';
 
-import type { City, Location } from '../../types/types';
-
-import { URL_MARKER_DEFAULT, ZOOM } from '../../const';
+import {MARKER_URL, UI_CONFIG} from '../../const';
 import useMap from '../../hooks/useMap';
+
+import type {City, Location} from '../../types/types';
 
 type LocationPickerProps = {
   city: City;
@@ -13,7 +13,7 @@ type LocationPickerProps = {
 };
 
 const customIcon = new Icon({
-  iconUrl: URL_MARKER_DEFAULT,
+  iconUrl: MARKER_URL.DEFAULT,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
@@ -30,7 +30,7 @@ const LocationPicker = ({ city, onChange, location }: LocationPickerProps) => {
           lat: location.latitude,
           lng: location.longitude,
         },
-        ZOOM
+        UI_CONFIG.ZOOM
       );
 
       marker = new Marker(
