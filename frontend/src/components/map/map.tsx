@@ -1,15 +1,10 @@
-import { useRef, useEffect } from 'react';
-import { Icon, Marker } from 'leaflet';
-
-import type { City, Location } from '../../types/types';
+import {Icon, Marker} from 'leaflet';
+import {useEffect, useRef} from 'react';
+import {CityLocation, MARKER_URL, UI_CONFIG} from '../../const';
 
 import useMap from '../../hooks/useMap';
-import {
-  CityLocation,
-  URL_MARKER_CURRENT,
-  URL_MARKER_DEFAULT,
-  ZOOM
-} from '../../const';
+
+import type {City, Location} from '../../types/types';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -21,13 +16,13 @@ type MapProps = {
 };
 
 const defaultCustomIcon = new Icon({
-  iconUrl: URL_MARKER_DEFAULT,
+  iconUrl: MARKER_URL.DEFAULT,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
 
 const currentCustomIcon = new Icon({
-  iconUrl: URL_MARKER_CURRENT,
+  iconUrl: MARKER_URL.CURRENT,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
@@ -59,7 +54,7 @@ const Map = ({
       });
 
       const { latitude: lat, longitude: lng } = CityLocation[city.name];
-      map.setView({ lat, lng }, ZOOM);
+      map.setView({lat, lng}, UI_CONFIG.ZOOM);
     }
 
     return () => {

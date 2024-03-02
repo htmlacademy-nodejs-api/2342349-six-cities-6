@@ -125,8 +125,8 @@ export class DefaultUserService implements UserService {
 
   public async addOfferToFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
     const currentUser = await this.findDocumentTypeById(userIdRef);
-    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
-    if (favoriteOfferIndex === -1) {
+    const existingFavoriteIndex = currentUser.favoriteOffers.find((favoriteId) => favoriteId === offerIdRef);
+    if (!existingFavoriteIndex) {
       currentUser.favoriteOffers.push(offerIdRef);
     }
 
@@ -136,7 +136,9 @@ export class DefaultUserService implements UserService {
 
   public async removeOfferFromFavorites(userIdRef: Ref<UserEntity>, offerIdRef: Ref<OfferEntity>): Promise<boolean> {
     const currentUser = await this.findDocumentTypeById(userIdRef);
-    const favoriteOfferIndex = currentUser.favoriteOffers.indexOf(offerIdRef);
+    const favoriteOfferIndex = currentUser.favoriteOffers.findIndex((favoriteId) =>
+      favoriteId.toString() === offerIdRef.toString()
+    );
     if (favoriteOfferIndex !== -1) {
       currentUser.favoriteOffers.splice(favoriteOfferIndex, 1);
     }

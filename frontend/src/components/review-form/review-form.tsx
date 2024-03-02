@@ -1,8 +1,8 @@
-import type { ChangeEvent, FormEvent } from 'react';
-import { Fragment, useState, useEffect } from 'react';
+import type {ChangeEvent, FormEvent} from 'react';
+import {Fragment, useEffect, useState} from 'react';
+import {COMMENT_CONFIG, SubmitStatus, UI_CONFIG} from '../../const';
 
-import type { NewComment } from '../../types/types';
-import { STARS_COUNT, MIN_COMMENT_LENGTH, MAX_COMMENT_LENGTH, SubmitStatus } from '../../const';
+import type {NewComment} from '../../types/types';
 
 type ReviewFormProps = {
   onSubmit: (formData: NewComment) => void;
@@ -45,20 +45,20 @@ const ReviewForm = ({ onSubmit, submitStatus }: ReviewFormProps) => {
         Your review
       </label>
       <div className="reviews__rating-form form__rating">
-        {Array.from({ length: STARS_COUNT}, (_,i) => (
-          <Fragment key={`Star ${STARS_COUNT - i}`}>
+        {Array.from({length: UI_CONFIG.STARS_COUNT}, (_, i) => (
+          <Fragment key={`Star ${UI_CONFIG.STARS_COUNT - i}`}>
             <input
               className="form__rating-input visually-hidden"
               name="rating"
-              defaultValue={STARS_COUNT - i}
-              id={`${STARS_COUNT - i}-stars`}
+              defaultValue={UI_CONFIG.STARS_COUNT - i}
+              id={`${UI_CONFIG.STARS_COUNT - i}-stars`}
               type="radio"
-              checked={STARS_COUNT - i === rating}
+              checked={UI_CONFIG.STARS_COUNT - i === rating}
               onChange={handleInputChange}
               disabled={isSubmiting}
             />
             <label
-              htmlFor={`${STARS_COUNT - i}-stars`}
+              htmlFor={`${UI_CONFIG.STARS_COUNT - i}-stars`}
               className="reviews__rating-label form__rating-label"
             >
               <svg className="form__star-image" width={37} height={33}>
@@ -81,10 +81,11 @@ const ReviewForm = ({ onSubmit, submitStatus }: ReviewFormProps) => {
         <p className="reviews__help">
             To submit review please make sure to set{' '}
           <span className="reviews__star">rating</span> and describe your stay
-            between <b className="reviews__text-amount">{MIN_COMMENT_LENGTH} and {MAX_COMMENT_LENGTH} characters</b>.
+          between <b
+          className="reviews__text-amount">{COMMENT_CONFIG.MIN_LENGTH} and {COMMENT_CONFIG.MAX_COMMENTS} characters</b>.
         </p>
         <button
-          disabled={isSubmiting || !rating || (text.length < MIN_COMMENT_LENGTH || text.length > MAX_COMMENT_LENGTH)}
+          disabled={isSubmiting || !rating || (text.length < COMMENT_CONFIG.MIN_LENGTH || text.length > COMMENT_CONFIG.MAX_COMMENTS)}
           className="reviews__submit form__submit button"
           type="submit"
         >

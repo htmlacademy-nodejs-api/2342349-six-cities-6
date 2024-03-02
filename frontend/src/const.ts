@@ -19,16 +19,22 @@ export const GOODS = [
   'Fridge',
 ];
 
-export const STARS_COUNT = 5;
-export const MAX_PERCENT_STARS_WIDTH = 100;
+export const MARKER_URL = {
+  DEFAULT: 'img/pin.svg',
+  CURRENT: 'img/pin-active.svg',
+};
 
-export const URL_MARKER_DEFAULT = 'img/pin.svg';
-export const URL_MARKER_CURRENT = 'img/pin-active.svg';
-export const ZOOM = 13;
+export const UI_CONFIG = {
+  STARS_COUNT: 5,
+  MAX_PERCENT_STARS_WIDTH: 100,
+  ZOOM: 13,
+};
 
-export const MAX_COMMENTS = 10;
-export const MIN_COMMENT_LENGTH = 50;
-export const MAX_COMMENT_LENGTH = 300;
+export const COMMENT_CONFIG = {
+  MAX_COMMENTS: 10,
+  MIN_LENGTH: 50,
+  MAX_LENGTH: 300,
+};
 
 export enum AppRoute {
   Root = '/',

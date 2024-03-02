@@ -1,4 +1,4 @@
-import { MAX_PERCENT_STARS_WIDTH, STARS_COUNT } from './const';
+import {UI_CONFIG} from './const';
 
 export const formatDate = (date: string) => new Intl.DateTimeFormat(
   'en-US',
@@ -6,7 +6,7 @@ export const formatDate = (date: string) => new Intl.DateTimeFormat(
 ).format( new Date(date) );
 
 export const getStarsWidth = (rating: number) =>
-  `${(MAX_PERCENT_STARS_WIDTH * Math.round(rating)) / STARS_COUNT}%`;
+  `${(UI_CONFIG.MAX_PERCENT_STARS_WIDTH * Math.round(rating)) / UI_CONFIG.STARS_COUNT}%`;
 
 export const getRandomElement = <T>(array: readonly T[]): T => array[Math.floor(Math.random() * array.length)];
 export const pluralize = (str: string, count: number) => count === 1 ? str : `${str}s`;
