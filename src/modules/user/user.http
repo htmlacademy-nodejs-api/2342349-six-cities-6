@@ -1,6 +1,6 @@
 @host = http://localhost:5001
-@offerId = 65de146c89047dbf6d3a3f69
-@token = eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6ImFsZXgyM0BleGFtcGxlLmNvbSIsIm5hbWUiOiLQnNCw0YDQuNGPINCS0LDRgdC40LvRjNC10LLQsCIsImlkIjoiNjVkZTM4N2QxNTMyYjFlNjU0MThiNzk2IiwiaWF0IjoxNzA5MDYyMjk2LCJleHAiOjE3MDkyMzUwOTZ9.829pxSkXy5LPjPTPREJA2unC-avj0y6K0KswFCL55KvmnEbr75bJ95ynT06y3SGgvmhMuCk5novuw7mksgekSw
+@offerId = 65e0f50da45b21568c8c5c35
+@token = eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjY1ZTE0MDg3OGQ1ODU4M2YzYjQ3ZDk4MCIsImVtYWlsIjoiYWxleDIzQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5MjYxNjcwLCJleHAiOjE3MDk0MzQ0NzB9.yVnHeTxZeNBalQlpP5N2zDWxUiRMkNlZ13Xg3c2STKomo-TXxB8BsfW9Uc8geGJX9jdZ7tqJxnWdcFCgYbzS4Q
 
 # User
 ## create
@@ -25,6 +25,12 @@ Content-Type: application/json
   "email": "alex23@example.com",
   "password": "123456"
 }
+
+###
+
+## check login
+GET {{host}}/users/login/
+Authorization: Bearer {{token}}
 
 ###
 

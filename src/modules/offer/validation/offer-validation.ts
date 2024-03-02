@@ -1,11 +1,11 @@
 import {City} from '#src/modules/city/type/city.type.js';
 import {CityValidation} from '#src/modules/city/validation/city-validation.js';
+import {Location} from '#src/modules/location/type/location.type.js';
 import {LocationValidation} from '#src/modules/location/validation/location-validation.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
 import {OFFER_VALIDATION_CONSTANT} from '#src/modules/offer/validation/offer-validation.constant.js';
 import {User} from '#src/modules/user/type/user.type.js';
 import {UserValidation} from '#src/modules/user/validation/user-validation.js';
-import {Location} from '#src/type/location.type.js';
 import {Type} from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -89,4 +89,9 @@ export class OfferValidation {
   @ValidateNested()
   @Type(() => LocationValidation)
   public location!: Location;
+
+  @IsNumber()
+  @Min(OFFER_VALIDATION_CONSTANT.VISITOR.MIN)
+  @Max(OFFER_VALIDATION_CONSTANT.VISITOR.MAX)
+  public visitor!: number;
 }

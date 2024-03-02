@@ -70,12 +70,9 @@ export class MongoReviewRepository implements ReviewRepository {
     return !!isReviewExists;
   }
 
-  public async calculateAverageRating(offerIdRef: Ref<OfferEntity>): Promise<{
-    _id: Ref<OfferEntity>;
-    averageRating: number;
-  }[]> {
+  public async calculateAverageRating(offerIdRef: Ref<OfferEntity>): Promise<number> {
     const objectId = new MongooseObjectId(offerIdRef.toString());
-    return this.reviewModel.aggregate([
+    const result = await this.reviewModel.aggregate([
       {
         $match: {offerId: objectId}
       },
@@ -85,6 +82,32 @@ export class MongoReviewRepository implements ReviewRepository {
           averageRating: {$avg: '$rating'},
         },
       },
+      {
+        $project: {
+          _id: 0,
+          averageRating: 1,
+        }
+      }
     ]);
+
+    return result.length > 0 ? result[0].averageRating : 0;
   }
+
+  // public async calculateAverageRating(offerIdRef: Ref<OfferEntity>): Promise<{
+  //   _id: Ref<OfferEntity>;
+  //   averageRating: number;
+  // }[]> {
+  //   const objectId = new MongooseObjectId(offerIdRef.toString());
+  //   return this.reviewModel.aggregate([
+  //     {
+  //       $match: {offerId: objectId}
+  //     },
+  //     {
+  //       $group: {
+  //         _id: '$offerId',
+  //         averageRating: {$avg: '$rating'},
+  //       },
+  //     },
+  //   ]);
+  // }
 }

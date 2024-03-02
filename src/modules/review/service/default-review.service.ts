@@ -54,12 +54,7 @@ export class DefaultReviewService implements ReviewService {
   }
 
   public async calculateAndSetRating(offerIdRef: Ref<OfferEntity>): Promise<boolean> {
-    const aggregationResult = await this.reviewRepository.calculateAverageRating(offerIdRef);
-    const {averageRating} = aggregationResult[0] ?? {};
-    if (averageRating === undefined) {
-      this.logger.error(`Error get rating aggregation result for offer ID: '${offerIdRef.toString()}'`);
-      return false;
-    }
+    const averageRating = await this.reviewRepository.calculateAverageRating(offerIdRef);
 
     const isOfferRatingUpdated = await this.offerService.setRating(offerIdRef, averageRating);
     if (!isOfferRatingUpdated) {

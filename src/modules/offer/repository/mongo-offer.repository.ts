@@ -3,7 +3,7 @@ import {OfferRepository} from '#src/modules/offer/repository/offer-repository.in
 import {Offer} from '#src/modules/offer/type/offer.type.js';
 import {Component} from '#src/type/component.enum.js';
 import {MongooseObjectId} from '#src/type/mongoose-objectid.type.js';
-import {DocumentType, Ref, types} from '@typegoose/typegoose';
+import {DocumentType, mongoose, Ref, types} from '@typegoose/typegoose';
 import {inject, injectable} from 'inversify';
 
 
@@ -23,13 +23,109 @@ export class MongoOfferRepository implements OfferRepository {
     return this.offerModel.findOne({title: offerTitle});
   }
 
-  public async findAll(limit: number, cityId?: string): Promise<DocumentType<OfferEntity>[]> {
+  public async findAllWithFavorite(limit: number, favoriteOfferIds: Ref<OfferEntity>[], cityId?: string): Promise<DocumentType<OfferEntity>[]> {
     const query = cityId ? {cityId} : {};
 
-    return this.offerModel
-      .find(query, {}, {limit: limit})
-      .sort({publishDate: -1})
-      .populate(['cityId', 'hostId']);
+    return this.offerModel.aggregate([
+      {$match: query},
+      {$limit: limit},
+      {$sort: {publishDate: -1}},
+      {
+        $lookup: {
+          from: 'cities',
+          localField: 'cityId',
+          foreignField: '_id',
+          as: 'city'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'hostId',
+          foreignField: '_id',
+          as: 'host'
+        }
+      },
+      {$unwind: '$city'},
+      {$unwind: '$host'},
+      {
+        $addFields: {
+          isFavorite: {
+            $in: ['$_id', favoriteOfferIds]
+          },
+          id: {$toString: '$_id'}
+        }
+      }
+    ]);
+  }
+
+  public async findByIdWithFavorite(offerIdRef: Ref<OfferEntity>, favoriteOfferIds: Ref<OfferEntity>[]): Promise<DocumentType<OfferEntity> | null> {
+    const offerObjectId = new mongoose.Types.ObjectId(offerIdRef.toString());
+
+    return this.offerModel.aggregate([
+      {$match: {_id: offerObjectId}},
+      {$limit: 1},
+      {
+        $lookup: {
+          from: 'cities',
+          localField: 'cityId',
+          foreignField: '_id',
+          as: 'city'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'hostId',
+          foreignField: '_id',
+          as: 'host'
+        }
+      },
+      {$unwind: '$city'},
+      {$unwind: '$host'},
+      {
+        $addFields: {
+          isFavorite: {
+            $in: ['$_id', favoriteOfferIds]
+          },
+          id: {$toString: '$_id'}
+        }
+      }
+    ]).then((results) => results[0] || null);
+  }
+
+  public async findFavorite(limit: number, favoriteOfferIds: Ref<OfferEntity>[]): Promise<DocumentType<OfferEntity>[]> {
+
+    return this.offerModel.aggregate([
+      {$match: {_id: {$in: favoriteOfferIds}}},
+      {$limit: limit},
+      {
+        $lookup: {
+          from: 'cities',
+          localField: 'cityId',
+          foreignField: '_id',
+          as: 'city'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'hostId',
+          foreignField: '_id',
+          as: 'host'
+        }
+      },
+      {$unwind: '$city'},
+      {$unwind: '$host'},
+      {
+        $addFields: {
+          isFavorite: {
+            $in: ['$_id', favoriteOfferIds]
+          },
+          id: {$toString: '$_id'}
+        }
+      }
+    ]);
   }
 
   public async findPremiumByCity(cityId: string, limit: number): Promise<DocumentType<OfferEntity>[]> {
@@ -60,7 +156,7 @@ export class MongoOfferRepository implements OfferRepository {
 
   public async updateById(offerIdRef: Ref<OfferEntity>, offerData: Partial<Offer>): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .findByIdAndUpdate(offerIdRef, offerData, {new: true})
+      .findByIdAndUpdate(offerIdRef, offerData)
       .populate(['cityId', 'hostId']);
   }
 

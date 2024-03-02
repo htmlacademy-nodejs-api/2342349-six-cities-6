@@ -14,5 +14,5 @@ export interface ReviewRepository {
 
   exists(reviewId: MongooseObjectId): Promise<boolean>;
 
-  calculateAverageRating(offerIdRef: Ref<OfferEntity>): Promise<{ _id: Ref<OfferEntity>; averageRating: number; }[]>;
+  calculateAverageRating(offerIdRef: Ref<OfferEntity>): Promise<number>;
 }

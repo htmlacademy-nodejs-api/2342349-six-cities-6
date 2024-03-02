@@ -1,4 +1,4 @@
-import {Location} from '#src/type/location.type.js';
+import {Location} from '#src/modules/location/type/location.type.js';
 import {Expose, Transform} from 'class-transformer';
 
 export class CityRDO {

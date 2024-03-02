@@ -27,7 +27,7 @@ export interface UserService extends DocumentExists {
 
   login(inputLogin: string, inputPassword: string): Promise<string>;
 
-  checkAuthenticate(email: string): Promise<boolean>;
+  checkAuthenticate(email?: string): Promise<boolean>;
 
   logout(): Promise<boolean>;
 }

@@ -118,12 +118,12 @@ paths:
       description: Возвращает список премиальных предложений по аренде недвижимости. Предложения могут быть отфильтрованы по городу. Доступно для всех пользователей.
       operationId: getPremiumOffers
       parameters:
-        - name: cityId
+        - name: cityName
           in: query
-          required: false
+          required: true
           schema:
             type: string
-          description: ID города для фильтрации премиальных предложений. Если не указан, возвращаются премиальные предложения из всех городов.
+          description: Имя города для фильтрации премиальных предложений. Если не указан, возвращаются премиальные предложения из всех городов.
         - name: limit
           in: query
           required: false
@@ -247,6 +247,13 @@ paths:
       summary: Загрузка файла фотографии предложения по аренде.
       description: Позволяет авторизованному пользователю загрузить файл фотографии предложения по аренде. Файл фотографии загружается для указанного предложения.
       operationId: uploadOfferImage
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID предложения
       requestBody:
         content:
           multipart/form-data:

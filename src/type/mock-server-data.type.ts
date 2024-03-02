@@ -1,7 +1,7 @@
 import {City} from '#src/modules/city/type/city.type.js';
+import {Location} from '#src/modules/location/type/location.type.js';
 import {OfferType} from '#src/modules/offer/type/offer.type.js';
 import {UserType} from '#src/modules/user/type/user.type.js';
-import {Location} from '#src/type/location.type.js';
 
 export interface MockServerData {
   titles: string[];
